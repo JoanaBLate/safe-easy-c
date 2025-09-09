@@ -12,12 +12,12 @@ void testReadTextFile()
     
     releaseHeap(&filename);
     releaseHeap(&file);
-    releaseHeap(&string);
-    releaseHeap(&expected);
 
     if (! stringsAreEqual(&expected, &string)) { 
         printf("readTextFile FAILS!\n"); 
         exit(1);
     }
+        
+    releaseHeap(&string);
+    releaseHeap(&expected);
 }
-
