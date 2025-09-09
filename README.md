@@ -4,7 +4,7 @@ SafeEasyC is a C library that provides a safe, high-level approach to working wi
 
 It prevents common errors such as
 - use-after-free
-- segmentation faults
+- segmentation fault
 - out-of-bounds access
 <!-- - using a non-initialized variable -->
 
