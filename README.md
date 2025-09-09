@@ -60,7 +60,8 @@ int main()
 
 void myFunction(String* myString)
 {
-    assureNotReleased(myString, "myFunction"); // the function name will appear in eventual error message
+    // the function name will appear in eventual error message
+    assureNotReleased(myString, "myFunction");
        
     printlnString(myString);
 }
