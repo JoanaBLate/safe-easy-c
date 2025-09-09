@@ -9,15 +9,15 @@ void testReadTextFile()
 
     String string = createSubstring(&file, 0, 18);
     String expected = createStringFromLiteral("// # Copyright (c)");
-
-    if (! stringsAreEqual(&expected, &string)) { 
-        printf("readTextFile FAILS!\n"); 
-        exit(1);
-    }
     
     releaseHeap(&filename);
     releaseHeap(&file);
     releaseHeap(&string);
     releaseHeap(&expected);
+
+    if (! stringsAreEqual(&expected, &string)) { 
+        printf("readTextFile FAILS!\n"); 
+        exit(1);
+    }
 }
 
