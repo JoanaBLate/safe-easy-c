@@ -45,6 +45,8 @@ void releaseHeap(void* voidStruct)
 {
     AddressStruct* genericStruct = (AddressStruct*) voidStruct;
     
+    if (genericStruct->address == FAKENULL) { return; }
+    
     free(genericStruct->address); // no problem to free(NULL)
     
     genericStruct->address = NULL;
