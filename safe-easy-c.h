@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
-///                             SafeEasyC Library                           ///
+///                            SafeEasyC Library                            ///
 ///                                                                         ///
-///                     DO   **NOT**   EDIT   THIS   FILE!                  ///
+///                    DO   **NOT**   EDIT   THIS   FILE!                   ///
 ///                                                                         ///
-///                 https://github.com/JoanaBLate/safe-easy-c               ///
+///                https://github.com/JoanaBLate/safe-easy-c                ///
 ///////////////////////////////////////////////////////////////////////////////
 
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
@@ -126,9 +126,9 @@ void releaseHeap(void* voidStruct)
 {
     AddressStruct* genericStruct = (AddressStruct*) voidStruct;
 
-    if (genericStruct->address == FAKENULL) { return; }
+    if (genericStruct->address == FAKENULL) { return; } // for empty strings
 
-    free(genericStruct->address); // no problem to free(NULL)
+    free(genericStruct->address); // no problem to "free again"
 
     genericStruct->address = NULL;
 }
@@ -151,11 +151,16 @@ void assureNotReleased(void* voidStruct, char* funcName)
 
 // file: string/info.h //
 
+// char* for storing text
+// unsigned char for raw byte values
+// int for functions that return character codes + need a sentinel
+
 long getStringSize(String* string)
 {
     return string->size;
 }
 
+// the same pattern as the C standard library
 int stringCharCodeAt(String* string, long index)
 {
     if (index < 0  ||  index >= string->size) { return -1; } // out of bounds

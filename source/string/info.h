@@ -1,12 +1,17 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
+// char* for storing text
+// unsigned char for raw byte values
+// int for functions that return character codes + need a sentinel
+
 long getStringSize(String* string)
 {        
     return string->size;
 }
 
+// the same pattern as the C standard library
 int stringCharCodeAt(String* string, long index)
-{    
+{     
     if (index < 0  ||  index >= string->size) { return -1; } // out of bounds
     
     return (int) ((unsigned char) string->address[index]);
