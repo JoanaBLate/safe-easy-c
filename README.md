@@ -14,7 +14,7 @@ SafeEasyC makes C programming much easier for beginners.
 
 Just download the file **safe-easy-c.h**, it contains the whole SafeEasyC library in it.
 
-*Currently* SafeEasyC is FOR **LINUX ONLY!**
+*Currently* SafeEasyC is for **LINUX ONLY!**
 
 ### Hello World
 
@@ -77,7 +77,9 @@ The names of *private* functions in the SafeEasyC library start with uderscore (
 
 Many SafeEasyC functions parameters are of the type *long* (where theoretically they should be *size_t*). 
 
-This is very useful for preventing many nasty bugs, but comes at the cost that you *MUST NOT* use the library for big data (size equal/greater to the max positive value of the type *long* - which exact number depends on your operatin system).
+This is very useful for preventing many nasty bugs, but comes at the cost that you *MUST NOT* use the library for big data (size equal/greater to the max positive value of the type *long* - which exact number depends on your operating system).
+
+For more information, search in the folder examples about this subject.
 
 <!-- At the moment the library is comprehensive enough to solve all the puzzles of the Advent of Code. -->
 
