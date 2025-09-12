@@ -36,16 +36,16 @@ String _createStringFromInfo(char* sourceAddress, long sourceSize)
     
     char* buffer = _allocateHeap(bufferSize);
 
-    memcpy(buffer, sourceAddress, bufferSize);
+    memcpy(buffer, sourceAddress, (unsigned long) bufferSize);
     
     return _makeStructString(buffer, bufferSize);
 }
 
 String createStringFromLiteral(char* cString) // argument not checked
 {
-    long size = strlen(cString);
+    unsigned long size = strlen(cString);
     
-    return _createStringFromInfo(cString, size);
+    return _createStringFromInfo(cString, (long) size);
 }
 
 String createStringClone(String* string)
@@ -68,8 +68,8 @@ String createStringFromLong(long number)
     
     sprintf(array, "%li", number);
     
-    long size = strlen(array);
+    unsigned long size = strlen(array);
     
-    return _createStringFromInfo(array, size);
+    return _createStringFromInfo(array, (long) size);
 }
 

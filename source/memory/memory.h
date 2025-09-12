@@ -1,12 +1,10 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
-// pointer must be unsigned long, because must be able to access all RAM bytes
-
 void* _allocateHeap(long size)
 {
     if (size < 1) { return NULL; }
     
-    unsigned long* address = malloc(size);
+    void* address = malloc((size_t) size);
     
     if (address != NULL) { return address; }
 
@@ -19,7 +17,7 @@ void* _allocateHeapClean(long size)
 {
     if (size < 1) { return NULL; }
     
-    unsigned long* address = calloc(1, size);
+    void* address = calloc(1, (size_t)  size);
     
     if (address != NULL) { return address; }
 
@@ -32,7 +30,7 @@ void* _reallocateHeap(void* address, long size)
 {
     if (size < 1) { return NULL; }
     
-    unsigned long* newAddress = realloc(address, size);
+    void* newAddress = realloc(address, (size_t) size);
     
     if (newAddress != NULL) { return newAddress; }
 

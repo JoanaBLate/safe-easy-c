@@ -1,9 +1,32 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
-// why using 'long' for sizes instead of 'unsigned long' (size_t)?
-//   'long' is big enough (half of the adressable memory)
-//   unsigned integers are more complicated to handle (logical comparison with negative numbers)
-//   SafeEasyC functions assure that size/capacity/length will never get negative value
+// C recomends an unsigned type for size, but many functions
+// of the standard library return a signed type because that
+// type must be able to return -1 (meaning failure). 
+// But a signed version of a type can only store ***HALF*** the 
+// value that its unsigned version can store!!!
+//
+// A function of the kind "indexOf" may return wrong result when
+// searching a very big array!!!
+//
+// The correct way is stop using the sentinel -1 for failure, 
+// and return a struct of the kind { long index, bool failed }
+//
+// This library will not go into that because this is not the only 
+// C flaw. A function expecting to receive an unsigned integer would 
+// generate a huge bug when called with a negative integer, because C
+// automatically converts the (small) negative argument into a (very
+// big) unsigned value. 
+//
+// There is no way of stopping C of doing that. It would be necessary 
+// a new programing language, more restrictive about types.
+//
+// C is flawed!!!
+//
+// This library uses **unsigned types** for sizes, indexes and
+// parameters. So it is BUG FREE, *excepting* objects which size
+// is greater than the max positive integer of the type "long",
+// for shuch big objects you MUST NOT use this library.
 
 // for the address of empty strings
 // true NULL is reserved for released objects

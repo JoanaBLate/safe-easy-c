@@ -19,8 +19,16 @@ long cGetFileSize(char* filename)
         fclose(fp);
         exit(1);
     }
-
+    
     long size = ftell(fp);
+    
+    if (size < 0) 
+    {
+        printf("\nERROR: while reading text file '%s': ", filename);
+        printf("failed to read the entire file\n");
+        fclose(fp);
+        exit(1);
+    }
 
     fclose(fp);
     return size;
@@ -39,8 +47,8 @@ void cReadFile(char* filename, char* buffer, long fileSize)
     }
 
     // Read the entire file into the buffer
-    long bytesRead = fread(buffer, 1, fileSize, fp);
-    if (bytesRead != fileSize)
+    size_t bytesRead = fread(buffer, 1, (size_t) fileSize, fp);
+    if (bytesRead != (size_t) fileSize)
     {
         printf("\nERROR: while reading text file '%s': ", filename);
         printf("failed to read the entire file\n");
@@ -61,8 +69,8 @@ String readTextFile(String filename)
     }
 
     // c filename
-    char* cFilename = malloc(filename.size + 1);
-    memcpy(cFilename, filename.address, filename.size);
+    char* cFilename = malloc((size_t) filename.size + 1);
+    memcpy(cFilename, filename.address, (size_t) filename.size);
     cFilename[filename.size] = 0;
     
     long fileSize = cGetFileSize(cFilename);
@@ -74,7 +82,7 @@ String readTextFile(String filename)
     // checking if is good string
     for (long index = 0; index < fileSize; index++)
     {
-        unsigned char c = buffer[index];
+        unsigned char c = (unsigned char) buffer[index];
         if (c > 31) { continue; }
         if (c == '\n') { continue; }
         if (c == '\r') { continue; }

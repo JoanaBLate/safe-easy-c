@@ -10,9 +10,9 @@ String createStringAppend(String* string, String* chunk)
     
     char* buffer = _allocateHeap(bufferSize);
     
-    memcpy(buffer, string->address, string->size);
+    memcpy(buffer, string->address, (unsigned long) string->size);
     
-    memcpy(&buffer[string->size], chunk->address, chunk->size);
+    memcpy(&buffer[string->size], chunk->address, (unsigned long) chunk->size);
     
     return _makeStructString(buffer, bufferSize);
 }

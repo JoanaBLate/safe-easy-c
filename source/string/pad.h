@@ -24,7 +24,7 @@ String createStringPadStart(String* string, String* chunk, long count)
         }
     }
     
-    memcpy(&buffer[index + 1], string->address, string->size);
+    memcpy(&buffer[index + 1], string->address, (unsigned long) string->size);
     
     return _makeStructString(buffer, bufferSize);
 }
@@ -39,7 +39,7 @@ String createStringPadEnd(String* string, String* chunk, long count)
             
     char* buffer = _allocateHeap(bufferSize);
     
-    memcpy(buffer, string->address, string->size);
+    memcpy(buffer, string->address, (unsigned long) string->size);
     
     long index = string->size - 1;
     

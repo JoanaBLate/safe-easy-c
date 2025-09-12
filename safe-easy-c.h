@@ -19,10 +19,33 @@
 
 // file: types/types.h //
 
-// why using 'long' for sizes instead of 'unsigned long' (size_t)?
-//   'long' is big enough (half of the adressable memory)
-//   unsigned integers are more complicated to handle (logical comparison with negative numbers)
-//   SafeEasyC functions assure that size/capacity/length will never get negative value
+// C recomends an unsigned type for size, but many functions
+// of the standard library return a signed type because that
+// type must be able to return -1 (meaning failure).
+// But a signed version of a type can only store ***HALF*** the
+// value that its unsigned version can store!!!
+//
+// A function of the kind "indexOf" may return wrong result when
+// searching a very big array!!!
+//
+// The correct way is stop using the sentinel -1 for failure,
+// and return a struct of the kind { long index, bool failed }
+//
+// This library will not go into that because this is not the only
+// C flaw. A function expecting to receive an unsigned integer would
+// generate a huge bug when called with a negative integer, because C
+// automatically converts the (small) negative argument into a (very
+// big) unsigned value.
+//
+// There is no way of stopping C of doing that. It would be necessary
+// a new programing language, more restrictive about types.
+//
+// C is flawed!!!
+//
+// This library uses **unsigned types** for sizes, indexes and
+// parameters. So it is BUG FREE, *excepting* objects which size
+// is greater than the max positive integer of the type "long",
+// for shuch big objects you MUST NOT use this library.
 
 // for the address of empty strings
 // true NULL is reserved for released objects
@@ -81,13 +104,11 @@ NullDouble makeNullDouble(double value, bool isNull)
 
 // file: memory/memory.h //
 
-// pointer must be unsigned long, because must be able to access all RAM bytes
-
 void* _allocateHeap(long size)
 {
     if (size < 1) { return NULL; }
 
-    unsigned long* address = malloc(size);
+    void* address = malloc((size_t) size);
 
     if (address != NULL) { return address; }
 
@@ -100,7 +121,7 @@ void* _allocateHeapClean(long size)
 {
     if (size < 1) { return NULL; }
 
-    unsigned long* address = calloc(1, size);
+    void* address = calloc(1, (size_t)  size);
 
     if (address != NULL) { return address; }
 
@@ -113,7 +134,7 @@ void* _reallocateHeap(void* address, long size)
 {
     if (size < 1) { return NULL; }
 
-    unsigned long* newAddress = realloc(address, size);
+    void* newAddress = realloc(address, (size_t) size);
 
     if (newAddress != NULL) { return newAddress; }
 
@@ -147,6 +168,126 @@ void assureNotReleased(void* voidStruct, char* funcName)
     if (genericStruct->address == NULL) { _errorAlreadyReleased(funcName); }
 }
 
+
+
+// file: string/print.h //
+
+void printStringBytes(String* string)
+{
+    if (string->size == 0) { printf("{ }"); return; }
+
+    bool expectingComma = false;
+
+    printf("{");
+
+    for (long index = 0; index < string->size; index++)
+    {
+        if (expectingComma) { printf(","); }
+
+        unsigned char c = (unsigned char) string->address[index];
+
+        printf(" %d", c);
+
+        expectingComma = true;
+    }
+    printf(" }");
+}
+
+void printlnStringBytes(String* string)
+{
+    printStringBytes(string);
+
+    printf("\n");
+}
+
+void printStringChars(String* string)
+{
+    char substitute = 26;
+
+    long index = -1;
+
+    while (true)
+    {
+        index += 1;
+
+        if (index >= string->size) { return; }
+
+        char c = string->address[index];
+
+        if (c == 10) { putchar(c); continue; }
+        if (c <  32) { putchar(substitute); continue; } // includes from 0 to -127
+        putchar(c);
+    }
+}
+
+void printlnStringChars(String* string)
+{
+    printStringChars(string);
+
+    printf("\n");
+}
+
+void printString(String* string)
+{
+    unsigned char substitute = 26;
+
+    unsigned char token[5];
+
+    long index = -1;
+
+    while (true)
+    {
+        index += 1;
+
+        if (index >= string->size) { return; }
+
+        unsigned char c = (unsigned char) string->address[index];
+
+        if (c == 10) { putchar(c); continue; }
+        if (c <  32) { putchar(substitute); continue; }
+        if (c < 128) { putchar(c); continue; }
+
+        // unicode encoded (or not):
+
+        token[0] = c;
+
+        index += 1;
+        if (index == string->size) { putchar(substitute); index -= 1; continue; } // corrupted data
+
+        token[1] = (unsigned char) string->address[index];
+
+        // 2-byte sequence
+        if ((c & 0xE0) == 0xC0) { token[2] = 0; printf("%s", token); continue; }
+
+        index += 1;
+        if (index == string->size) { putchar(substitute); index -= 2; continue; } // corrupted data
+
+        token[2] = (unsigned char) string->address[index];
+
+        // 3-byte sequence
+        if ((c & 0xF0) == 0xE0) { token[3] = 0; printf("%s", token); continue; }
+
+        index += 1;
+        if (index == string->size) { putchar(substitute); index -= 3; continue; } // corrupted data
+
+        token[3] = (unsigned char) string->address[index];
+
+        // 4-byte sequence
+        if ((c & 0xF8) == 0xF0) { token[4] = 0; printf("%s", token); continue; }
+
+        // not encoded:
+
+        putchar(substitute);
+        index -= 3;
+    }
+}
+
+void printlnString(String* string)
+{
+    printString(string);
+
+    printf("\n");
+}
 
 
 // file: string/info.h //
@@ -399,16 +540,16 @@ String _createStringFromInfo(char* sourceAddress, long sourceSize)
 
     char* buffer = _allocateHeap(bufferSize);
 
-    memcpy(buffer, sourceAddress, bufferSize);
+    memcpy(buffer, sourceAddress, (unsigned long) bufferSize);
 
     return _makeStructString(buffer, bufferSize);
 }
 
 String createStringFromLiteral(char* cString) // argument not checked
 {
-    long size = strlen(cString);
+    unsigned long size = strlen(cString);
 
-    return _createStringFromInfo(cString, size);
+    return _createStringFromInfo(cString, (long) size);
 }
 
 String createStringClone(String* string)
@@ -431,27 +572,27 @@ String createStringFromLong(long number)
 
     sprintf(array, "%li", number);
 
-    long size = strlen(array);
+    unsigned long size = strlen(array);
 
-    return _createStringFromInfo(array, size);
+    return _createStringFromInfo(array, (long) size);
 }
 
 
 // file: string/repeat.h //
 
-String createStringRepeat(String string, long count)
+String createStringRepeat(String* string, long count)
 {
-    if (string.size == 0) { return createEmptyString(); }
+    if (string->size == 0) { return createEmptyString(); }
 
-    if (count <= 0) { return createEmptyString(); }
+    if (count < 1) { return createEmptyString(); }
 
-    long bufferSize = count * string.size;
+    long bufferSize = count * string->size;
 
     char* buffer = _allocateHeap(bufferSize);
 
     for (long turn = 0; turn < count; turn++)
     {
-        memcpy(&buffer[turn * string.size], string.address, string.size);
+        memcpy(&buffer[turn * string->size], string->address, (unsigned long) string->size);
     }
 
     return _makeStructString(buffer, bufferSize);
@@ -470,9 +611,9 @@ String createStringAppend(String* string, String* chunk)
 
     char* buffer = _allocateHeap(bufferSize);
 
-    memcpy(buffer, string->address, string->size);
+    memcpy(buffer, string->address, (unsigned long) string->size);
 
-    memcpy(&buffer[string->size], chunk->address, chunk->size);
+    memcpy(&buffer[string->size], chunk->address, (unsigned long) chunk->size);
 
     return _makeStructString(buffer, bufferSize);
 }
@@ -648,7 +789,7 @@ String createStringPadStart(String* string, String* chunk, long count)
         }
     }
 
-    memcpy(&buffer[index + 1], string->address, string->size);
+    memcpy(&buffer[index + 1], string->address, (unsigned long) string->size);
 
     return _makeStructString(buffer, bufferSize);
 }
@@ -663,7 +804,7 @@ String createStringPadEnd(String* string, String* chunk, long count)
 
     char* buffer = _allocateHeap(bufferSize);
 
-    memcpy(buffer, string->address, string->size);
+    memcpy(buffer, string->address, (unsigned long) string->size);
 
     long index = string->size - 1;
 
@@ -680,126 +821,6 @@ String createStringPadEnd(String* string, String* chunk, long count)
     }
 
     return _makeStructString(buffer, bufferSize);
-}
-
-
-// file: string/print.h //
-
-void printStringBytes(String* string)
-{
-    if (string->size == 0) { printf("{ }"); return; }
-
-    bool expectingComma = false;
-
-    printf("{");
-
-    for (long index = 0; index < string->size; index++)
-    {
-        if (expectingComma) { printf(","); }
-
-        unsigned char c = (unsigned char) string->address[index];
-
-        printf(" %d", c);
-
-        expectingComma = true;
-    }
-    printf(" }");
-}
-
-void printlnStringBytes(String* string)
-{
-    printStringBytes(string);
-
-    printf("\n");
-}
-
-void printStringChars(String* string)
-{
-    char substitute = 26;
-
-    long index = -1;
-
-    while (true)
-    {
-        index += 1;
-
-        if (index >= string->size) { return; }
-
-        char c = string->address[index];
-
-        if (c == 10) { putchar(c); continue; }
-        if (c <  32) { putchar(substitute); continue; } // includes from 0 to -127
-        putchar(c);
-    }
-}
-
-void printlnStringChars(String* string)
-{
-    printStringChars(string);
-
-    printf("\n");
-}
-
-void printString(String* string)
-{
-    char substitute = 26;
-
-    char token[5];
-
-    long index = -1;
-
-    while (true)
-    {
-        index += 1;
-
-        if (index >= string->size) { return; }
-
-        unsigned char c = (unsigned char) string->address[index];
-
-        if (c == 10) { putchar(c); continue; }
-        if (c <  32) { putchar(substitute); continue; }
-        if (c < 128) { putchar(c); continue; }
-
-        // unicode encoded (or not):
-
-        token[0] = c;
-
-        index += 1;
-        if (index == string->size) { putchar(substitute); index -= 1; continue; } // corrupted data
-
-        token[1] = string->address[index];
-
-        // 2-byte sequence
-        if ((c & 0xE0) == 0xC0) { token[2] = 0; printf("%s", token); continue; }
-
-        index += 1;
-        if (index == string->size) { putchar(substitute); index -= 2; continue; } // corrupted data
-
-        token[2] = string->address[index];
-
-        // 3-byte sequence
-        if ((c & 0xF0) == 0xE0) { token[3] = 0; printf("%s", token); continue; }
-
-        index += 1;
-        if (index == string->size) { putchar(substitute); index -= 3; continue; } // corrupted data
-
-        token[3] = string->address[index];
-
-        // 4-byte sequence
-        if ((c & 0xF8) == 0xF0) { token[4] = 0; printf("%s", token); continue; }
-
-        // not encoded:
-
-        putchar(substitute);
-        index -= 3;
-    }
-}
-
-void printlnString(String* string)
-{
-    printString(string);
-
-    printf("\n");
 }
 
 
@@ -1231,6 +1252,14 @@ long cGetFileSize(char* filename)
 
     long size = ftell(fp);
 
+    if (size < 0)
+    {
+        printf("\nERROR: while reading text file '%s': ", filename);
+        printf("failed to read the entire file\n");
+        fclose(fp);
+        exit(1);
+    }
+
     fclose(fp);
     return size;
 }
@@ -1248,8 +1277,8 @@ void cReadFile(char* filename, char* buffer, long fileSize)
     }
 
     // Read the entire file into the buffer
-    long bytesRead = fread(buffer, 1, fileSize, fp);
-    if (bytesRead != fileSize)
+    size_t bytesRead = fread(buffer, 1, (size_t) fileSize, fp);
+    if (bytesRead != (size_t) fileSize)
     {
         printf("\nERROR: while reading text file '%s': ", filename);
         printf("failed to read the entire file\n");
@@ -1270,8 +1299,8 @@ String readTextFile(String filename)
     }
 
     // c filename
-    char* cFilename = malloc(filename.size + 1);
-    memcpy(cFilename, filename.address, filename.size);
+    char* cFilename = malloc((size_t) filename.size + 1);
+    memcpy(cFilename, filename.address, (size_t) filename.size);
     cFilename[filename.size] = 0;
 
     long fileSize = cGetFileSize(cFilename);
@@ -1283,7 +1312,7 @@ String readTextFile(String filename)
     // checking if is good string
     for (long index = 0; index < fileSize; index++)
     {
-        unsigned char c = buffer[index];
+        unsigned char c = (unsigned char) buffer[index];
         if (c > 31) { continue; }
         if (c == '\n') { continue; }
         if (c == '\r') { continue; }

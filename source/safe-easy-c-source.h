@@ -11,6 +11,7 @@
 
 #include "memory/memory.h"
 
+#include "string/print.h"
 #include "string/info.h"
 #include "string/create.h"
 #include "string/repeat.h"
@@ -18,7 +19,6 @@
 #include "string/substring.h"
 #include "string/lower-reverse-sort.h"
 #include "string/pad.h"
-#include "string/print.h"
 #include "string/replace.h"
 #include "string/remove.h"
 #include "string/trim.h"

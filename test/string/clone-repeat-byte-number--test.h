@@ -68,16 +68,16 @@ void testCreateStringRepeat()
     
     String source = createStringFromLiteral("∆rock∆");
     
-    String result1 = createStringRepeat(source, 3);
+    String result1 = createStringRepeat(&source, 3);
     String expected1 = createStringFromLiteral("∆rock∆∆rock∆∆rock∆");
     if (! stringsAreEqual(&expected1, &result1)) { fails = true; }
 
-    String result2 = createStringRepeat(source, -33);
+    String result2 = createStringRepeat(&source, -33);
     String expected2 = createEmptyString();
     if (! stringsAreEqual(&expected2, &result2)) { fails = true; }
 
     String empty = createEmptyString();
-    String result3 = createStringRepeat(empty, 3);
+    String result3 = createStringRepeat(&empty, 3);
     String expected3 = createEmptyString();
     if (! stringsAreEqual(&expected3, &result3)) { fails = true; }
     

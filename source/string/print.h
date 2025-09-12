@@ -57,9 +57,9 @@ void printlnStringChars(String* string)
 
 void printString(String* string)
 {
-    char substitute = 26;
+    unsigned char substitute = 26;
     
-    char token[5];
+    unsigned char token[5];
     
     long index = -1;
 
@@ -82,7 +82,7 @@ void printString(String* string)
         index += 1;
         if (index == string->size) { putchar(substitute); index -= 1; continue; } // corrupted data
         
-        token[1] = string->address[index];
+        token[1] = (unsigned char) string->address[index];
 
         // 2-byte sequence
         if ((c & 0xE0) == 0xC0) { token[2] = 0; printf("%s", token); continue; }
@@ -90,7 +90,7 @@ void printString(String* string)
         index += 1;
         if (index == string->size) { putchar(substitute); index -= 2; continue; } // corrupted data
 
-        token[2] = string->address[index];
+        token[2] = (unsigned char) string->address[index];
         
         // 3-byte sequence
         if ((c & 0xF0) == 0xE0) { token[3] = 0; printf("%s", token); continue; }
@@ -98,7 +98,7 @@ void printString(String* string)
         index += 1;
         if (index == string->size) { putchar(substitute); index -= 3; continue; } // corrupted data
         
-        token[3] = string->address[index];
+        token[3] = (unsigned char) string->address[index];
         
         // 4-byte sequence
         if ((c & 0xF8) == 0xF0) { token[4] = 0; printf("%s", token); continue; }

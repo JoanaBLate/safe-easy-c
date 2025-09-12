@@ -14,5 +14,6 @@ Unicode characters like '∆' may be corrupted by these functions:
 - 'stringToLower'
 - 'stringToUpper'
 - 'stringToOppositeCase'
-(TODO: create stringReverseUnicode, stringSortUnicode...)
+
+(TODO: create stringReverseUnicode, stringSortUnicode... OR create the type 'rune')
 
