@@ -5,6 +5,7 @@ Inside the folder "test":
 
 ~~~ bash
 gcc test.c -o test -Wall -Wextra -Wpedantic -Wvla -Wsign-conversion -fsanitize=address
+
 ./test
 ~~~ 
  
