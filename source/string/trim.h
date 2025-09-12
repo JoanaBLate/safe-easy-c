@@ -2,6 +2,8 @@
 
 String stringTrimStart(String* string) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringTrimStart"); }
+    
     long margin = 0;
     long size = string->size;
 
@@ -19,6 +21,8 @@ String stringTrimStart(String* string)
 
 String stringTrimEnd(String* string) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringTrimEnd"); }
+    
     long size = string->size;
     
     while (true)
@@ -37,6 +41,8 @@ String stringTrimEnd(String* string)
 
 String stringTrim(String* string) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringTrim"); }
+    
     long margin = 0;
     long size = string->size;
     

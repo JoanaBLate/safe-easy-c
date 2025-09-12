@@ -64,3 +64,11 @@ void assureNotReleased(void* voidStruct, char* funcName)
     if (genericStruct->address == NULL) { _errorAlreadyReleased(funcName); }
 }
 
+void _errorNullArgument(char* funcName)
+{
+    printf("\nERROR: null argument received in function '%s'\n", funcName);
+    
+    exit(1);
+}
+
+

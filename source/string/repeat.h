@@ -2,6 +2,8 @@
 
 String createStringRepeat(String* string, long count) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringRepeat"); }
+    
     if (string->size == 0) { return createEmptyString(); }
     
     if (count < 1) { return createEmptyString(); }

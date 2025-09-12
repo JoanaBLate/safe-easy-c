@@ -2,6 +2,8 @@
 
 void printStringBytes(String* string)
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("printStringBytes"); }
+    
     if (string->size == 0) { printf("{ }"); return; }
 
     bool expectingComma = false;
@@ -23,6 +25,8 @@ void printStringBytes(String* string)
 
 void printlnStringBytes(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printlnStringBytes"); }
+    
     printStringBytes(string);
     
     printf("\n");
@@ -30,6 +34,8 @@ void printlnStringBytes(String* string)
 
 void printStringChars(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printStringChars"); }
+    
     char substitute = 26;
     
     long index = -1;
@@ -50,6 +56,8 @@ void printStringChars(String* string)
 
 void printlnStringChars(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printlnStringChars"); }
+    
     printStringChars(string);
     
     printf("\n");
@@ -57,6 +65,8 @@ void printlnStringChars(String* string)
 
 void printString(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printString"); }
+    
     unsigned char substitute = 26;
     
     unsigned char token[5];
@@ -112,6 +122,8 @@ void printString(String* string)
 
 void printlnString(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printlnString"); }
+    
     printString(string);
     
     printf("\n");

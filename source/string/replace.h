@@ -4,6 +4,9 @@
 
 String createStringReplaceStart(String* string, long count, String* chunk) 
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplaceStart"); }
+    if (chunk->address == NULL)  { _errorAlreadyReleased("createStringReplaceStart"); }
+    
     if (count < 1) { return createStringInsert(string, chunk, 0); } 
     
     if (count >= string->size) { return createStringClone(chunk); }
@@ -29,6 +32,9 @@ String createStringReplaceStart(String* string, long count, String* chunk)
 
 String createStringReplaceEnd(String* string, long count, String* chunk) 
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplaceEnd"); }
+    if (chunk->address == NULL)  { _errorAlreadyReleased("createStringReplaceEnd"); }
+    
     if (count < 1) { return createStringAppend(string, chunk); } 
     
     if (count >= string->size) { return createStringClone(chunk); } 
@@ -53,6 +59,11 @@ String createStringReplaceEnd(String* string, long count, String* chunk)
 
 String _createStringReplace(String* string, String* target, String* chunk, long position) 
 {
+ // unnecessary, private function
+ // if (string->address == NULL) { _errorAlreadyReleased("_createStringReplace"); }
+ // if (target->address == NULL) { _errorAlreadyReleased("_createStringReplace"); }
+ // if (chunk->address  == NULL) { _errorAlreadyReleased("_createStringReplace"); }
+    
  // long stringLeftArmStart = 0;
     long stringLeftArmSize = position;
     
@@ -80,6 +91,10 @@ String _createStringReplace(String* string, String* target, String* chunk, long 
 
 String createStringReplace(String* string, String* target, String* chunk) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplace"); }
+    if (target->address == NULL) { _errorAlreadyReleased("createStringReplace"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("createStringReplace"); }
+    
     long position = stringIndexOf(string, target);
     
     if (position == -1) { return createStringClone(string); } // target not found
@@ -93,6 +108,10 @@ String createStringReplace(String* string, String* target, String* chunk)
 
 String createStringReplaceLast(String* string, String* target, String* chunk) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplaceLast"); }
+    if (target->address == NULL) { _errorAlreadyReleased("createStringReplaceLast"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("createStringReplaceLast"); }
+    
     long position = stringLastIndexOf(string, target);
     
     if (position == -1) { return createStringClone(string); } // target not found
@@ -108,6 +127,10 @@ String createStringReplaceLast(String* string, String* target, String* chunk)
 
 String createStringReplaceAll(String* string, String* target, String* chunk) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplaceAll"); }
+    if (target->address == NULL) { _errorAlreadyReleased("createStringReplaceAll"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("createStringReplaceAll"); }
+    
     long count = stringCountOf(string, target);
     
     if (count == 0) { return createStringClone(string); }

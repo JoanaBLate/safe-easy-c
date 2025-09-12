@@ -2,6 +2,9 @@
 
 String createStringPadStart(String* string, String* chunk, long count)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringPadStart"); }
+    if (chunk->address == NULL)  { _errorAlreadyReleased("createStringPadStart"); }
+    
     if (count < 1) { return createStringClone(string); }
     
     if (chunk->size == 0) { return createStringClone(string); }
@@ -31,6 +34,9 @@ String createStringPadStart(String* string, String* chunk, long count)
 
 String createStringPadEnd(String* string, String* chunk, long count)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringPadEnd"); }
+    if (chunk->address == NULL)  { _errorAlreadyReleased("createStringPadEnd"); }
+    
     if (count < 1) { return createStringClone(string); }
     
     if (chunk->size == 0) { return createStringClone(string); }

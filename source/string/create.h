@@ -43,6 +43,8 @@ String _createStringFromInfo(char* sourceAddress, long sourceSize)
 
 String createStringFromLiteral(char* cString) // argument not checked
 {
+    if (cString == NULL) { _errorNullArgument("createStringFromLiteral"); }
+    
     unsigned long size = strlen(cString);
     
     return _createStringFromInfo(cString, (long) size);

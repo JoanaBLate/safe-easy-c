@@ -6,12 +6,16 @@
 
 long getStringSize(String* string)
 {        
+    if (string->address == NULL) { _errorAlreadyReleased("getStringSize"); }
+    
     return string->size;
 }
 
 // the same pattern as the C standard library
 int stringCharCodeAt(String* string, long index)
 {     
+    if (string->address == NULL) { _errorAlreadyReleased("stringCharCodeAt"); }
+    
     if (index < 0  ||  index >= string->size) { return -1; } // out of bounds
     
     return (int) ((unsigned char) string->address[index]);
@@ -19,6 +23,9 @@ int stringCharCodeAt(String* string, long index)
 
 bool stringsAreEqual(String* stringA, String* stringB)
 {
+    if (stringA->address == NULL) { _errorAlreadyReleased("stringsAreEqual"); }
+    if (stringB->address == NULL) { _errorAlreadyReleased("stringsAreEqual"); }
+    
     if (stringA->size != stringB->size) { return false; };
     
     for (long index = 0; index < stringA->size; index ++)
@@ -30,6 +37,9 @@ bool stringsAreEqual(String* stringA, String* stringB)
 
 char stringsCompare(String* stringA, String* stringB)
 {
+    if (stringA->address == NULL) { _errorAlreadyReleased("stringsCompare"); }
+    if (stringB->address == NULL) { _errorAlreadyReleased("stringsCompare"); }
+    
     long size = stringA->size;
     
     if (stringB->size < size) { size = stringB->size; }    
@@ -48,6 +58,9 @@ char stringsCompare(String* stringA, String* stringB)
 
 bool stringStartsWith(String* string, String* target)
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("stringStartsWith"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringStartsWith"); }
+    
     if (target->size == 0) { return false; }
     
     if (target->size > string->size) { return false; }
@@ -61,6 +74,9 @@ bool stringStartsWith(String* string, String* target)
 
 bool stringEndsWith(String* string, String* target)
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("stringEndsWith"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringEndsWith"); }
+    
     if (target->size == 0) { return false; }
     
     if (target->size > string->size) { return false; }
@@ -76,6 +92,9 @@ bool stringEndsWith(String* string, String* target)
 
 long stringIndexOf(String* string, String* target)
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("stringIndexOf"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringIndexOf"); }
+    
     if (target->size == 0) { return -1; }
     
     if (target->size > string->size) { return -1; }
@@ -98,6 +117,9 @@ long stringIndexOf(String* string, String* target)
 
 long stringIndexOfAfter(String* string, String* target, long usedIndex)
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("stringIndexOfAfter"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringIndexOfAfter"); }
+    
     if (string->size == 0) { return -1; }
 
     if (target->size > string->size) { return -1; }
@@ -126,6 +148,9 @@ long stringIndexOfAfter(String* string, String* target, long usedIndex)
 
 long stringLastIndexOf(String* string, String* target)
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("stringLastIndexOf"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringLastIndexOf"); }
+    
     if (target->size == 0) { return -1; }
     
     if (target->size > string->size) { return -1; }
@@ -148,6 +173,9 @@ long stringLastIndexOf(String* string, String* target)
 
 long stringLastIndexOfBefore(String* string, String* target, long usedIndex)
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("stringLastIndexOfBefore"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringLastIndexOfBefore"); }
+    
     if (target->size == 0) { return -1; }
 
     if (target->size > string->size) { return -1; }
@@ -174,11 +202,17 @@ long stringLastIndexOfBefore(String* string, String* target, long usedIndex)
 
 bool stringContains(String* string, String* target)
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("stringContains"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringContains"); }
+    
     return (stringIndexOf(string, target) != -1);
 }
 
 long stringCountOf(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringCountOf"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringCountOf"); }
+    
     long count = 0;
 
     long index = -target->size;
@@ -195,6 +229,8 @@ long stringCountOf(String* string, String* target)
 
 long stringMarginCount(String* string) // 'count' instead of 'length' because TAB effect is undefined
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringMarginCount"); }
+    
     long count = 0;
     
     for (long index = 0; index < string->size; index++)

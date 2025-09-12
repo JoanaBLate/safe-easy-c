@@ -168,12 +168,21 @@ void assureNotReleased(void* voidStruct, char* funcName)
     if (genericStruct->address == NULL) { _errorAlreadyReleased(funcName); }
 }
 
+void _errorNullArgument(char* funcName)
+{
+    printf("\nERROR: null argument received in function '%s'\n", funcName);
+
+    exit(1);
+}
+
 
 
 // file: string/print.h //
 
 void printStringBytes(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printStringBytes"); }
+
     if (string->size == 0) { printf("{ }"); return; }
 
     bool expectingComma = false;
@@ -195,6 +204,8 @@ void printStringBytes(String* string)
 
 void printlnStringBytes(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printlnStringBytes"); }
+
     printStringBytes(string);
 
     printf("\n");
@@ -202,6 +213,8 @@ void printlnStringBytes(String* string)
 
 void printStringChars(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printStringChars"); }
+
     char substitute = 26;
 
     long index = -1;
@@ -222,6 +235,8 @@ void printStringChars(String* string)
 
 void printlnStringChars(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printlnStringChars"); }
+
     printStringChars(string);
 
     printf("\n");
@@ -229,6 +244,8 @@ void printlnStringChars(String* string)
 
 void printString(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printString"); }
+
     unsigned char substitute = 26;
 
     unsigned char token[5];
@@ -284,6 +301,8 @@ void printString(String* string)
 
 void printlnString(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("printlnString"); }
+
     printString(string);
 
     printf("\n");
@@ -298,12 +317,16 @@ void printlnString(String* string)
 
 long getStringSize(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("getStringSize"); }
+
     return string->size;
 }
 
 // the same pattern as the C standard library
 int stringCharCodeAt(String* string, long index)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringCharCodeAt"); }
+
     if (index < 0  ||  index >= string->size) { return -1; } // out of bounds
 
     return (int) ((unsigned char) string->address[index]);
@@ -311,6 +334,9 @@ int stringCharCodeAt(String* string, long index)
 
 bool stringsAreEqual(String* stringA, String* stringB)
 {
+    if (stringA->address == NULL) { _errorAlreadyReleased("stringsAreEqual"); }
+    if (stringB->address == NULL) { _errorAlreadyReleased("stringsAreEqual"); }
+
     if (stringA->size != stringB->size) { return false; };
 
     for (long index = 0; index < stringA->size; index ++)
@@ -322,6 +348,9 @@ bool stringsAreEqual(String* stringA, String* stringB)
 
 char stringsCompare(String* stringA, String* stringB)
 {
+    if (stringA->address == NULL) { _errorAlreadyReleased("stringsCompare"); }
+    if (stringB->address == NULL) { _errorAlreadyReleased("stringsCompare"); }
+
     long size = stringA->size;
 
     if (stringB->size < size) { size = stringB->size; }
@@ -340,6 +369,9 @@ char stringsCompare(String* stringA, String* stringB)
 
 bool stringStartsWith(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringStartsWith"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringStartsWith"); }
+
     if (target->size == 0) { return false; }
 
     if (target->size > string->size) { return false; }
@@ -353,6 +385,9 @@ bool stringStartsWith(String* string, String* target)
 
 bool stringEndsWith(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringEndsWith"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringEndsWith"); }
+
     if (target->size == 0) { return false; }
 
     if (target->size > string->size) { return false; }
@@ -368,6 +403,9 @@ bool stringEndsWith(String* string, String* target)
 
 long stringIndexOf(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringIndexOf"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringIndexOf"); }
+
     if (target->size == 0) { return -1; }
 
     if (target->size > string->size) { return -1; }
@@ -390,6 +428,9 @@ long stringIndexOf(String* string, String* target)
 
 long stringIndexOfAfter(String* string, String* target, long usedIndex)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringIndexOfAfter"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringIndexOfAfter"); }
+
     if (string->size == 0) { return -1; }
 
     if (target->size > string->size) { return -1; }
@@ -418,6 +459,9 @@ long stringIndexOfAfter(String* string, String* target, long usedIndex)
 
 long stringLastIndexOf(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringLastIndexOf"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringLastIndexOf"); }
+
     if (target->size == 0) { return -1; }
 
     if (target->size > string->size) { return -1; }
@@ -440,6 +484,9 @@ long stringLastIndexOf(String* string, String* target)
 
 long stringLastIndexOfBefore(String* string, String* target, long usedIndex)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringLastIndexOfBefore"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringLastIndexOfBefore"); }
+
     if (target->size == 0) { return -1; }
 
     if (target->size > string->size) { return -1; }
@@ -466,11 +513,17 @@ long stringLastIndexOfBefore(String* string, String* target, long usedIndex)
 
 bool stringContains(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringContains"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringContains"); }
+
     return (stringIndexOf(string, target) != -1);
 }
 
 long stringCountOf(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringCountOf"); }
+    if (target->address == NULL) { _errorAlreadyReleased("stringCountOf"); }
+
     long count = 0;
 
     long index = -target->size;
@@ -487,6 +540,8 @@ long stringCountOf(String* string, String* target)
 
 long stringMarginCount(String* string) // 'count' instead of 'length' because TAB effect is undefined
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringMarginCount"); }
+
     long count = 0;
 
     for (long index = 0; index < string->size; index++)
@@ -547,6 +602,8 @@ String _createStringFromInfo(char* sourceAddress, long sourceSize)
 
 String createStringFromLiteral(char* cString) // argument not checked
 {
+    if (cString == NULL) { _errorNullArgument("createStringFromLiteral"); }
+
     unsigned long size = strlen(cString);
 
     return _createStringFromInfo(cString, (long) size);
@@ -582,6 +639,8 @@ String createStringFromLong(long number)
 
 String createStringRepeat(String* string, long count)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringRepeat"); }
+
     if (string->size == 0) { return createEmptyString(); }
 
     if (count < 1) { return createEmptyString(); }
@@ -603,6 +662,8 @@ String createStringRepeat(String* string, long count)
 
 String createStringAppend(String* string, String* chunk)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringAppend"); }
+
     if (string->size == 0) { return createStringClone(chunk); }
 
     if (chunk->size == 0)  { return createStringClone(string); }
@@ -620,6 +681,8 @@ String createStringAppend(String* string, String* chunk)
 
 String createStringInsert(String* string, String* chunk, long position)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringInsert"); }
+
     if (string->size == 0) { return createStringClone(chunk); }
 
     if (chunk->size == 0) { return createStringClone(string); }
@@ -646,6 +709,8 @@ String createStringInsert(String* string, String* chunk, long position)
 
 String createSubstring(String* string, long start, long count)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createSubstring"); }
+
     if (count < 1) { return createEmptyString(); }
 
     long off = start + count;
@@ -663,11 +728,15 @@ String createSubstring(String* string, long start, long count)
 
 String createSubstringStart(String* string, long count)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createSubstringStart"); }
+
     return createSubstring(string, 0, count);
 }
 
 String createSubstringEnd(String* string, long count)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createSubstringEnd"); }
+
     if (count < 1) { return createEmptyString(); }
 
     long start = string->size - count;
@@ -680,6 +749,8 @@ String createSubstringEnd(String* string, long count)
 
 String createStringToLower(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringToLower"); }
+
     String newString = createStringClone(string);
 
     for (long index = 0; index < newString.size; index++)
@@ -692,6 +763,8 @@ String createStringToLower(String* string)
 
 String createStringToUpper(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringToUpper"); }
+
     String newString = createStringClone(string);
 
     for (long index = 0; index < newString.size; index++)
@@ -704,6 +777,8 @@ String createStringToUpper(String* string)
 
 String createStringToOppositeCase(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringToOppositeCase"); }
+
     String newString = createStringClone(string);
 
     for (long index = 0; index < newString.size; index++)
@@ -725,6 +800,8 @@ String createStringToOppositeCase(String* string)
 
 String createStringReverse(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReverse"); }
+
     String newString = createStringClone(string);
 
     long halfLength = newString.size / 2;
@@ -743,6 +820,8 @@ String createStringReverse(String* string)
 
 String createStringSort(String* string) // TODO: slow
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringSort"); }
+
     String newString = createStringClone(string);
 
     for (long indexA = 0; indexA < newString.size - 1; indexA++)
@@ -767,6 +846,9 @@ String createStringSort(String* string) // TODO: slow
 
 String createStringPadStart(String* string, String* chunk, long count)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringPadStart"); }
+    if (chunk->address == NULL)  { _errorAlreadyReleased("createStringPadStart"); }
+
     if (count < 1) { return createStringClone(string); }
 
     if (chunk->size == 0) { return createStringClone(string); }
@@ -796,6 +878,9 @@ String createStringPadStart(String* string, String* chunk, long count)
 
 String createStringPadEnd(String* string, String* chunk, long count)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringPadEnd"); }
+    if (chunk->address == NULL)  { _errorAlreadyReleased("createStringPadEnd"); }
+
     if (count < 1) { return createStringClone(string); }
 
     if (chunk->size == 0) { return createStringClone(string); }
@@ -830,6 +915,9 @@ String createStringPadEnd(String* string, String* chunk, long count)
 
 String createStringReplaceStart(String* string, long count, String* chunk)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplaceStart"); }
+    if (chunk->address == NULL)  { _errorAlreadyReleased("createStringReplaceStart"); }
+
     if (count < 1) { return createStringInsert(string, chunk, 0); }
 
     if (count >= string->size) { return createStringClone(chunk); }
@@ -855,6 +943,9 @@ String createStringReplaceStart(String* string, long count, String* chunk)
 
 String createStringReplaceEnd(String* string, long count, String* chunk)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplaceEnd"); }
+    if (chunk->address == NULL)  { _errorAlreadyReleased("createStringReplaceEnd"); }
+
     if (count < 1) { return createStringAppend(string, chunk); }
 
     if (count >= string->size) { return createStringClone(chunk); }
@@ -879,6 +970,11 @@ String createStringReplaceEnd(String* string, long count, String* chunk)
 
 String _createStringReplace(String* string, String* target, String* chunk, long position)
 {
+ // unnecessary, private function
+ // if (string->address == NULL) { _errorAlreadyReleased("_createStringReplace"); }
+ // if (target->address == NULL) { _errorAlreadyReleased("_createStringReplace"); }
+ // if (chunk->address  == NULL) { _errorAlreadyReleased("_createStringReplace"); }
+
  // long stringLeftArmStart = 0;
     long stringLeftArmSize = position;
 
@@ -906,6 +1002,10 @@ String _createStringReplace(String* string, String* target, String* chunk, long 
 
 String createStringReplace(String* string, String* target, String* chunk)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplace"); }
+    if (target->address == NULL) { _errorAlreadyReleased("createStringReplace"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("createStringReplace"); }
+
     long position = stringIndexOf(string, target);
 
     if (position == -1) { return createStringClone(string); } // target not found
@@ -919,6 +1019,10 @@ String createStringReplace(String* string, String* target, String* chunk)
 
 String createStringReplaceLast(String* string, String* target, String* chunk)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplaceLast"); }
+    if (target->address == NULL) { _errorAlreadyReleased("createStringReplaceLast"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("createStringReplaceLast"); }
+
     long position = stringLastIndexOf(string, target);
 
     if (position == -1) { return createStringClone(string); } // target not found
@@ -934,6 +1038,10 @@ String createStringReplaceLast(String* string, String* target, String* chunk)
 
 String createStringReplaceAll(String* string, String* target, String* chunk)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReplaceAll"); }
+    if (target->address == NULL) { _errorAlreadyReleased("createStringReplaceAll"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("createStringReplaceAll"); }
+
     long count = stringCountOf(string, target);
 
     if (count == 0) { return createStringClone(string); }
@@ -988,6 +1096,9 @@ String createStringReplaceAll(String* string, String* target, String* chunk)
 
 String createStringRemove(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringRemove"); }
+    if (target->address == NULL) { _errorAlreadyReleased("createStringRemove"); }
+
     String empty = createEmptyString();
 
     return createStringReplace(string, target, &empty);
@@ -995,6 +1106,9 @@ String createStringRemove(String* string, String* target)
 
 String createStringRemoveLast(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringRemoveLast"); }
+    if (target->address == NULL) { _errorAlreadyReleased("createStringRemoveLast"); }
+
     String empty = createEmptyString();
 
     return createStringReplaceLast(string, target, &empty);
@@ -1002,6 +1116,9 @@ String createStringRemoveLast(String* string, String* target)
 
 String createStringRemoveAll(String* string, String* target)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringRemoveAll"); }
+    if (target->address == NULL) { _errorAlreadyReleased("createStringRemoveAll"); }
+
     String empty = createEmptyString();
 
     return createStringReplaceAll(string, target, &empty);
@@ -1012,6 +1129,8 @@ String createStringRemoveAll(String* string, String* target)
 
 String stringTrimStart(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringTrimStart"); }
+
     long margin = 0;
     long size = string->size;
 
@@ -1029,6 +1148,8 @@ String stringTrimStart(String* string)
 
 String stringTrimEnd(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringTrimEnd"); }
+
     long size = string->size;
 
     while (true)
@@ -1047,6 +1168,8 @@ String stringTrimEnd(String* string)
 
 String stringTrim(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringTrim"); }
+
     long margin = 0;
     long size = string->size;
 
@@ -1080,8 +1203,11 @@ String stringTrim(String* string)
 
 // the parsers here stop parsing when find a separator (comma)!!
 
-long _stringLengthOfDigits(String* string, long start) // zero base index
+long _stringLengthOfDigits(String* string, long start)
 {
+ // unnecessary: private function
+ // if (string->address == NULL) { _errorAlreadyReleased("_stringLengthOfDigits"); }
+
     long length = 0;
 
     for (long index = start; index < string->size; index++)
@@ -1095,8 +1221,12 @@ long _stringLengthOfDigits(String* string, long start) // zero base index
     return length;
 }
 
-double _stringParseIntSegment(String* string, long start, long length) // zero base index
+// *NOT* CHECKING FOR TOO BIG NUMBER
+double _stringParseIntSegment(String* string, long start, long length)
 {
+ // unnecessary: private function
+ // if (string->address == NULL) { _errorAlreadyReleased("_stringParseIntSegment"); }
+
     double value = 0;
 
     long factor = 1;
@@ -1113,21 +1243,27 @@ double _stringParseIntSegment(String* string, long start, long length) // zero b
     return value;
 }
 
-double _stringParseFractionalSegment(String* string, long start, long length, int signal) // zero base index
+double _stringParseFractionalSegment(String* string, long start, long length, int signal)
 {
+ // unnecessary: private function
+ // if (string->address == NULL) { _errorAlreadyReleased("_stringParseFractionalSegment"); }
+
     if (length > 12) { length = 12; }
 
     double divisor = 1;
 
     for (int n = 0; n < length; n++) { divisor *= 10; }
 
-    return signal * _stringParseIntSegment(string, start, length) / divisor; // zero base index
+    return signal * _stringParseIntSegment(string, start, length) / divisor;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-NullLong stringParseLong(String* string) // TODO: (?) checking if the number is not too (negative) big
+// *NOT* CHECKING FOR TOO BIG NUMBER
+NullLong stringParseLong(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("_errorAlreadyReleased"); }
+
     int signal = 0; // zero means signal not found
 
     long start = stringMarginCount(string);
@@ -1144,15 +1280,18 @@ NullLong stringParseLong(String* string) // TODO: (?) checking if the number is 
 
     if (length == 0) { return makeNullLong(0, true); }
 
-    long value = _stringParseIntSegment(string, start, length); // zero base index
+    long value = _stringParseIntSegment(string, start, length);
 
     return makeNullLong(signal * value, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-NullDouble stringParseDouble(String* string) // TODO: (?) checking if the number is not too (negative) big
+// *NOT* CHECKING FOR TOO BIG NUMBER
+NullDouble stringParseDouble(String* string)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("stringParseDouble"); }
+
     int signal = 0; // zero means signal not found
 
     long start = stringMarginCount(string);
@@ -1173,7 +1312,7 @@ NullDouble stringParseDouble(String* string) // TODO: (?) checking if the number
 
         if (length == 0) { return makeNullDouble(0, true); }
 
-        double fractional = _stringParseFractionalSegment(string, start, length, signal); // zero base index
+        double fractional = _stringParseFractionalSegment(string, start, length, signal);
 
         return makeNullDouble(fractional, false);
     }
@@ -1182,7 +1321,7 @@ NullDouble stringParseDouble(String* string) // TODO: (?) checking if the number
 
     if (length == 0) { return makeNullDouble(0, true); }
 
-    double integerPart = signal * _stringParseIntSegment(string, start, length); // zero base index
+    double integerPart = signal * _stringParseIntSegment(string, start, length);
 
     start += length;
 
@@ -1196,7 +1335,7 @@ NullDouble stringParseDouble(String* string) // TODO: (?) checking if the number
 
     if (length == 0) { return makeNullDouble(integerPart, false); }
 
-    double fractional = _stringParseFractionalSegment(string, start, length, signal); // zero base index
+    double fractional = _stringParseFractionalSegment(string, start, length, signal);
 
     return makeNullDouble(integerPart + fractional, false);
 }

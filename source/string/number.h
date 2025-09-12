@@ -4,8 +4,11 @@
 
 // the parsers here stop parsing when find a separator (comma)!!
 
-long _stringLengthOfDigits(String* string, long start) // zero base index 
+long _stringLengthOfDigits(String* string, long start) 
 {
+ // unnecessary: private function
+ // if (string->address == NULL) { _errorAlreadyReleased("_stringLengthOfDigits"); }
+    
     long length = 0;
     
     for (long index = start; index < string->size; index++)
@@ -19,8 +22,12 @@ long _stringLengthOfDigits(String* string, long start) // zero base index
     return length;
 }
 
-double _stringParseIntSegment(String* string, long start, long length) // zero base index
-{    
+// *NOT* CHECKING FOR TOO BIG NUMBER
+double _stringParseIntSegment(String* string, long start, long length) 
+{  
+ // unnecessary: private function  
+ // if (string->address == NULL) { _errorAlreadyReleased("_stringParseIntSegment"); }
+    
     double value = 0;
     
     long factor = 1;
@@ -37,21 +44,27 @@ double _stringParseIntSegment(String* string, long start, long length) // zero b
     return value;
 }
 
-double _stringParseFractionalSegment(String* string, long start, long length, int signal) // zero base index
-{    
+double _stringParseFractionalSegment(String* string, long start, long length, int signal) 
+{   
+ // unnecessary: private function 
+ // if (string->address == NULL) { _errorAlreadyReleased("_stringParseFractionalSegment"); }
+    
     if (length > 12) { length = 12; }
     
     double divisor = 1;
     
     for (int n = 0; n < length; n++) { divisor *= 10; }
     
-    return signal * _stringParseIntSegment(string, start, length) / divisor; // zero base index
+    return signal * _stringParseIntSegment(string, start, length) / divisor; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-NullLong stringParseLong(String* string) // TODO: (?) checking if the number is not too (negative) big
-{     
+// *NOT* CHECKING FOR TOO BIG NUMBER
+NullLong stringParseLong(String* string) 
+{  
+    if (string->address == NULL) { _errorAlreadyReleased("_errorAlreadyReleased"); }
+       
     int signal = 0; // zero means signal not found
 
     long start = stringMarginCount(string);
@@ -68,15 +81,18 @@ NullLong stringParseLong(String* string) // TODO: (?) checking if the number is 
     
     if (length == 0) { return makeNullLong(0, true); }
     
-    long value = _stringParseIntSegment(string, start, length); // zero base index
+    long value = _stringParseIntSegment(string, start, length); 
       
     return makeNullLong(signal * value, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-NullDouble stringParseDouble(String* string) // TODO: (?) checking if the number is not too (negative) big
-{   
+// *NOT* CHECKING FOR TOO BIG NUMBER
+NullDouble stringParseDouble(String* string)
+{  
+    if (string->address == NULL) { _errorAlreadyReleased("stringParseDouble"); }
+     
     int signal = 0; // zero means signal not found
     
     long start = stringMarginCount(string);
@@ -97,7 +113,7 @@ NullDouble stringParseDouble(String* string) // TODO: (?) checking if the number
         
         if (length == 0) { return makeNullDouble(0, true); }
         
-        double fractional = _stringParseFractionalSegment(string, start, length, signal); // zero base index
+        double fractional = _stringParseFractionalSegment(string, start, length, signal); 
     
         return makeNullDouble(fractional, false);
     }
@@ -106,7 +122,7 @@ NullDouble stringParseDouble(String* string) // TODO: (?) checking if the number
 
     if (length == 0) { return makeNullDouble(0, true); }
 
-    double integerPart = signal * _stringParseIntSegment(string, start, length); // zero base index
+    double integerPart = signal * _stringParseIntSegment(string, start, length); 
 
     start += length;
 
@@ -120,7 +136,7 @@ NullDouble stringParseDouble(String* string) // TODO: (?) checking if the number
         
     if (length == 0) { return makeNullDouble(integerPart, false); }
         
-    double fractional = _stringParseFractionalSegment(string, start, length, signal); // zero base index
+    double fractional = _stringParseFractionalSegment(string, start, length, signal); 
     
     return makeNullDouble(integerPart + fractional, false);
 }

@@ -2,6 +2,8 @@
 
 String createStringAppend(String* string, String* chunk)
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("createStringAppend"); }
+    
     if (string->size == 0) { return createStringClone(chunk); }
     
     if (chunk->size == 0)  { return createStringClone(string); }
@@ -19,6 +21,8 @@ String createStringAppend(String* string, String* chunk)
 
 String createStringInsert(String* string, String* chunk, long position)
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringInsert"); }
+    
     if (string->size == 0) { return createStringClone(chunk); }
     
     if (chunk->size == 0) { return createStringClone(string); }

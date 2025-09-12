@@ -2,6 +2,8 @@
 
 String createStringToLower(String* string) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringToLower"); }
+    
     String newString = createStringClone(string);
     
     for (long index = 0; index < newString.size; index++)
@@ -14,6 +16,8 @@ String createStringToLower(String* string)
 
 String createStringToUpper(String* string) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringToUpper"); }
+    
     String newString = createStringClone(string);
     
     for (long index = 0; index < newString.size; index++)
@@ -26,6 +30,8 @@ String createStringToUpper(String* string)
 
 String createStringToOppositeCase(String* string) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringToOppositeCase"); }
+    
     String newString = createStringClone(string);
     
     for (long index = 0; index < newString.size; index++)
@@ -47,6 +53,8 @@ String createStringToOppositeCase(String* string)
 
 String createStringReverse(String* string) 
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringReverse"); }
+    
     String newString = createStringClone(string);
     
     long halfLength = newString.size / 2;
@@ -65,6 +73,8 @@ String createStringReverse(String* string)
 
 String createStringSort(String* string) // TODO: slow  
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createStringSort"); }
+    
     String newString = createStringClone(string);
     
     for (long indexA = 0; indexA < newString.size - 1; indexA++) 

@@ -2,6 +2,8 @@
 
 String createSubstring(String* string, long start, long count)  
 {
+    if (string->address == NULL) { _errorAlreadyReleased("createSubstring"); }
+    
     if (count < 1) { return createEmptyString(); }
     
     long off = start + count;
@@ -19,11 +21,15 @@ String createSubstring(String* string, long start, long count)
 
 String createSubstringStart(String* string, long count) 
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("createSubstringStart"); }
+    
     return createSubstring(string, 0, count);
 }
 
 String createSubstringEnd(String* string, long count) 
 {    
+    if (string->address == NULL) { _errorAlreadyReleased("createSubstringEnd"); }
+    
     if (count < 1) { return createEmptyString(); }
     
     long start = string->size - count;
