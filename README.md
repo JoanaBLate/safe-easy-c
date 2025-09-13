@@ -75,11 +75,28 @@ The names of *private* functions in the SafeEasyC library start with uderscore (
 
 ### Size limits
 
-Many SafeEasyC functions parameters are of the type *long* (where theoretically they should be *size_t*). 
+The max size of any data structure (String, Buffer, Array...) is **9223372036854775807** bytes - which is the max positive value of the type **signed long** (in my computer), always preferred by the SafeEasyC functions.
 
-This is very useful for preventing many nasty bugs, but comes at the cost that you *MUST NOT* use the library for data sizes greater than *9223372036854775807* bytes - which is the max positive value of the type (signed) *long* (in my computer).
+#### Why signed types (1)
 
-For more information, search in the folder examples about this subject.
+Safe Easy functions adopted *signed types* for parameters to avoid subtle and nasty bugs - [look at this example](examples/why-signed-parameters.c).
+
+#### Why signed types (2)
+
+The best practice tells that *unsigned types* should be used for size and index. Sounds good. 
+
+But C uses the value -1 for indicating failure in functions of the kind *indexOf*, for example. 
+
+So, that function must return a *signed type*. 
+
+OK, but *signed types* have **half** the capacity of *unsigned types*. 
+
+This means that, in case the data size is too big: BUG - that function cannot not search the whole data!!!
+
+The index and the size must share the same type (*signed*)! 
+
+
+
 
 <!-- At the moment the library is comprehensive enough to solve all the puzzles of the Advent of Code. -->
 
