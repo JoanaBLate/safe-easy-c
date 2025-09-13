@@ -3,7 +3,9 @@
 SafeEasyC is a C library that provides a safe, high-level approach to working with strings and other data structures. 
 
 It prevents common errors such as
+- double free
 - use-after-free
+- dangling pointers
 - segmentation fault
 - out-of-bounds access
 <!-- - using a non-initialized variable -->
