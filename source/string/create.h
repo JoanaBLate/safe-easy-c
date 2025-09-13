@@ -50,6 +50,11 @@ String createStringFromLiteral(char* cString) // argument not checked
     return _createStringFromInfo(cString, (long) size);
 }
 
+String createStringFromCString(char* cString) // argument not checked
+{
+    return createStringFromLiteral(cString);
+}
+
 String createStringClone(String* string)
 {
     if (string->address == NULL) { _errorAlreadyReleased("createStringClone"); }

@@ -43,11 +43,19 @@ void releaseHeap(void* voidStruct)
 {
     AddressStruct* genericStruct = (AddressStruct*) voidStruct;
     
-    if (genericStruct->address == FAKENULL) { return; } // for empty strings
+    if (genericStruct->address == NULL) { return; } // avoiding double free
     
-    free(genericStruct->address); // no problem to "free again"
+    // empty strings (fakenull address) must not be freed
+    if (genericStruct->address != FAKENULL) { free(genericStruct->address); } 
     
     genericStruct->address = NULL;
+}
+
+bool objectExists(void* voidStruct)
+{
+    AddressStruct* genericStruct = (AddressStruct*) voidStruct;
+    
+    return genericStruct->address != NULL;
 }
 
 void _errorAlreadyReleased(char* funcName)

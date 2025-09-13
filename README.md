@@ -77,7 +77,7 @@ The names of *private* functions in the SafeEasyC library start with uderscore (
 
 Many SafeEasyC functions parameters are of the type *long* (where theoretically they should be *size_t*). 
 
-This is very useful for preventing many nasty bugs, but comes at the cost that you *MUST NOT* use the library for big data (size equal/greater to the max positive value of the type *long* - which exact number depends on your operating system).
+This is very useful for preventing many nasty bugs, but comes at the cost that you *MUST NOT* use the library for data sizes greater than *9223372036854775807* bytes - which is the max positive value of the type (signed) *long* (in my computer).
 
 For more information, search in the folder examples about this subject.
 
