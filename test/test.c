@@ -4,13 +4,13 @@
 
 #include "file/test.h"
 #include "string/test.h"
-// #include "buffer/test.h"
+#include "buffer/test.h"
 
 int main()
 {
-    testReadTextFile();
-// testBuffer();
-    testString();
+   // testReadTextFile();
+    testBuffer();
+  //  testString();
 
     printf("\nAll tests passed!\n");
 

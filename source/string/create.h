@@ -41,16 +41,16 @@ String _createStringFromInfo(char* sourceAddress, long sourceSize)
     return _makeStructString(buffer, bufferSize);
 }
 
-String createStringFromLiteral(char* cString) // argument not checked
+String createStringFromLiteral(char* cString)
 {
-    if (cString == NULL) { _errorNullArgument("createStringFromLiteral"); }
+    if (cString == NULL) { return createEmptyString(); }
     
     unsigned long size = strlen(cString);
     
     return _createStringFromInfo(cString, (long) size);
 }
 
-String createStringFromCString(char* cString) // argument not checked
+String createStringFromCString(char* cString) 
 {
     return createStringFromLiteral(cString);
 }

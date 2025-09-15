@@ -50,8 +50,8 @@ int main()
        
     releaseHeap(&hello);
     
-    // ERROR: trying to use already released object in function 'createStringClone'
-    String hello2 = createStringClone(&hello);
+    // ERROR: trying to use already released object in function 'printlnString'
+    printlnString(&hello);
     
     return 0;
 }
