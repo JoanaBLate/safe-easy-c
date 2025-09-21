@@ -121,14 +121,15 @@ long stringIndexOfAfter(String* string, String* target, long usedIndex)
     if (target->address == NULL) { _errorAlreadyReleased("stringIndexOfAfter"); }
     
     if (string->size == 0) { return -1; }
+    if (target->size == 0) { return -1; }
 
     if (target->size > string->size) { return -1; }
         
     if (usedIndex >= string->size) { return -1; }
     
-    if (usedIndex < 1) { return stringIndexOf(string, target); }
+    if (usedIndex < 0) { return stringIndexOf(string, target); }
     
-    long startIndex = usedIndex;
+    long startIndex = usedIndex + 1;
     
     long maxIndex = string->size - target->size;
     

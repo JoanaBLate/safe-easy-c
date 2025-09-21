@@ -295,15 +295,15 @@ void testBufferIndexOfAfter()
     String string2 = createStringFromLiteral("∆");
     String string3 = createStringFromLiteral("∆#");
     
-    if (bufferIndexOfAfter(&buffer1, &string1,  0) !=  0) { fails = true; }
+    if (bufferIndexOfAfter(&buffer1, &string1, -1) !=  0) { fails = true; }
     if (bufferIndexOfAfter(&buffer1, &string1, -9) !=  0) { fails = true; }
-    if (bufferIndexOfAfter(&buffer1, &string2,  9) != 21) { fails = true; }
+    if (bufferIndexOfAfter(&buffer1, &string2,  8) != 21) { fails = true; }
     if (bufferIndexOfAfter(&buffer1, &string2, 99) != -1) { fails = true; }
     if (bufferIndexOfAfter(&buffer1, &string2,  0) !=  8) { fails = true; }
     if (bufferIndexOfAfter(&buffer1, &string3,  0) != -1) { fails = true; }
-    if (bufferIndexOfAfter(&buffer1, &string0, 0) != -1) { fails = true; }  
-    if (bufferIndexOfAfter(&buffer0, &string1, 0) != -1) { fails = true; }  
-    if (bufferIndexOfAfter(&buffer0, &string0, 0) != -1) { fails = true; }  
+    if (bufferIndexOfAfter(&buffer1, &string0,  0) != -1) { fails = true; } 
+    if (bufferIndexOfAfter(&buffer0, &string1,  0) != -1) { fails = true; }  
+    if (bufferIndexOfAfter(&buffer0, &string0,  0) != -1) { fails = true; }  
          
     if (fails) {
         printf("bufferIndexOfAfter FAILS!\n");

@@ -15,6 +15,9 @@ bool testBufferTrimStartTarget1()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -34,6 +37,9 @@ bool testBufferTrimStartTarget2()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -53,6 +59,9 @@ bool testBufferTrimStartTarget3()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -72,6 +81,9 @@ bool testBufferTrimStartTarget4()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -105,6 +117,9 @@ bool testBufferTrimEndTarget1()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -124,6 +139,9 @@ bool testBufferTrimEndTarget2()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -143,6 +161,9 @@ bool testBufferTrimEndTarget3()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -162,6 +183,9 @@ bool testBufferTrimEndTarget4()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -195,6 +219,9 @@ bool testBufferTrimTarget1()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -214,6 +241,9 @@ bool testBufferTrimTarget2()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -233,6 +263,9 @@ bool testBufferTrimTarget3()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&target);
+    releaseHeap(&expected);
     
     return ok;
 }

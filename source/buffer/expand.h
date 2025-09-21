@@ -1,8 +1,8 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
-bool bufferMaybeExpandCapacity(Buffer* buffer, long neededSpace)
+bool _bufferMaybeExpandCapacity(Buffer* buffer, long neededSpace)
 {
-    if (buffer->address == NULL) { _errorAlreadyReleased("bufferMaybeExpandCapacity"); }
+ // if (buffer->address == NULL) { _errorAlreadyReleased("_bufferMaybeExpandCapacity"); } // private function
     
     long hiddenSpace = buffer->capacity - buffer->size;
     

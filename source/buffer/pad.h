@@ -9,7 +9,7 @@ void bufferPadStart(Buffer* buffer, String* chunk, long count)
         
     if (padLength < 1) { return; }
     
-    bufferMaybeExpandCapacity(buffer, padLength);
+    _bufferMaybeExpandCapacity(buffer, padLength);
 
     if (buffer->margin >= padLength)
     {
@@ -21,7 +21,7 @@ void bufferPadStart(Buffer* buffer, String* chunk, long count)
     {
         long deltaRight = padLength - buffer->margin;
         
-        long origin = buffer->margin + 1;
+        long origin = buffer->margin;
         
         long length = buffer->size;
         
@@ -51,7 +51,7 @@ void bufferPadEnd(Buffer* buffer, String* chunk, long count)
         
     if (padLength < 1) { return; }
     
-    bufferMaybeExpandCapacity(buffer, padLength);
+    _bufferMaybeExpandCapacity(buffer, padLength);
     
     long hiddenTail = buffer->capacity - buffer->margin - buffer->size;
     
@@ -69,9 +69,9 @@ void bufferPadEnd(Buffer* buffer, String* chunk, long count)
 
         buffer->size += deltaLeft; // temporary
         
-        long origin = 1 + deltaLeft;
+        long origin = deltaLeft;
         
-        long destiny = 1;
+        long destiny = 0;
         
         bufferMoveRange(buffer, origin, length, destiny);
 

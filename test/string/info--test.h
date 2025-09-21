@@ -229,9 +229,9 @@ void testStringIndexOfAfter()
     String source2 = createStringFromLiteral("∆");
     String source3 = createStringFromLiteral("∆#");
     
-    if (stringIndexOfAfter(&source1, &source1,  0) !=  0) { fails = true; }
+    if (stringIndexOfAfter(&source1, &source1,  -1) !=  0) { fails = true; }
     if (stringIndexOfAfter(&source1, &source1, -9) !=  0) { fails = true; }
-    if (stringIndexOfAfter(&source1, &source2,  9) != 21) { fails = true; }
+    if (stringIndexOfAfter(&source1, &source2,  8) != 21) { fails = true; }
     if (stringIndexOfAfter(&source1, &source2, 99) != -1) { fails = true; }
     if (stringIndexOfAfter(&source1, &source2,  0) !=  8) { fails = true; }
     if (stringIndexOfAfter(&source1, &source3,  0) != -1) { fails = true; }

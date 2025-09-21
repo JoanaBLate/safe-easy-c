@@ -440,14 +440,15 @@ long stringIndexOfAfter(String* string, String* target, long usedIndex)
     if (target->address == NULL) { _errorAlreadyReleased("stringIndexOfAfter"); }
 
     if (string->size == 0) { return -1; }
+    if (target->size == 0) { return -1; }
 
     if (target->size > string->size) { return -1; }
 
     if (usedIndex >= string->size) { return -1; }
 
-    if (usedIndex < 1) { return stringIndexOf(string, target); }
+    if (usedIndex < 0) { return stringIndexOf(string, target); }
 
-    long startIndex = usedIndex;
+    long startIndex = usedIndex + 1;
 
     long maxIndex = string->size - target->size;
 
@@ -1617,9 +1618,9 @@ Buffer createBufferFromString(String* string)
 
 // file: buffer/expand.h //
 
-bool bufferMaybeExpandCapacity(Buffer* buffer, long neededSpace)
+bool _bufferMaybeExpandCapacity(Buffer* buffer, long neededSpace)
 {
-    if (buffer->address == NULL) { _errorAlreadyReleased("bufferMaybeExpandCapacity"); }
+ // if (buffer->address == NULL) { _errorAlreadyReleased("_bufferMaybeExpandCapacity"); } // private function
 
     long hiddenSpace = buffer->capacity - buffer->size;
 
@@ -1720,8 +1721,7 @@ void bufferMoveRange(Buffer* buffer, long origin, long count, long destiny)
 // the exact order of the statements of this function is crucial!
 void bufferCopyRange(Buffer* originBuffer, long originPosition, long count, Buffer* destinyBuffer, long destinyPosition)
 {
-    if (originBuffer->address == NULL) { _errorAlreadyReleased("bufferCopyRange"); }
-
+    if (originBuffer->address == NULL)  { _errorAlreadyReleased("bufferCopyRange"); }
     if (destinyBuffer->address == NULL) { _errorAlreadyReleased("bufferCopyRange"); }
 
     if (count < 1) { return; }
@@ -2132,7 +2132,7 @@ void bufferReplaceStart(Buffer* buffer, long count, String* chunk)
         return;
     }
 
-    bufferMaybeExpandCapacity(buffer, chunk->size);
+    _bufferMaybeExpandCapacity(buffer, chunk->size);
 
     // now capacity is enough but margin is not enough: must move bytes to right
 
@@ -2140,7 +2140,7 @@ void bufferReplaceStart(Buffer* buffer, long count, String* chunk)
 
     buffer->size += delta;
 
-    bufferMoveRange(buffer, 1, buffer->size - delta, delta);
+    bufferMoveRange(buffer, 0, buffer->size - delta, delta);
 
     buffer->size += buffer->margin;
 
@@ -2173,7 +2173,7 @@ void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
         return;
     }
 
-    bufferMaybeExpandCapacity(buffer, chunk->size);
+    _bufferMaybeExpandCapacity(buffer, chunk->size);
 
     hiddenTail = buffer->capacity - buffer->margin - buffer->size;
 
@@ -2196,7 +2196,7 @@ void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
 
     buffer->size += delta;
 
-    bufferMoveRange(buffer, 1 + delta, buffer->size, 0);
+    bufferMoveRange(buffer, 0 + delta, buffer->size, 0);
 
     memcpy(buffer->address + position, chunk->address, (size_t) chunk->size);
 
@@ -2210,7 +2210,7 @@ void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
 
 bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long relativePosition)
 {
-    if (relativePosition == 0) { return false; } // target not found
+    if (relativePosition == -1) { return false; } // target not found
 
     long absolutePosition = buffer->margin + relativePosition;
 
@@ -2243,7 +2243,7 @@ bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long relative
 
     long neededSpace = chunk->size - target->size;
 
-    bufferMaybeExpandCapacity(buffer, neededSpace);
+    _bufferMaybeExpandCapacity(buffer, neededSpace);
 
     // moving to the right (maybe)
     long hiddenTail = buffer->capacity - buffer->margin - buffer->size;
@@ -2276,7 +2276,7 @@ bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long relative
 
         buffer->size += deltaLeft;
 
-        bufferMoveRange(buffer, 1 + deltaLeft, buffer->size, 1);
+        bufferMoveRange(buffer, deltaLeft, buffer->size, 0);
 
         absolutePosition -= deltaLeft;
     }
@@ -2325,7 +2325,7 @@ bool bufferReplaceAll(Buffer* buffer, String* target, String* chunk)
     {
         long neededSpace = count * (chunk->size - target->size);
 
-        bufferMaybeExpandCapacity(buffer, neededSpace);
+        _bufferMaybeExpandCapacity(buffer, neededSpace);
     }
 
      while (bufferReplace(buffer, target, chunk)) { }
@@ -2378,7 +2378,7 @@ void bufferPadStart(Buffer* buffer, String* chunk, long count)
 
     if (padLength < 1) { return; }
 
-    bufferMaybeExpandCapacity(buffer, padLength);
+    _bufferMaybeExpandCapacity(buffer, padLength);
 
     if (buffer->margin >= padLength)
     {
@@ -2390,7 +2390,7 @@ void bufferPadStart(Buffer* buffer, String* chunk, long count)
     {
         long deltaRight = padLength - buffer->margin;
 
-        long origin = buffer->margin + 1;
+        long origin = buffer->margin;
 
         long length = buffer->size;
 
@@ -2420,7 +2420,7 @@ void bufferPadEnd(Buffer* buffer, String* chunk, long count)
 
     if (padLength < 1) { return; }
 
-    bufferMaybeExpandCapacity(buffer, padLength);
+    _bufferMaybeExpandCapacity(buffer, padLength);
 
     long hiddenTail = buffer->capacity - buffer->margin - buffer->size;
 
@@ -2438,9 +2438,9 @@ void bufferPadEnd(Buffer* buffer, String* chunk, long count)
 
         buffer->size += deltaLeft; // temporary
 
-        long origin = 1 + deltaLeft;
+        long origin = deltaLeft;
 
-        long destiny = 1;
+        long destiny = 0;
 
         bufferMoveRange(buffer, origin, length, destiny);
 

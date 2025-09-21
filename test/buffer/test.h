@@ -27,51 +27,50 @@ void testBuffer()
     testBufferIndexOfAfter();
     testBufferLastIndexOfBefore();
     testBufferCountOf();
-//    
-//    testBufferMoveRange();
-//    
-//    testBufferCopyRange(); TODO: !!!
+    
+    testBufferMoveRange();
+    testBufferCopyRange();
     
     testBufferToLower();
     testBufferToUpper();
     testBufferToOppositeCase();
     testBufferReverse();
     testBufferSort();
-//
-//    testBufferTrimStart();
-//    testBufferTrimEnd();
-//    testBufferTrim();
-//        
-//    testBufferTrimStartTarget();
-//    testBufferTrimEndTarget();
-//    testBufferTrimTarget(); 
-//       
-//    testBufferTrimStartAny();
-//    testBufferTrimEndAny();
-//    testBufferTrimAny(); 
-//    
-//    testBufferEatStart();
-//    testBufferEatEnd();
-//    
-//    testBufferReplaceStart();
-//    testBufferReplaceEnd();
-//    testBufferReplace();
-//    testBufferReplaceLast();
-//    testBufferReplaceAll();
-//    
-//    testBufferRemove();
-//    testBufferRemoveLast();
-//    testBufferRemoveAll();
-//    
-//    testBufferPadStart();
-//    testBufferPadEnd();
-//    
-//    testBufferReset();
-//    testBufferClear();
-//    testBufferFill();
-//    
-//    testPrintBufferA();
-//    testPrintBufferB();
-//    testPrintBufferC();
+
+    testBufferTrimStart();
+    testBufferTrimEnd();
+    testBufferTrim();
+        
+    testBufferTrimStartTarget();
+    testBufferTrimEndTarget();
+    testBufferTrimTarget(); 
+       
+    testBufferTrimStartAny();
+    testBufferTrimEndAny();
+    testBufferTrimAny(); 
+    
+    testBufferEatStart();
+    testBufferEatEnd();
+    
+    testBufferReplaceStart();
+    testBufferReplaceEnd();
+    testBufferReplace();
+    testBufferReplaceLast();
+    testBufferReplaceAll();
+    
+    testBufferRemove();
+    testBufferRemoveLast();
+    testBufferRemoveAll();
+    
+    testBufferPadStart();
+    testBufferPadEnd();
+    
+    testBufferReset();
+    testBufferClear();
+    testBufferFill();
+    
+    testPrintBufferA();
+    testPrintBufferB();
+    testPrintBufferC();
 }
 

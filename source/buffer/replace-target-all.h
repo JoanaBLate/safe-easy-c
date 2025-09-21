@@ -4,7 +4,7 @@
 
 bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long relativePosition) 
 {        
-    if (relativePosition == 0) { return false; } // target not found
+    if (relativePosition == -1) { return false; } // target not found
     
     long absolutePosition = buffer->margin + relativePosition;
     
@@ -37,7 +37,7 @@ bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long relative
 
     long neededSpace = chunk->size - target->size;
     
-    bufferMaybeExpandCapacity(buffer, neededSpace);
+    _bufferMaybeExpandCapacity(buffer, neededSpace);
     
     // moving to the right (maybe)    
     long hiddenTail = buffer->capacity - buffer->margin - buffer->size;  
@@ -70,7 +70,7 @@ bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long relative
         
         buffer->size += deltaLeft;
       
-        bufferMoveRange(buffer, 1 + deltaLeft, buffer->size, 1);
+        bufferMoveRange(buffer, deltaLeft, buffer->size, 0);
     
         absolutePosition -= deltaLeft;
     }
@@ -119,7 +119,7 @@ bool bufferReplaceAll(Buffer* buffer, String* target, String* chunk)
     {
         long neededSpace = count * (chunk->size - target->size);
     
-        bufferMaybeExpandCapacity(buffer, neededSpace);
+        _bufferMaybeExpandCapacity(buffer, neededSpace);
     }
      
      while (bufferReplace(buffer, target, chunk)) { }

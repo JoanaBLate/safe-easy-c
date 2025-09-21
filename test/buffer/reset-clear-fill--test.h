@@ -58,6 +58,7 @@ void testBufferFill()
     if (! buffersAreEqual(&buffer, &expected)) { printf("bufferFill FAILS!\n"); exit(1); }
     
     releaseHeap(&buffer);
+    releaseHeap(&chunk);
     releaseHeap(&expected);
 }
 

@@ -3,8 +3,7 @@
 // the exact order of the statements of this function is crucial!
 void bufferCopyRange(Buffer* originBuffer, long originPosition, long count, Buffer* destinyBuffer, long destinyPosition)
 {
-    if (originBuffer->address == NULL) { _errorAlreadyReleased("bufferCopyRange"); }
-    
+    if (originBuffer->address == NULL)  { _errorAlreadyReleased("bufferCopyRange"); }    
     if (destinyBuffer->address == NULL) { _errorAlreadyReleased("bufferCopyRange"); }
     
     if (count < 1) { return; }

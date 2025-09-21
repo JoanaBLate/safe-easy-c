@@ -6,9 +6,16 @@ void _testBufferRemove(Buffer* buffer, String* target, String* expected)
     
     String result = createStringFromBuffer(buffer);
     
-    if (stringsAreEqual(&result, expected)) { return; }
+    bool fails = false;
+       
+    if (! stringsAreEqual(&result, expected)) { fails = true; }
+
+    releaseHeap(&result);
     
-    printf("bufferRemove FAILS!\n"); exit(1);
+    if (fails) {
+        printf("bufferRemove FAILS!\n");
+        exit(1);
+     }
 }
 
 void testBufferRemove() 
@@ -23,6 +30,8 @@ void testBufferRemove()
     _testBufferRemove(&buffer, &target, &expected);
 
     releaseHeap(&buffer);
+    releaseHeap(&target);
+    releaseHeap(&expected);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,9 +42,16 @@ void _testBufferRemoveLast(Buffer* buffer, String* target, String* expected)
     
     String result = createStringFromBuffer(buffer);
     
-    if (stringsAreEqual(&result, expected)) { return; }
+    bool fails = false;
+       
+    if (! stringsAreEqual(&result, expected)) { fails = true; }
+
+    releaseHeap(&result);
     
-    printf("bufferRemoveLast FAILS!\n"); exit(1);
+    if (fails) {
+        printf("bufferRemoveLast FAILS!\n");
+        exit(1);
+     }
 }
 
 void testBufferRemoveLast() // bufferRemoveLast basically uses the same code as bufferRemove
@@ -48,6 +64,8 @@ void testBufferRemoveLast() // bufferRemoveLast basically uses the same code as 
     _testBufferRemoveLast(&buffer, &target, &expected);
 
     releaseHeap(&buffer);
+    releaseHeap(&target);
+    releaseHeap(&expected);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,9 +76,16 @@ void _testBufferRemoveAll(Buffer* buffer, String* target, String* expected)
     
     String result = createStringFromBuffer(buffer);
     
-    if (stringsAreEqual(&result, expected)) { return; }
+    bool fails = false;
+       
+    if (! stringsAreEqual(&result, expected)) { fails = true; }
+
+    releaseHeap(&result);
     
-    printf("bufferRemoveAll FAILS!\n"); exit(1);
+    if (fails) {
+        printf("bufferRemoveAll FAILS!\n");
+        exit(1);
+     }
 }
 
 void testBufferRemoveAll() // bufferRemoveAll basically uses the same code as bufferRemove
@@ -73,5 +98,7 @@ void testBufferRemoveAll() // bufferRemoveAll basically uses the same code as bu
     _testBufferRemoveAll(&buffer, &target, &expected);
 
     releaseHeap(&buffer);
+    releaseHeap(&target);
+    releaseHeap(&expected);
 }
 

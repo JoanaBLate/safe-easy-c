@@ -15,6 +15,8 @@ void _testBufferEatStart(Buffer* buffer, long size, char* literal1,  char* liter
     
     releaseHeap(&result1);
     releaseHeap(&result2);
+    releaseHeap(&expected1);
+    releaseHeap(&expected2);
 
     if (fails) { 
         printf("bufferEatStart FAILS!\n"); 
@@ -59,6 +61,8 @@ void _testBufferEatEnd(Buffer* buffer, long size, char* literal1,  char* literal
     
     releaseHeap(&result1);
     releaseHeap(&result2);
+    releaseHeap(&expected1);
+    releaseHeap(&expected2);
 
     if (fails) { 
         printf("bufferEatEnd FAILS!\n"); 

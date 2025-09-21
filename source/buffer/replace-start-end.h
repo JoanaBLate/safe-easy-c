@@ -23,7 +23,7 @@ void bufferReplaceStart(Buffer* buffer, long count, String* chunk)
         return;    
     }
     
-    bufferMaybeExpandCapacity(buffer, chunk->size);
+    _bufferMaybeExpandCapacity(buffer, chunk->size);
     
     // now capacity is enough but margin is not enough: must move bytes to right
     
@@ -31,7 +31,7 @@ void bufferReplaceStart(Buffer* buffer, long count, String* chunk)
     
     buffer->size += delta;
     
-    bufferMoveRange(buffer, 1, buffer->size - delta, delta);
+    bufferMoveRange(buffer, 0, buffer->size - delta, delta);
 
     buffer->size += buffer->margin;
     
@@ -64,7 +64,7 @@ void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
         return;    
     }
     
-    bufferMaybeExpandCapacity(buffer, chunk->size);
+    _bufferMaybeExpandCapacity(buffer, chunk->size);
         
     hiddenTail = buffer->capacity - buffer->margin - buffer->size;
     
@@ -87,7 +87,7 @@ void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
     
     buffer->size += delta;
   
-    bufferMoveRange(buffer, 1 + delta, buffer->size, 0);
+    bufferMoveRange(buffer, 0 + delta, buffer->size, 0);
 
     memcpy(buffer->address + position, chunk->address, (size_t) chunk->size);
     

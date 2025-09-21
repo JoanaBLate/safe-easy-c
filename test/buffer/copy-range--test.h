@@ -7,9 +7,16 @@ void _testBufferCopyRange(Buffer* originBuffer, long originPosition, long count,
     
     String result = createStringFromBuffer(destinyBuffer);
            
-    if (stringsAreEqual(&result, expected)) { return; }
+    bool fails = false;
     
-    printf("bufferCopyRange FAILS!\n"); exit(1);
+    if (! stringsAreEqual(&result, expected)) { fails = true; }
+    
+    releaseHeap(&result); 
+    
+    if (fails) { 
+        printf("bufferCopyRange FAILS!\n"); 
+        exit(1);
+    }
 }
 
 void testBufferCopyRange() 
@@ -26,19 +33,24 @@ void testBufferCopyRange()
     
     String expected = createStringFromLiteral("abcdefghijklmno"); 
     
-    _testBufferCopyRange(&originBuffer,  600,  5, &destinyBuffer,    7, &expected);
-    _testBufferCopyRange(&originBuffer, -600,  5, &destinyBuffer,    7, &expected); 
-    _testBufferCopyRange(&originBuffer,    6,  5, &destinyBuffer, -700, &expected);
-    _testBufferCopyRange(&originBuffer,    6,  5, &destinyBuffer,  700, &expected);
-    _testBufferCopyRange(&originBuffer,    6, -5, &destinyBuffer,    7, &expected);
+    _testBufferCopyRange(&originBuffer,  600,  5, &destinyBuffer,    6, &expected);
+    _testBufferCopyRange(&originBuffer, -600,  5, &destinyBuffer,    6, &expected); 
+    _testBufferCopyRange(&originBuffer,    5,  5, &destinyBuffer, -700, &expected);
+    _testBufferCopyRange(&originBuffer,    5,  5, &destinyBuffer,  700, &expected);
+    _testBufferCopyRange(&originBuffer,    5, -5, &destinyBuffer,    6, &expected);
+    
+    releaseHeap(&expected);
     
     expected = createStringFromLiteral("Hellofghijklmno");
-    _testBufferCopyRange(&originBuffer, 6, 5, &destinyBuffer, 1, &expected);
+    _testBufferCopyRange(&originBuffer, 5, 5, &destinyBuffer, 0, &expected);
     
+    releaseHeap(&expected);
+
     expected = createStringFromLiteral("HellofghijkHell"); // remembers the changed data!
-    _testBufferCopyRange(&originBuffer, 6, 500, &destinyBuffer, 12, &expected);
+    _testBufferCopyRange(&originBuffer, 5, 500, &destinyBuffer, 11, &expected);
     
     releaseHeap(&originBuffer);   
     releaseHeap(&destinyBuffer); 
+    releaseHeap(&expected);
 }
 

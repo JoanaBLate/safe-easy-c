@@ -38,7 +38,7 @@ int main()
 }
 ~~~ 
 
-### No use-after-free in SafeEasyC functions
+### No use-after-free <!-- in SafeEasyC functions -->
 
 ~~~ C
 
@@ -56,7 +56,7 @@ int main()
     return 0;
 }
 ~~~
-
+<!-- probably not necessary because all objects are handled/checked by the library (or they are just stack - or global - structs)
 
 ### No use-after-free in your own functions
 
@@ -67,10 +67,10 @@ void myFunction(String* myString)
     // the function name will appear in eventual error message
     assureNotReleased(myString, "myFunction");
        
-    printlnString(myString);
+    // do something here using myString
 }
 ~~~ 
-
+-->
 ### Private functions
 
 The names of *private* functions in the SafeEasyC library start with uderscore (*_name*). Never call those functions.
@@ -101,5 +101,6 @@ The index and the size must share the same type (*signed*)!
 
 
 <!-- At the moment the library is comprehensive enough to solve all the puzzles of the Advent of Code. -->
+
 
 

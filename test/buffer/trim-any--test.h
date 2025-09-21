@@ -15,6 +15,9 @@ bool testBufferTrimStartAny1()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&sample);
+    releaseHeap(&virtual);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -34,6 +37,9 @@ bool testBufferTrimStartAny2()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&sample);
+    releaseHeap(&virtual);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -53,6 +59,8 @@ bool testBufferTrimStartAny3()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -72,6 +80,8 @@ bool testBufferTrimStartAny4()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -105,6 +115,9 @@ bool testBufferTrimEndAny1()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&sample);
+    releaseHeap(&virtual);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -124,6 +137,9 @@ bool testBufferTrimEndAny2()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&sample);
+    releaseHeap(&virtual);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -143,6 +159,8 @@ bool testBufferTrimEndAny3()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&virtual);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -162,6 +180,9 @@ bool testBufferTrimEndAny4()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&sample);
+    releaseHeap(&virtual);
+    releaseHeap(&expected);
     
     return ok;
 }
@@ -202,6 +223,9 @@ void testBufferTrimAny()
     bool ok = stringsAreEqual(&virtual, &expected);
     
     releaseHeap(&buffer);
+    releaseHeap(&sample);
+    releaseHeap(&virtual);
+    releaseHeap(&expected);
     
     if (! ok) { printf("%s", msg); exit(1); }
 }

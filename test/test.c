@@ -8,9 +8,9 @@
 
 int main()
 {
-   // testReadTextFile();
+    testReadTextFile();
+    testString();
     testBuffer();
-  //  testString();
 
     printf("\nAll tests passed!\n");
 
