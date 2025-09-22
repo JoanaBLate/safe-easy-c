@@ -46,9 +46,9 @@
 
 //#include "linked-list/linked-list.h"
 
-//#include "hashmap/hashmap-helper.h"
-//#include "hashmap/hashmap-long.h"
-//#include "hashmap/hashmap-string.h"
+#include "hashmap/hashmap-helper.h"
+#include "hashmap/hashmap-long.h"
+#include "hashmap/hashmap-string.h"
 
 #include "file/read.h"
 
