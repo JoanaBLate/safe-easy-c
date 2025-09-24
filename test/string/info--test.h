@@ -1,5 +1,25 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
+void testStringIsEmpty() 
+{
+    printf("- testing stringIsEmpty\n"); 
+    
+    String empty = createEmptyString();
+    String source = createStringFromLiteral("He@llo");
+    
+    bool fails = false;
+    
+    if (stringIsEmpty(&source))  { fails = true; }
+    if (! stringIsEmpty(&empty)) { fails = true; }
+    
+    deleteString(&source);
+    
+    if (fails) { 
+        printf("stringIsEmpty FAILS!\n"); 
+        exit(1);
+    }
+}
+
 void testStringCharCodeAt() 
 {
     printf("- testing stringCharCodeAt\n"); 
@@ -12,7 +32,7 @@ void testStringCharCodeAt()
     if (stringCharCodeAt(&source, -1) != -1)   { fails = true; }
     if (stringCharCodeAt(&source, 200) != -1)   { fails = true; }
     
-    releaseHeap(&source);
+    deleteString(&source);
     
     if (fails) { 
         printf("stringCharCodeAt FAILS!\n"); 
@@ -39,9 +59,9 @@ void testStringsAreEquals()
     if (! stringsAreEqual(&empty1, &empty2)) { fails = true; }
     if (stringsAreEqual(&empty1, &source1))  { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
     
     if (fails) { 
         printf("stringsAreEqual FAILS!\n");
@@ -68,10 +88,10 @@ void testStringsCompare()
     if (stringsCompare(&source1, &source3) != +1) { fails = true; }
     if (stringsCompare(&source4, &source3) != -1) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&source4);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&source4);
     
     if (fails) { 
         printf("stringsCompare FAILS!\n");
@@ -96,9 +116,9 @@ void testStringContains()
     if (stringContains(&source1, &empty))   { fails = true; }
     if (stringContains(&empty, &source1))   { fails = true; }
 
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
     
     if (fails) { 
         printf("stringContains FAILS!\n"); 
@@ -124,9 +144,9 @@ void testStringStartsWith()
     if (! stringStartsWith(&source1, &source1)) { fails = true; }
     if (! stringStartsWith(&source1, &source2)) { fails = true; }
 
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
     
     if (fails) { 
         printf("stringStartsWith FAILS!\n");
@@ -152,9 +172,9 @@ void testStringEndsWith()
     if (! stringEndsWith(&source1, &source1)) { fails = true; }
     if (! stringEndsWith(&source1, &source3)) { fails = true; }
 
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
     
     if (fails) { 
         printf("stringEndsWith FAILS!\n");
@@ -180,9 +200,9 @@ void testStringIndexOf()
     if (stringIndexOf(&empty, &source1)   != -1) { fails = true; }
     if (stringIndexOf(&empty, &empty)     != -1) { fails = true; }
         
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
     
     if (fails) {
         printf("stringIndexOf FAILS!\n");
@@ -208,9 +228,9 @@ void testStringLastIndexOf()
     if (stringLastIndexOf(&empty, &source1) != -1) { fails = true; }
     if (stringLastIndexOf(&empty, &empty)   != -1) { fails = true; }    
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
     
     if (fails) {
         printf("stringLastIndexOf FAILS!\n");
@@ -239,9 +259,9 @@ void testStringIndexOfAfter()
     if (stringIndexOfAfter(&empty, &source1, 0) != -1) { fails = true; }  
     if (stringIndexOfAfter(&empty, &empty,   0) != -1) { fails = true; }  
          
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
     
     if (fails) {
         printf("stringIndexOfAfter FAILS!\n");
@@ -269,9 +289,9 @@ void testStringLastIndexOfBefore()
     if (stringLastIndexOfBefore(&empty, &source1, 10) !=   -1) { fails = true; } 
     if (stringLastIndexOfBefore(&empty, &empty,   10) !=   -1) { fails = true; }  
          
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
     
     if (fails) {
         printf("stringLastIndexOfBefore FAILS!\n"); 
@@ -300,11 +320,11 @@ void testStringCountOf()
     if (stringCountOf(&empty, &source1) != 0) { fails = true; }
     if (stringCountOf(&empty, &empty)   != 0) { fails = true; }
          
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&source4);
-    releaseHeap(&source5);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&source4);
+    deleteString(&source5);
     
     if (fails) {
         printf("stringCountOf FAILS!\n"); 
@@ -330,10 +350,10 @@ void testStringMarginCount()
     if (stringMarginCount(&source3) != 6) { fails = true; }
     if (stringMarginCount(&source4) != 6) { fails = true; }
          
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&source4);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&source4);
     
     if (fails) {
         printf("stringMarginCount FAILS!\n"); 

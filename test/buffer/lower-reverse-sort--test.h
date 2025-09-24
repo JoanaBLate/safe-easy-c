@@ -28,11 +28,11 @@ void testBufferToLower()
     
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&result1);
-    releaseHeap(&expected1);
-    releaseHeap(&result2);
-    releaseHeap(&bufferEmpty);
-    releaseHeap(&bufferSource);
+    deleteString(&result1);
+    deleteString(&expected1);
+    deleteString(&result2);
+    deleteBuffer(&bufferEmpty);
+    deleteBuffer(&bufferSource);
     
     if (fails) { 
         printf("bufferToLower FAILS!\n");
@@ -68,11 +68,11 @@ void testBufferToUpper()
     
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&result1);
-    releaseHeap(&expected1);
-    releaseHeap(&result2);
-    releaseHeap(&bufferEmpty);
-    releaseHeap(&bufferSource);
+    deleteString(&result1);
+    deleteString(&expected1);
+    deleteString(&result2);
+    deleteBuffer(&bufferEmpty);
+    deleteBuffer(&bufferSource);
     
     if (fails) { 
         printf("bufferToUpper FAILS!\n");
@@ -108,11 +108,11 @@ void testBufferToOppositeCase()
     
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&result1);
-    releaseHeap(&expected1);
-    releaseHeap(&result2);
-    releaseHeap(&bufferEmpty);
-    releaseHeap(&bufferSource);
+    deleteString(&result1);
+    deleteString(&expected1);
+    deleteString(&result2);
+    deleteBuffer(&bufferEmpty);
+    deleteBuffer(&bufferSource);
     
     if (fails) { 
         printf("bufferToOppositeCase FAILS!\n");
@@ -148,11 +148,11 @@ void testBufferReverse()
     
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&result1);
-    releaseHeap(&expected1);
-    releaseHeap(&result2);
-    releaseHeap(&bufferEmpty);
-    releaseHeap(&bufferSource);
+    deleteString(&result1);
+    deleteString(&expected1);
+    deleteString(&result2);
+    deleteBuffer(&bufferEmpty);
+    deleteBuffer(&bufferSource);
     
     if (fails) { 
         printf("bufferReverse FAILS!\n");
@@ -188,13 +188,13 @@ void testBufferSort()
     
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&expected2);
-    releaseHeap(&bufferEmpty);
-    releaseHeap(&bufferSource);
-    releaseHeap(&result1);
-    releaseHeap(&expected1);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&expected2);
+    deleteBuffer(&bufferEmpty);
+    deleteBuffer(&bufferSource);
+    deleteString(&result1);
+    deleteString(&expected1);
     
     if (fails) { 
         printf("bufferSort FAILS!\n");

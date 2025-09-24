@@ -30,18 +30,18 @@ void testCreateStringReplaceStart()
     String expected5 = createEmptyString();    
     if (! stringsAreEqual(&result5, &expected5)) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
     
     if (fails) { 
         printf("createStringReplaceStart FAILS!\n");
@@ -79,18 +79,18 @@ void testCreateStringReplaceEnd()
     String expected5 = createEmptyString();    
     if (! stringsAreEqual(&result5, &expected5)) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
     
     if (fails) { 
         printf("createStringReplaceStart FAILS!\n");
@@ -133,21 +133,21 @@ void testCreateStringReplace()
     String expected6 = createEmptyString();    
     if (! stringsAreEqual(&result6, &expected6)) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&result6);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
-    releaseHeap(&expected6);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&result6);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
+    deleteString(&expected6);
     
     if (fails) { 
         printf("createStringReplaceStart FAILS!\n");
@@ -190,21 +190,21 @@ void testCreateStringReplaceLast()
     String expected6 = createEmptyString();    
     if (! stringsAreEqual(&result6, &expected6)) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&result6);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
-    releaseHeap(&expected6);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&result6);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
+    deleteString(&expected6);
     
     if (fails) { 
         printf("createStringReplaceStart FAILS!\n");
@@ -244,20 +244,20 @@ void testCreateStringReplaceAll()
     String expected5 = createStringFromLiteral(" Life is  rock ");    
     if (! stringsAreEqual(&result5, &expected5)) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&source4);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&source4);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
     
     if (fails) { 
         printf("createStringReplaceStart FAILS!\n");

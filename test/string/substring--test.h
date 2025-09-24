@@ -33,19 +33,19 @@ void testCreateSubstringStart()
     String expected6 = createStringFromLiteral("Life is ∆ rock");    
     if (! stringsAreEqual(&result6, &expected6)) { fails = true; }
     
-    releaseHeap(&source);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&result6);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
-    releaseHeap(&expected6);
+    deleteString(&source);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&result6);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
+    deleteString(&expected6);
 
     if (fails) { 
         printf("createSubstringStart FAILS!\n");
@@ -86,19 +86,19 @@ void testCreateSubstringEnd()
     String expected6 = createStringFromLiteral("Life is ∆ rock");    
     if (! stringsAreEqual(&result6, &expected6)) { fails = true; }
     
-    releaseHeap(&source);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&result6);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
-    releaseHeap(&expected6);
+    deleteString(&source);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&result6);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
+    deleteString(&expected6);
 
     if (fails) { 
         printf("createSubstringEnd FAILS!\n");
@@ -143,21 +143,21 @@ void testCreateSubstring()
     String expected7 = createStringFromLiteral("rock");
     if (! stringsAreEqual(&result7, &expected7)) { fails = true; }
     
-    releaseHeap(&source);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&result6);
-    releaseHeap(&result7);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
-    releaseHeap(&expected6);
-    releaseHeap(&expected7);
+    deleteString(&source);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&result6);
+    deleteString(&result7);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
+    deleteString(&expected6);
+    deleteString(&expected7);
     
     if (fails) { 
         printf("createSubstring FAILS!\n");

@@ -10,7 +10,7 @@ void _testBufferPadStart(Buffer* buffer, String* chunk, long count, String* expe
 
     if (! stringsAreEqual(&result, expected)) { fails = true; }
    
-    releaseHeap(&result);
+    deleteString(&result);
     
     if (fails) { 
         printf("bufferPadStart FAILS!\n");
@@ -29,18 +29,18 @@ void testBufferPadStart()
     String expected = createStringFromLiteral("Life is ∆ rock");    
     _testBufferPadStart(&buffer, &chunk, 10, &expected);
 
-    releaseHeap(&chunk);   
+    deleteString(&chunk);   
      
     chunk = createStringFromLiteral("(^-^) ");
     _testBufferPadStart(&buffer, &chunk, 0, &expected);
     
-    releaseHeap(&expected);
+    deleteString(&expected);
     
     expected = createStringFromLiteral("(^-^) (^-^) Life is ∆ rock");
     _testBufferPadStart(&buffer, &chunk, 2, &expected);
 
-    releaseHeap(&buffer);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&expected);
 
     buffer = createBufferFromLiteral("123456789012345Life is ∆ rock");
     buffer.margin = 15;
@@ -48,8 +48,8 @@ void testBufferPadStart()
     expected = createStringFromLiteral("(^-^) (^-^) Life is ∆ rock");
     _testBufferPadStart(&buffer, &chunk, 2, &expected);
      
-    releaseHeap(&buffer);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&expected);
     
     buffer = createBufferFromLiteral("12Life is ∆ rock!");
     buffer.margin = 2;
@@ -57,9 +57,9 @@ void testBufferPadStart()
     expected = createStringFromLiteral("(^-^) (^-^) Life is ∆ rock!");
     _testBufferPadStart(&buffer, &chunk, 2, &expected);
 
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&expected);
 } 
 
 void _testBufferPadEnd(Buffer* buffer, String* chunk, long count, String* expected)
@@ -72,7 +72,7 @@ void _testBufferPadEnd(Buffer* buffer, String* chunk, long count, String* expect
 
     if (! stringsAreEqual(&result, expected)) { fails = true; }
    
-    releaseHeap(&result);
+    deleteString(&result);
     
     if (fails) { 
         printf("bufferPadEnd FAILS!\n");
@@ -91,18 +91,18 @@ void testBufferPadEnd()
     String expected = createStringFromLiteral("Life is ∆ rock");    
     _testBufferPadEnd(&buffer, &chunk, 10, &expected);
     
-    releaseHeap(&chunk);
+    deleteString(&chunk);
     
     chunk = createStringFromLiteral("(^-^) ");
     _testBufferPadEnd(&buffer, &chunk, 0, &expected);
     
-    releaseHeap(&expected);
+    deleteString(&expected);
     
     expected = createStringFromLiteral("Life is ∆ rock(^-^) (^-^) ");
     _testBufferPadEnd(&buffer, &chunk, 2, &expected);
 
-    releaseHeap(&buffer);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&expected);
     
     buffer = createBufferFromLiteral("123456789012345Life is ∆ rock");
     buffer.margin = 15;
@@ -110,8 +110,8 @@ void testBufferPadEnd()
     expected = createStringFromLiteral("Life is ∆ rock(^-^) (^-^) ");
     _testBufferPadEnd(&buffer, &chunk, 2, &expected);
      
-    releaseHeap(&buffer);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&expected);
 
     buffer = createBufferFromLiteral("12Life is ∆ rock!");
     buffer.margin = 2;
@@ -119,8 +119,8 @@ void testBufferPadEnd()
     expected = createStringFromLiteral("Life is ∆ rock!(^-^) (^-^) ");
     _testBufferPadEnd(&buffer, &chunk, 2, &expected);
 
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&expected);
 } 
 

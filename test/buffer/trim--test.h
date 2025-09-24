@@ -12,9 +12,9 @@ bool testBufferTrimStart1()
     
     bool ok = stringsAreEqual(&result, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&result);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&result);
+    deleteString(&expected);
     
     return ok;
 }
@@ -31,7 +31,7 @@ bool testBufferTrimStart2()
     
     bool ok = stringsAreEqual(&result, &expected);
     
-    releaseHeap(&buffer);
+    deleteBuffer(&buffer);
     
     return ok;
 }
@@ -48,7 +48,7 @@ bool testBufferTrimStart3()
     
     bool ok = stringsAreEqual(&result, &expected);
     
-    releaseHeap(&buffer);
+    deleteBuffer(&buffer);
     
     return ok;
 }
@@ -78,9 +78,9 @@ bool testBufferTrimEnd1()
     
     bool ok = stringsAreEqual(&result, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&result);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&result);
+    deleteString(&expected);
     
     return ok;
 }
@@ -97,9 +97,9 @@ bool testBufferTrimEnd2()
     
     bool ok = stringsAreEqual(&result, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&result);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&result);
+    deleteString(&expected);
     
     return ok;
 }
@@ -116,9 +116,9 @@ bool testBufferTrimEnd3()
     
     bool ok = stringsAreEqual(&result, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&result);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&result);
+    deleteString(&expected);
     
     return ok;
 }
@@ -148,9 +148,9 @@ bool testBufferTrim1()
     
     bool ok = stringsAreEqual(&result, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&result);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&result);
+    deleteString(&expected);
     
     return ok;
 }
@@ -167,9 +167,9 @@ bool testBufferTrim2()
     
     bool ok = stringsAreEqual(&result, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&result);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&result);
+    deleteString(&expected);
     
     return ok;
 }
@@ -186,9 +186,9 @@ bool testBufferTrim3()
     
     bool ok = stringsAreEqual(&result, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&result);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&result);
+    deleteString(&expected);
     
     return ok;
 }

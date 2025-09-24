@@ -16,6 +16,7 @@
 
 void testBuffer()
 {    
+    testBufferIsEmpty();
     testBufferByteAt();
     testBuffersCompare();
     testBufferContains();

@@ -24,7 +24,7 @@ void testPrintStringB()
     printf("- printing string bytes: ");
     printlnStringBytes(&string);
     
-    releaseHeap(&string);
+    deleteString(&string);
 }
 
 void testPrintStringC()
@@ -37,6 +37,6 @@ void testPrintStringC()
     printf("- printing string bytes: ");
     printlnStringBytes(&string);
     
-    releaseHeap(&string);
+    deleteString(&string);
 }
 

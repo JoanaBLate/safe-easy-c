@@ -10,7 +10,7 @@ void _testBufferReplaceStart(Buffer* buffer, long count, String* chunk, String* 
        
     if (! stringsAreEqual(&result, expected)) { fails = true; }
 
-    releaseHeap(&result);
+    deleteString(&result);
     
     if (fails) {
         printf("bufferReplaceStart FAILS!\n");
@@ -30,22 +30,22 @@ void testBufferReplaceStart()
     String expected = createStringFromLiteral("123Hello!");    
     _testBufferReplaceStart(&buffer, -15, &chunk, &expected);
     
-    releaseHeap(&chunk);
-    releaseHeap(&expected);    
+    deleteString(&chunk);
+    deleteString(&expected);    
 
     chunk = createStringFromLiteral("AB"); 
     expected = createStringFromLiteral("ABHello!");    
     _testBufferReplaceStart(&buffer, 3, &chunk, &expected); 
      
-    releaseHeap(&chunk);
-    releaseHeap(&expected);       
+    deleteString(&chunk);
+    deleteString(&expected);       
 
     chunk = createStringFromLiteral("abcdefghij"); 
     expected = createStringFromLiteral("abcdefghijHello!");    
     _testBufferReplaceStart(&buffer, 2, &chunk, &expected); 
     
-    releaseHeap(&chunk);
-    releaseHeap(&expected);    
+    deleteString(&chunk);
+    deleteString(&expected);    
 
     buffer.margin += 2; // cutting 'ab', leaving margin
     buffer.size -= 2;     
@@ -55,9 +55,9 @@ void testBufferReplaceStart()
     expected = createStringFromLiteral("Hell");    
     _testBufferReplaceStart(&buffer, 8, &chunk, &expected);  
     
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&expected);    
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&expected);    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ void _testBufferReplaceEnd(Buffer* buffer, long count, String *chunk, String *ex
        
     if (! stringsAreEqual(&result, expected)) { fails = true; }
 
-    releaseHeap(&result);
+    deleteString(&result);
     
     if (fails) {
         printf("bufferReplaceEnd FAILS!\n");
@@ -92,25 +92,25 @@ void testBufferReplaceEnd()
     String expected = createStringFromLiteral("Hello!123");    
     _testBufferReplaceEnd(&buffer, -15, &chunk, &expected); 
     
-    releaseHeap(&chunk);
-    releaseHeap(&expected);    
+    deleteString(&chunk);
+    deleteString(&expected);    
     
     chunk = createStringFromLiteral("AB"); 
     expected = createStringFromLiteral("Hello!AB");    
     _testBufferReplaceEnd(&buffer, 3, &chunk, &expected);   
      
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&expected);    
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&expected);    
     
     buffer = createBufferFromLiteral("Hello!");
     chunk = createStringFromLiteral("abc"); 
     expected = createStringFromLiteral("Helloabc");    
     _testBufferReplaceEnd(&buffer, 1, &chunk, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&expected);    
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&expected);    
     
     buffer = createBufferFromLiteral(".12345!");
     buffer.margin = 1;
@@ -119,9 +119,9 @@ void testBufferReplaceEnd()
     expected = createStringFromLiteral("12345abc");    
     _testBufferReplaceEnd(&buffer, 1, &chunk, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&expected);    
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&expected);    
     
     buffer = createBufferFromLiteral("...HelloXX...");
     buffer.margin = 3;
@@ -130,9 +130,9 @@ void testBufferReplaceEnd()
     expected = createStringFromLiteral("Helloabcdefghijklmn");
     _testBufferReplaceEnd(&buffer, 2, &chunk, &expected);  
     
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&expected);    
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&expected);    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -147,7 +147,7 @@ void _testBufferReplace(Buffer* buffer, String* target, String* chunk, String* e
        
     if (! stringsAreEqual(&result, expected)) { fails = true; }
       
-    releaseHeap(&result);
+    deleteString(&result);
     
     if (fails) {
         printf("bufferReplace FAILS!\n");
@@ -165,27 +165,27 @@ void testBufferReplace()
     String expected = createStringFromLiteral("He@#o!");    
     _testBufferReplace(&buffer, &target, &chunk, &expected);
     
-    releaseHeap(&chunk);
-    releaseHeap(&target);
-    releaseHeap(&expected);    
+    deleteString(&chunk);
+    deleteString(&target);
+    deleteString(&expected);    
 
     target = createStringFromLiteral("@#");
     chunk = createStringFromLiteral(""); 
     expected = createStringFromLiteral("Heo!");      
     _testBufferReplace(&buffer, &target, &chunk, &expected);
     
-    releaseHeap(&chunk);
-    releaseHeap(&target);
-    releaseHeap(&expected);    
+    deleteString(&chunk);
+    deleteString(&target);
+    deleteString(&expected);    
 
     target = createStringFromLiteral("e");
     chunk = createStringFromLiteral("ell---$$$---"); 
     expected = createStringFromLiteral("Hell---$$$---o!");    
     _testBufferReplace(&buffer, &target, &chunk, &expected);
     
-    releaseHeap(&chunk);
-    releaseHeap(&target);
-    releaseHeap(&expected);    
+    deleteString(&chunk);
+    deleteString(&target);
+    deleteString(&expected);    
     
     buffer.margin = 4;
     buffer.size -= 4;
@@ -195,19 +195,19 @@ void testBufferReplace()
     expected = createStringFromLiteral(">[^]<");   
     _testBufferReplace(&buffer, &target, &chunk, &expected);
     
-    releaseHeap(&chunk);
-    releaseHeap(&target);
-    releaseHeap(&expected);  
+    deleteString(&chunk);
+    deleteString(&target);
+    deleteString(&expected);  
             
     target = createStringFromLiteral("^");
     chunk = createStringFromLiteral("Life is ∆ rock! Life is ∆ rock!"); 
     expected = createStringFromLiteral(">[Life is ∆ rock! Life is ∆ rock!]<");   
     _testBufferReplace(&buffer, &target, &chunk, &expected);
     
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&target);
-    releaseHeap(&expected);    
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&target);
+    deleteString(&expected);    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -222,7 +222,7 @@ void _testBufferReplaceLast(Buffer* buffer, String *target, String *chunk, Strin
        
     if (! stringsAreEqual(&result, expected)) { fails = true; }
     
-    releaseHeap(&result);
+    deleteString(&result);
         
     if (fails) {
         printf("bufferReplaceLast FAILS!\n");
@@ -240,10 +240,10 @@ void testBufferReplaceLast() // bufferReplaceLast basically uses the same code a
     String expected = createStringFromLiteral("Hel∆o!");    
     _testBufferReplaceLast(&buffer, &target, &chunk, &expected);
 
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&target);
-    releaseHeap(&expected);    
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&target);
+    deleteString(&expected);    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ void _testBufferReplaceAll(Buffer* buffer, String* target, String* chunk, String
        
     if (! stringsAreEqual(&result, expected)) { fails = true; }
     
-    releaseHeap(&result);
+    deleteString(&result);
     
     if (fails) {
         printf("bufferReplaceAll FAILS!\n");
@@ -276,9 +276,9 @@ void testBufferReplaceAll() // bufferReplaceAll basically uses the same code as 
     String expected = createStringFromLiteral("Hello! Hello! Hello! Hello!");    
     _testBufferReplaceAll(&buffer, &target, &chunk, &expected);
 
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&target);
-    releaseHeap(&expected);    
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteString(&target);
+    deleteString(&expected);    
 }
 

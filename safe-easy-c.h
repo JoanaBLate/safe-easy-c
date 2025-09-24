@@ -655,6 +655,18 @@ String createStringFromLong(long number)
     return _createStringFromInfo(array, (long) size);
 }
 
+bool deleteString(String* string)
+{
+    if (string->address == NULL) { return false; }
+
+    // empty strings (fakenull address) must not be freed
+    if (string->address != FAKENULL) { free(string->address); }
+
+    string->address = NULL;
+
+    return true;
+}
+
 
 // file: string/repeat.h //
 
@@ -1641,6 +1653,17 @@ Buffer convertStringIntoBuffer(String* string)
     string->address = NULL; // must not call 'releaseHeap'
 
     return buffer;
+}
+
+bool deleteBuffer(Buffer* buffer)
+{
+    if (buffer->address == NULL) { return false; }
+
+    free(buffer->address);
+
+    buffer->address = NULL;
+
+    return true;
 }
 
 
@@ -2753,6 +2776,11 @@ typedef struct
     HashmapLongItem** items;
 } HashmapLong;
 
+long getHashmapLongCount(HashmapLong* map)
+{
+    return map->count;
+}
+
 HashmapLongItem* createHashmapLongItem(String* key, long value)
 {
     if (key->address == NULL) { _errorAlreadyReleased("createHashmapLongItem"); }
@@ -2768,15 +2796,11 @@ HashmapLongItem* createHashmapLongItem(String* key, long value)
     return item;
 }
 
-HashmapLong* createHashmapLong(long capacity)
+HashmapLong createHashmapLong(long capacity)
 {
-    HashmapLong* map = _allocateHeap(1 * (long) sizeof(HashmapLong));
+    HashmapLong map = { capacity, 0, NULL };
 
-    map->capacity = capacity;
-
-    map->count = 0;
-
-    map->items = _allocateHeapClean(capacity * (long) sizeof(HashmapLongItem*));
+    map.items = _allocateHeapClean(capacity * (long) sizeof(HashmapLongItem*));
 
     return map;
 }
@@ -2889,33 +2913,33 @@ bool deleteItemFromHashmapLong(HashmapLong* map, String* key)
     return false; // unreachable
 }
 
-void deleteHashmapLong(HashmapLong* map)
+void deleteHashmapLongContent(HashmapLong* map)
 {
-    for (long mapIndex = 0; mapIndex < map->capacity; mapIndex++)
-    {
-        HashmapLongItem* item = map->items[mapIndex];
-
-        if (item == NULL) { continue; }
-
-        HashmapLongItem* nextItem = item->next;
-
-        releaseHeap(&item->key);
-        releaseHeap(item);
-
-        while (nextItem != NULL)
-        {
-            item = nextItem;
-
-            nextItem = item->next;
-
-            releaseHeap(&item->key);
-            releaseHeap(item);
-        }
-    }
+//    for (long mapIndex = 0; mapIndex < map->capacity; mapIndex++)
+//    {
+//        HashmapLongItem* item = map->items[mapIndex];
+//
+//        if (item == NULL) { continue; }
+//
+//        HashmapLongItem* nextItem = item->next;
+//
+//        releaseHeap(&item->key);
+//        releaseHeap(item);
+//
+//        while (nextItem != NULL)
+//        {
+//            item = nextItem;
+//
+//            nextItem = item->next;
+//
+//            releaseHeap(&item->key);
+//            releaseHeap(item);
+//        }
+//    }
 
     releaseHeap(map->items);
-    releaseHeap(map);
 }
+
 /* TODO: must wait ArrayList is ready
 ArrayList* getHashmapLongKeys(HashmapLong* map)
 {
@@ -3217,17 +3241,17 @@ void cReadFile(char* filename, char* buffer, long fileSize)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-String readTextFile(String filename)
+String readTextFile(String* filename)
 {
-    if (filename.size == 0) {
+    if (filename->size == 0) {
         printf("\nERROR: cannot read text file: file name is blank\n");
         exit(1);
     }
 
     // c filename
-    char* cFilename = malloc((size_t) filename.size + 1);
-    memcpy(cFilename, filename.address, (size_t) filename.size);
-    cFilename[filename.size] = 0;
+    char* cFilename = malloc((size_t) filename->size + 1);
+    memcpy(cFilename, filename->address, (size_t) filename->size);
+    cFilename[filename->size] = 0;
 
     long fileSize = cGetFileSize(cFilename);
 

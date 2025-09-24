@@ -14,7 +14,7 @@ void testBufferReset()
     
     if (buffer.margin != 0  ||  buffer.size != 40) { printf("bufferReset FAILS!\n"); exit(1); }        
     
-    releaseHeap(&buffer);
+    deleteBuffer(&buffer);
 }
 
 void testBufferClear()
@@ -35,8 +35,8 @@ void testBufferClear()
     
     if (! buffersAreEqual(&buffer, &expected)) { printf("bufferClear FAILS!\n"); exit(1); }
     
-    releaseHeap(&buffer);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteBuffer(&expected);
 }
 
 void testBufferFill()
@@ -57,8 +57,8 @@ void testBufferFill()
     
     if (! buffersAreEqual(&buffer, &expected)) { printf("bufferFill FAILS!\n"); exit(1); }
     
-    releaseHeap(&buffer);
-    releaseHeap(&chunk);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&chunk);
+    deleteBuffer(&expected);
 }
 

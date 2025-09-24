@@ -31,19 +31,19 @@ void testCreateStringRemove()
     String expected5 = createEmptyString();    
     if (! stringsAreEqual(&result5, &expected5)) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
     
     if (fails) { 
         printf("createStringRemove FAILS!\n");
@@ -82,19 +82,19 @@ void testCreateStringRemoveLast()
     String expected5 = createEmptyString();    
     if (! stringsAreEqual(&result5, &expected5)) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
-    releaseHeap(&expected5);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+    deleteString(&expected5);
     
     if (fails) { 
         printf("createStringRemoveLast FAILS!\n");
@@ -129,17 +129,17 @@ void testCreateStringRemoveAll()
     String expected4 = createEmptyString();    
     if (! stringsAreEqual(&result4, &expected4)) { fails = true; }
         
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
     
     if (fails) { 
         printf("createStringRemoveAll FAILS!\n");

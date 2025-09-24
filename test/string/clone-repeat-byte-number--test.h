@@ -18,12 +18,12 @@ void testCreateStringFromByte()
     String expected3 = createEmptyString();
     if (! stringsAreEqual(&expected3, &result3)) { fails = true ; }
 
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
     
     if (fails) {
         printf("createStringFromByte FAILS!\n");
@@ -47,12 +47,12 @@ void testCreateStringClone()
     String expected2 = createEmptyString();
     if (! stringsAreEqual(&expected2, &result2)) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&expected1);
+    deleteString(&expected2);
     
     if (fails) {
         printf("createStringClone FAILS!\n");
@@ -81,13 +81,13 @@ void testCreateStringRepeat()
     String expected3 = createEmptyString();
     if (! stringsAreEqual(&expected3, &result3)) { fails = true; }
     
-    releaseHeap(&source);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
+    deleteString(&source);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
     
     if (fails) {
         printf("createStringRepeat FAILS!\n");
@@ -113,12 +113,12 @@ void testCreateStringFromLong()
     String expected3 = createStringFromLiteral("-500");
     if (! stringsAreEqual(&expected3, &result3)) { fails = true; }
     
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
     
     if (fails) {
         printf("createStringFromLong FAILS!\n");

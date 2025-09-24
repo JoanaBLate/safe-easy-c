@@ -13,10 +13,10 @@ void _testBufferEatStart(Buffer* buffer, long size, char* literal1,  char* liter
     if (! stringsAreEqual(&result1, &expected1)) { fails = true; }
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&expected1);
+    deleteString(&expected2);
 
     if (fails) { 
         printf("bufferEatStart FAILS!\n"); 
@@ -42,8 +42,8 @@ void testBufferEatStart()
 
     _testBufferEatStart(&bufferSource, 300, "is ∆ rock", ""); 
     
-    releaseHeap(&bufferEmpty);
-    releaseHeap(&bufferSource);
+    deleteBuffer(&bufferEmpty);
+    deleteBuffer(&bufferSource);
 }
 
 void _testBufferEatEnd(Buffer* buffer, long size, char* literal1,  char* literal2) 
@@ -59,10 +59,10 @@ void _testBufferEatEnd(Buffer* buffer, long size, char* literal1,  char* literal
     if (! stringsAreEqual(&result1, &expected1)) { fails = true; }
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&expected1);
+    deleteString(&expected2);
 
     if (fails) { 
         printf("bufferEatEnd FAILS!\n"); 
@@ -88,7 +88,7 @@ void testBufferEatEnd()
 
     _testBufferEatEnd(&bufferSource, 300, "Life is ∆", ""); 
     
-    releaseHeap(&bufferEmpty);
-    releaseHeap(&bufferSource);
+    deleteBuffer(&bufferEmpty);
+    deleteBuffer(&bufferSource);
 }
 

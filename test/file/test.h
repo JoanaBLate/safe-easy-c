@@ -5,19 +5,19 @@ void testReadTextFile()
     printf("- testing readTextFile\n"); 
     
     String filename = createStringFromLiteral("test.c");        
-    String file = readTextFile(filename);
+    String file = readTextFile(&filename);
 
     String string = createSubstring(&file, 0, 18);
     String expected = createStringFromLiteral("// # Copyright (c)");
     
-    releaseHeap(&filename);
-    releaseHeap(&file);
+    deleteString(&filename);
+    deleteString(&file);
 
     if (! stringsAreEqual(&expected, &string)) { 
         printf("readTextFile FAILS!\n"); 
         exit(1);
     }
         
-    releaseHeap(&string);
-    releaseHeap(&expected);
+    deleteString(&string);
+    deleteString(&expected);
 }

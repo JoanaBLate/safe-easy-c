@@ -77,3 +77,14 @@ Buffer convertStringIntoBuffer(String* string)
     return buffer;
 }
 
+bool deleteBuffer(Buffer* buffer)
+{
+    if (buffer->address == NULL) { return false; }
+    
+    free(buffer->address); 
+    
+    buffer->address = NULL;
+    
+    return true;
+}
+

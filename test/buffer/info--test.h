@@ -1,5 +1,26 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
+void testBufferIsEmpty() 
+{
+    printf("- testing bufferIsEmpty\n"); 
+    
+    Buffer empty = createEmptyBuffer();
+    Buffer source = createBufferFromLiteral("He@llo");
+    
+    bool fails = false;
+    
+    if (bufferIsEmpty(&source))  { fails = true; }
+    if (! bufferIsEmpty(&empty)) { fails = true; }
+    
+    deleteBuffer(&empty);
+    deleteBuffer(&source);
+    
+    if (fails) { 
+        printf("bufferIsEmpty FAILS!\n"); 
+        exit(1);
+    }
+}
+
 void testBufferByteAt() 
 {
     printf("- testing bufferByteAt\n"); 
@@ -14,7 +35,7 @@ void testBufferByteAt()
     if (bufferByteAt(&buffer,  -1) != -1)   { fails = true; }
     if (bufferByteAt(&buffer, 333) != -1)   { fails = true; }
     
-    releaseHeap(&buffer);
+    deleteBuffer(&buffer);
         
     if (fails) { 
         printf("bufferByteAt FAILS!\n"); 
@@ -44,11 +65,11 @@ void testBuffersAreEquals()
     if (! buffersAreEqual(&empty1, &empty2)) { fails = true; }
     if (buffersAreEqual(&empty1, &buffer1))  { fails = true; }
     
-    releaseHeap(&buffer1);
-    releaseHeap(&buffer2);
-    releaseHeap(&buffer3);
-    releaseHeap(&empty1);
-    releaseHeap(&empty2);
+    deleteBuffer(&buffer1);
+    deleteBuffer(&buffer2);
+    deleteBuffer(&buffer3);
+    deleteBuffer(&empty1);
+    deleteBuffer(&empty2);
     
     if (fails) { 
         printf("buffersAreEqual FAILS!\n");
@@ -82,16 +103,16 @@ void testBuffersCompare()
     if (stringsCompare(&source1, &source3) != +1) { fails = true; }
     if (stringsCompare(&source4, &source3) != -1) { fails = true; }
     
-    releaseHeap(&bEmpty1);
-    releaseHeap(&bEmpty2);
-    releaseHeap(&bSource1);
-    releaseHeap(&bSource2);
-    releaseHeap(&bSource3);
-    releaseHeap(&bSource4);
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&source4);
+    deleteBuffer(&bEmpty1);
+    deleteBuffer(&bEmpty2);
+    deleteBuffer(&bSource1);
+    deleteBuffer(&bSource2);
+    deleteBuffer(&bSource3);
+    deleteBuffer(&bSource4);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&source4);
     
     if (fails) { 
         printf("buffersCompare FAILS!\n");
@@ -122,11 +143,11 @@ void testBufferContains()
     if (bufferContains(&buffer1, &string3))   { fails = true; }
     if (bufferContains(&buffer0, &string1))   { fails = true; }
     
-    releaseHeap(&buffer0);
-    releaseHeap(&buffer1);
-    releaseHeap(&string1);
-    releaseHeap(&string2);
-    releaseHeap(&string3);
+    deleteBuffer(&buffer0);
+    deleteBuffer(&buffer1);
+    deleteString(&string1);
+    deleteString(&string2);
+    deleteString(&string3);
 
     if (fails) { 
         printf("bufferContains FAILS!\n"); 
@@ -158,11 +179,11 @@ void testBufferStartsWith()
     if (! bufferStartsWith(&buffer1, &string1)) { fails = true; }
     if (! bufferStartsWith(&buffer1, &string2)) { fails = true; }
     
-    releaseHeap(&buffer0);
-    releaseHeap(&buffer1);
-    releaseHeap(&string1);
-    releaseHeap(&string2);
-    releaseHeap(&string3);
+    deleteBuffer(&buffer0);
+    deleteBuffer(&buffer1);
+    deleteString(&string1);
+    deleteString(&string2);
+    deleteString(&string3);
 
     if (fails) { 
         printf("bufferStartsWith FAILS!\n");
@@ -194,11 +215,11 @@ void testBufferEndsWith()
     if (! bufferEndsWith(&buffer1, &string1)) { fails = true; }
     if (! bufferEndsWith(&buffer1, &string3)) { fails = true; }
     
-    releaseHeap(&buffer0);
-    releaseHeap(&buffer1);
-    releaseHeap(&string1);
-    releaseHeap(&string2);
-    releaseHeap(&string3);
+    deleteBuffer(&buffer0);
+    deleteBuffer(&buffer1);
+    deleteString(&string1);
+    deleteString(&string2);
+    deleteString(&string3);
 
     if (fails) { 
         printf("bufferEndsWith FAILS!\n");
@@ -230,11 +251,11 @@ void testBufferIndexOf()
     if (bufferIndexOf(&buffer0, &string1) != -1) { fails = true; }
     if (bufferIndexOf(&buffer0, &string0) != -1) { fails = true; }
     
-    releaseHeap(&buffer0);
-    releaseHeap(&buffer1);
-    releaseHeap(&string1);
-    releaseHeap(&string2);
-    releaseHeap(&string3);
+    deleteBuffer(&buffer0);
+    deleteBuffer(&buffer1);
+    deleteString(&string1);
+    deleteString(&string2);
+    deleteString(&string3);
     
     if (fails) {
         printf("bufferIndexOf FAILS!\n");
@@ -271,11 +292,11 @@ void testBufferLastIndexOf()
         exit(1);
     }
     
-    releaseHeap(&buffer0);
-    releaseHeap(&buffer1);
-    releaseHeap(&string1);
-    releaseHeap(&string2);
-    releaseHeap(&string3);
+    deleteBuffer(&buffer0);
+    deleteBuffer(&buffer1);
+    deleteString(&string1);
+    deleteString(&string2);
+    deleteString(&string3);
 }
 
 void testBufferIndexOfAfter()
@@ -310,11 +331,11 @@ void testBufferIndexOfAfter()
         exit(1);
     }
     
-    releaseHeap(&buffer0);
-    releaseHeap(&buffer1);
-    releaseHeap(&string1);
-    releaseHeap(&string2);
-    releaseHeap(&string3);
+    deleteBuffer(&buffer0);
+    deleteBuffer(&buffer1);
+    deleteString(&string1);
+    deleteString(&string2);
+    deleteString(&string3);
 }
 
 void testBufferLastIndexOfBefore()
@@ -343,11 +364,11 @@ void testBufferLastIndexOfBefore()
     if (bufferLastIndexOfBefore(&buffer0, &string1, 10) != -1) { fails = true; } 
     if (bufferLastIndexOfBefore(&buffer0, &string0, 10) != -1) { fails = true; } 
     
-    releaseHeap(&buffer0);
-    releaseHeap(&buffer1);
-    releaseHeap(&string1);
-    releaseHeap(&string2);
-    releaseHeap(&string3); 
+    deleteBuffer(&buffer0);
+    deleteBuffer(&buffer1);
+    deleteString(&string1);
+    deleteString(&string2);
+    deleteString(&string3); 
          
     if (fails) {
         printf("bufferLastIndexOfBefore FAILS!\n"); 
@@ -382,13 +403,13 @@ void testBufferCountOf()
     if (bufferCountOf(&buffer0, &string1) != 0) { fails = true; }
     if (bufferCountOf(&buffer0, &string0) != 0) { fails = true; }
     
-    releaseHeap(&buffer0);
-    releaseHeap(&buffer1);
-    releaseHeap(&buffer2);
-    releaseHeap(&buffer3);
-    releaseHeap(&string1);
-    releaseHeap(&string2);
-    releaseHeap(&string3);
+    deleteBuffer(&buffer0);
+    deleteBuffer(&buffer1);
+    deleteBuffer(&buffer2);
+    deleteBuffer(&buffer3);
+    deleteString(&string1);
+    deleteString(&string2);
+    deleteString(&string3);
          
     if (fails) {
         printf("bufferCountOf FAILS!\n"); 

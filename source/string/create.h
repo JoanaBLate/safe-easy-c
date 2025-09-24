@@ -80,3 +80,15 @@ String createStringFromLong(long number)
     return _createStringFromInfo(array, (long) size);
 }
 
+bool deleteString(String* string)
+{
+    if (string->address == NULL) { return false; }
+    
+    // empty strings (fakenull address) must not be freed
+    if (string->address != FAKENULL) { free(string->address); } 
+    
+    string->address = NULL;
+    
+    return true;
+}
+

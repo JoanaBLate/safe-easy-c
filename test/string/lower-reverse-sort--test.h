@@ -17,11 +17,11 @@ void testCreateStringToLower()
     String expected2 = createEmptyString();    
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&source);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
+    deleteString(&source);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&expected1);
+    deleteString(&expected2);
     
     if (fails) { 
         printf("createStringToLower FAILS!\n");
@@ -46,11 +46,11 @@ void testCreateStringToUpper()
     String expected2 = createEmptyString();    
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&source);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
+    deleteString(&source);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&expected1);
+    deleteString(&expected2);
     
     if (fails) { 
         printf("createStringToUpper FAILS!\n");
@@ -75,11 +75,11 @@ void testCreateStringToOppositeCase()
     String expected2 = createEmptyString();    
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&source);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
+    deleteString(&source);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&expected1);
+    deleteString(&expected2);
     
     if (fails) { 
         printf("createStringToOppositeCase FAILS!\n");
@@ -104,11 +104,11 @@ void testCreateStringReverse()
     String expected2 = createEmptyString();    
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&source);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
+    deleteString(&source);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&expected1);
+    deleteString(&expected2);
     
     if (fails) { 
         printf("createStringReverse FAILS!\n");
@@ -133,11 +133,11 @@ void testCreateStringSort()
     String expected2 = createEmptyString();    
     if (! stringsAreEqual(&result2, &expected2)) { fails = true; }
     
-    releaseHeap(&source);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
+    deleteString(&source);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&expected1);
+    deleteString(&expected2);
     
     if (fails) { 
         printf("createStringSort FAILS!\n");

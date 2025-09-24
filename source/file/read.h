@@ -61,17 +61,17 @@ void cReadFile(char* filename, char* buffer, long fileSize)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-String readTextFile(String filename)
+String readTextFile(String* filename)
 {
-    if (filename.size == 0) {    
+    if (filename->size == 0) {    
         printf("\nERROR: cannot read text file: file name is blank\n");
         exit(1);     
     }
 
     // c filename
-    char* cFilename = malloc((size_t) filename.size + 1);
-    memcpy(cFilename, filename.address, (size_t) filename.size);
-    cFilename[filename.size] = 0;
+    char* cFilename = malloc((size_t) filename->size + 1);
+    memcpy(cFilename, filename->address, (size_t) filename->size);
+    cFilename[filename->size] = 0;
     
     long fileSize = cGetFileSize(cFilename);
 

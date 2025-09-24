@@ -10,7 +10,7 @@ void _testBufferRemove(Buffer* buffer, String* target, String* expected)
        
     if (! stringsAreEqual(&result, expected)) { fails = true; }
 
-    releaseHeap(&result);
+    deleteString(&result);
     
     if (fails) {
         printf("bufferRemove FAILS!\n");
@@ -29,9 +29,9 @@ void testBufferRemove()
     String expected = createStringFromLiteral("Hello!");    
     _testBufferRemove(&buffer, &target, &expected);
 
-    releaseHeap(&buffer);
-    releaseHeap(&target);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&target);
+    deleteString(&expected);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ void _testBufferRemoveLast(Buffer* buffer, String* target, String* expected)
        
     if (! stringsAreEqual(&result, expected)) { fails = true; }
 
-    releaseHeap(&result);
+    deleteString(&result);
     
     if (fails) {
         printf("bufferRemoveLast FAILS!\n");
@@ -63,9 +63,9 @@ void testBufferRemoveLast() // bufferRemoveLast basically uses the same code as 
     String expected = createStringFromLiteral("Hello!");    
     _testBufferRemoveLast(&buffer, &target, &expected);
 
-    releaseHeap(&buffer);
-    releaseHeap(&target);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&target);
+    deleteString(&expected);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ void _testBufferRemoveAll(Buffer* buffer, String* target, String* expected)
        
     if (! stringsAreEqual(&result, expected)) { fails = true; }
 
-    releaseHeap(&result);
+    deleteString(&result);
     
     if (fails) {
         printf("bufferRemoveAll FAILS!\n");
@@ -97,8 +97,8 @@ void testBufferRemoveAll() // bufferRemoveAll basically uses the same code as bu
     String expected = createStringFromLiteral("Hello Hello Hello Hello");    
     _testBufferRemoveAll(&buffer, &target, &expected);
 
-    releaseHeap(&buffer);
-    releaseHeap(&target);
-    releaseHeap(&expected);
+    deleteBuffer(&buffer);
+    deleteString(&target);
+    deleteString(&expected);
 }
 

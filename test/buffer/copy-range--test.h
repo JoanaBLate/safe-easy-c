@@ -11,7 +11,7 @@ void _testBufferCopyRange(Buffer* originBuffer, long originPosition, long count,
     
     if (! stringsAreEqual(&result, expected)) { fails = true; }
     
-    releaseHeap(&result); 
+    deleteString(&result); 
     
     if (fails) { 
         printf("bufferCopyRange FAILS!\n"); 
@@ -39,18 +39,18 @@ void testBufferCopyRange()
     _testBufferCopyRange(&originBuffer,    5,  5, &destinyBuffer,  700, &expected);
     _testBufferCopyRange(&originBuffer,    5, -5, &destinyBuffer,    6, &expected);
     
-    releaseHeap(&expected);
+    deleteString(&expected);
     
     expected = createStringFromLiteral("Hellofghijklmno");
     _testBufferCopyRange(&originBuffer, 5, 5, &destinyBuffer, 0, &expected);
     
-    releaseHeap(&expected);
+    deleteString(&expected);
 
     expected = createStringFromLiteral("HellofghijkHell"); // remembers the changed data!
     _testBufferCopyRange(&originBuffer, 5, 500, &destinyBuffer, 11, &expected);
     
-    releaseHeap(&originBuffer);   
-    releaseHeap(&destinyBuffer); 
-    releaseHeap(&expected);
+    deleteBuffer(&originBuffer);   
+    deleteBuffer(&destinyBuffer); 
+    deleteString(&expected);
 }
 

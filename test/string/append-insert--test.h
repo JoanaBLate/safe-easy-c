@@ -26,16 +26,16 @@ void testCreateStringAppend()
     String expected4 = createEmptyString();   
     if (! stringsAreEqual(&result4, &expected4)) { fails = true; }
     
-    releaseHeap(&source1);    
-    releaseHeap(&source2);    
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&expected1);
- // releaseHeap(&expected2); // redundant
- // releaseHeap(&expected3); // redundant
-    releaseHeap(&expected4);
+    deleteString(&source1);    
+    deleteString(&source2);    
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&expected1);
+ // deleteString(&expected2); // redundant
+ // deleteString(&expected3); // redundant
+    deleteString(&expected4);
     
     if (fails) { 
         printf("createStringAppend FAILS!\n");
@@ -81,22 +81,22 @@ void testCreateStringInsert()
     String expected7 = createEmptyString();       
     if (! stringsAreEqual(&result7, &expected7)) { fails = true; }
     
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&result4);
-    releaseHeap(&result5);
-    releaseHeap(&result6);
-    releaseHeap(&result7);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
-    releaseHeap(&expected4);
- // releaseHeap(&expected5); // redundant
- // releaseHeap(&expected6); // redundant
-    releaseHeap(&expected7);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&result4);
+    deleteString(&result5);
+    deleteString(&result6);
+    deleteString(&result7);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
+    deleteString(&expected4);
+ // deleteString(&expected5); // redundant
+ // deleteString(&expected6); // redundant
+    deleteString(&expected7);
     
     if (fails) { 
         printf("createStringInsert FAILS!\n");

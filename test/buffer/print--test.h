@@ -10,7 +10,7 @@ void testPrintBufferA()
     printf("- printing empty buffer bytes: ");
     printlnBufferBytes(&empty);
     
-    releaseHeap(&empty);
+    deleteBuffer(&empty);
 }
 
 void testPrintBufferB()
@@ -23,7 +23,7 @@ void testPrintBufferB()
     printf("- printing buffer bytes: ");
     printlnBufferBytes(&buffer);
     
-    releaseHeap(&buffer);
+    deleteBuffer(&buffer);
 }
 
 void testPrintBufferC()
@@ -36,6 +36,6 @@ void testPrintBufferC()
     printf("- printing buffer bytes: ");
     printlnBufferBytes(&buffer);
     
-    releaseHeap(&buffer);
+    deleteBuffer(&buffer);
 }
 

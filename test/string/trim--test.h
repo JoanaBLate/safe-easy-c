@@ -21,15 +21,15 @@ void testStringTrimStart()
     String expected3 = createEmptyString();    
     if (! stringsAreEqual(&result3, &expected3)) { fails = true; }    
   
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
 
     if (fails) { 
         printf("stringTrimStart FAILS!\n");
@@ -58,15 +58,15 @@ void testStringTrimEnd()
     String expected3 = createEmptyString();    
     if (! stringsAreEqual(&result3, &expected3)) { fails = true; } 
   
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
 
     if (fails) { 
         printf("stringTrimStart FAILS!\n");
@@ -95,15 +95,15 @@ void testStringTrim()
     String expected3 = createEmptyString();    
     if (! stringsAreEqual(&result3, &expected3)) { fails = true; } 
   
-    releaseHeap(&source1);
-    releaseHeap(&source2);
-    releaseHeap(&source3);
-    releaseHeap(&result1);
-    releaseHeap(&result2);
-    releaseHeap(&result3);
-    releaseHeap(&expected1);
-    releaseHeap(&expected2);
-    releaseHeap(&expected3);
+    deleteString(&source1);
+    deleteString(&source2);
+    deleteString(&source3);
+    deleteString(&result1);
+    deleteString(&result2);
+    deleteString(&result3);
+    deleteString(&expected1);
+    deleteString(&expected2);
+    deleteString(&expected3);
 
     if (fails) { 
         printf("stringTrimStart FAILS!\n");
