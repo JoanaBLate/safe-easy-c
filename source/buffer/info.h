@@ -21,6 +21,13 @@ long getBufferSize(Buffer* buffer)
     return buffer->size;
 }
 
+bool bufferIsEmpty(Buffer* buffer)
+{        
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferIsEmpty"); }
+
+    return buffer->size == 0;
+}
+
 // the same pattern as the C standard library
 int bufferByteAt(Buffer* buffer, long index)
 { 

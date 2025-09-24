@@ -330,6 +330,13 @@ long getStringSize(String* string)
     return string->size;
 }
 
+bool stringIsEmpty(String* string)
+{
+    if (string->address == NULL) { _errorAlreadyReleased("stringIsEmpty"); }
+
+    return string->size == 0;
+}
+
 // the same pattern as the C standard library
 int stringCharCodeAt(String* string, long index)
 {
@@ -1276,7 +1283,7 @@ double _stringParseFractionalSegment(String* string, long start, long length, in
 // *NOT* CHECKING FOR TOO BIG NUMBER
 NullLong stringParseLong(String* string)
 {
-    if (string->address == NULL) { _errorAlreadyReleased("_errorAlreadyReleased"); }
+    if (string->address == NULL) { _errorAlreadyReleased("stringParseLong"); }
 
     int signal = 0; // zero means signal not found
 
@@ -1435,6 +1442,13 @@ long getBufferSize(Buffer* buffer)
     if (buffer->address == NULL) { _errorAlreadyReleased("getBufferSize"); }
 
     return buffer->size;
+}
+
+bool bufferIsEmpty(Buffer* buffer)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferIsEmpty"); }
+
+    return buffer->size == 0;
 }
 
 // the same pattern as the C standard library
@@ -1611,6 +1625,20 @@ Buffer createBufferFromString(String* string)
     buffer.size = capacity;
 
     memcpy(buffer.address, string->address, (size_t) string->size);
+
+    return buffer;
+}
+
+// does NOT allocate new memory
+Buffer convertStringIntoBuffer(String* string)
+{
+    if (string->address == NULL) { _errorAlreadyReleased("convertStringIntoBuffer"); }
+
+    if (string->size == 0) { releaseHeap(string); return createEmptyBuffer(); }
+
+    Buffer buffer = { string->address, string->size, 0, string->size };
+
+    string->address = NULL; // must not call 'releaseHeap'
 
     return buffer;
 }
@@ -2499,15 +2527,630 @@ void bufferFill(Buffer* buffer, String* chunk)
     }
 }
 
+
+// file: buffer/token.h //
+
+String bufferEatLine(Buffer* buffer)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferEatLine"); }
+
+    if (buffer->size == 0) { return createEmptyString(); }
+
+    long nIndex = -1; // '\n'
+    long rIndex = -1; // '\r'
+
+    for (long index = 0; index < buffer->size; index++)
+    {
+        char c = buffer->address[buffer->margin + index];
+
+        if (c == '\r') { rIndex = index; }
+
+        if (c == '\n') { nIndex = index; break; }
+    }
+
+    // no EOL was found
+    if (nIndex == -1) { String s = createStringFromBuffer(buffer); buffer->size = 0; return s; }
+
+    long sizeWithEOL = nIndex + 1;
+
+    long sizeWithoutEOL = sizeWithEOL - ((rIndex == nIndex - 1) ? 2 : 1); // may remove '\r' (for Windows EOL)
+
+    String result = _createStringFromInfo(buffer->address + buffer->margin, sizeWithoutEOL);
+
+    buffer->margin += sizeWithEOL;
+    buffer->size -= sizeWithEOL;
+
+    return result;
+}
+
+
+// file: buffer/number.h //
+
+// *NOT* CHECKING FOR TOO BIG NUMBER
+NullLong bufferEatLong(Buffer* buffer)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferEatLong"); }
+
+    while (buffer->size > 0)
+    {
+        char c = buffer->address[buffer->margin];
+
+        if (c != ' ') { break; }
+
+        buffer->margin += 1;
+        buffer->size -= 1;
+    }
+
+    if (buffer->size == 0) { return makeNullLong(0, true); }
+
+    int signal = 0; // zero means signal not found
+
+    char c = buffer->address[buffer->margin];
+
+    if (c == '-')
+    {
+        signal = -1;
+    }
+    else if (c == '+')
+    {
+        signal = +1;
+    }
+    else if (c < '0'  ||  c > '9')
+    {
+        return makeNullLong(0, true);
+    }
+
+    if (signal != 0)
+    {
+        if (buffer->size == 1) { return makeNullLong(0, true); }
+
+        char c = buffer->address[buffer->margin + 1];
+
+        if (c < '0'  ||  c > '9') { return makeNullLong(0, true); }
+
+        buffer->margin += 1;
+        buffer->size -= 1;
+    }
+    else
+    {
+        signal = +1;
+    }
+
+    // expecting digit(s) now
+
+    int length = 0;
+
+    while (buffer->size > 0)
+    {
+        char c = buffer->address[buffer->margin];
+
+        if (c < '0'  ||  c > '9') { break; }
+
+        buffer->margin += 1;
+        buffer->size -= 1;
+
+        length += 1;
+    }
+
+    long value = 0;
+
+    long factor = 1;
+
+    long end = buffer->margin - 1;
+
+    long start = end - length + 1;
+
+    for (int index = end; index >= start; index--) // runs backwards
+    {
+        value += (buffer->address[index] - '0') * factor;
+
+        factor *= 10;
+    }
+    return makeNullLong(signal * value, false);
+}
+
 //#include "array/array.h"
 
-//#include "array-list/array-list.h"
+
+
+// file: array-list/array-list.h //
+
+typedef struct {
+    long   capacity;
+    long   count;
+    void** items;
+} ArrayList;
+
+ArrayList* newArrayList(long capacity)
+{
+    ArrayList* list = _allocateHeap(1 * (long) sizeof(ArrayList));
+
+    list->capacity = capacity;
+
+    list->count = 0;
+
+    list->items = _allocateHeap(capacity * (long) sizeof(void**));
+
+    return list;
+}
+
+void arrayListInclude(ArrayList* list, void* item)
+{
+    if (list->count >= list->capacity)
+    {
+        printf("\nERROR in function 'arrayListInclude': ArrayList was already full\n"); exit(1);
+    }
+
+    list->items[list->count] = item;
+
+    list->count += 1;
+}
+
+// TODO void arrayListRemove // one base
+
+void arrayListUnorderedRemove(ArrayList* list, long index) // one base
+{
+    if (index < 1  ||  index > list->count)
+    {
+        printf("\nERROR in function 'arrayListUnorderedRemove': index (%li) out of bounds\n", index); exit(1);
+    }
+
+    index -= 1; // adjusting to zero base
+
+    long indexOfLast = list->count - 1; // zero base
+
+    list->items[index] = list->items[indexOfLast]; // sometimes index == indexOfLast
+
+    list->items[indexOfLast] = NULL;
+
+    list->count -= 1;
+}
 
 //#include "linked-list/linked-list.h"
 
-//#include "hashmap/hashmap-helper.h"
-//#include "hashmap/hashmap-long.h"
-//#include "hashmap/hashmap-string.h"
+
+
+// file: hashmap/hashmap-helper.h //
+
+long makeHashCode(String* string, long capacity)
+{
+    if (string->size == 0) { return 0; }
+
+    int factors[21] = { 7, 11, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97 };
+
+    int factorIndex = -1;
+
+    long value = 0;
+
+    for (int index = 0; index < string->size; index++)
+    {
+        unsigned char c = (unsigned char) string->address[index];
+
+        factorIndex += 1;
+
+        if (factorIndex == 21) { factorIndex = 0; };
+
+        value += c * factors[factorIndex];
+    }
+
+    return value % capacity;
+}
+
+
+// file: hashmap/hashmap-long.h //
+
+typedef struct
+{
+    String key;
+    long value;
+    void* next; // linked item that has the same hashcode
+} HashmapLongItem;
+
+typedef struct
+{
+    long capacity;
+    long count;
+    HashmapLongItem** items;
+} HashmapLong;
+
+HashmapLongItem* createHashmapLongItem(String* key, long value)
+{
+    if (key->address == NULL) { _errorAlreadyReleased("createHashmapLongItem"); }
+
+    HashmapLongItem* item = _allocateHeap(sizeof(HashmapLongItem));
+
+    item->key = createStringClone(key);
+
+    item->value = value;
+
+    item->next = NULL;
+
+    return item;
+}
+
+HashmapLong* createHashmapLong(long capacity)
+{
+    HashmapLong* map = _allocateHeap(1 * (long) sizeof(HashmapLong));
+
+    map->capacity = capacity;
+
+    map->count = 0;
+
+    map->items = _allocateHeapClean(capacity * (long) sizeof(HashmapLongItem*));
+
+    return map;
+}
+
+bool addItemToHashmapLongOrSetValue(HashmapLong* map, String* key, long value) // returns true when makes new item
+{
+    if (key->address == NULL) { _errorAlreadyReleased("addItemToHashmapLongOrSetValue"); }
+
+    long hashcode = makeHashCode(key, map->capacity);
+
+    HashmapLongItem* item = map->items[hashcode];
+
+    if (item == NULL) // ADDING new item directly to the items array
+    {
+        map->items[hashcode] = createHashmapLongItem(key, value);
+
+        map->count += 1;
+
+        return true;
+    }
+
+    if (stringsAreEqual(key, &item->key)) { item->value = value; return false; } // SETTING item value
+
+    while (true) // searching in the chain
+    {
+        HashmapLongItem* nextItem = item->next;
+
+        if (nextItem == NULL) { break; }
+
+        if (stringsAreEqual(key, &nextItem->key)) { nextItem->value = value; return false; } // SETTING item value
+
+        item = nextItem;
+    }
+
+    // ADDING new item in the chain
+
+    item->next = createHashmapLongItem(key, value);
+
+    map->count += 1;
+
+    return true;
+}
+
+HashmapLongItem* getItemFromHashmapLong(HashmapLong* map, String* key)
+{
+    if (key->address == NULL) { _errorAlreadyReleased("getItemFromHashmapLong"); }
+
+    long hashcode = makeHashCode(key, map->capacity);
+
+    HashmapLongItem* item = map->items[hashcode];
+
+    if (item == NULL) { return NULL; }
+
+    if (stringsAreEqual(key, &item->key)) { return item; }
+
+    while (true) // searching in the chain
+    {
+        HashmapLongItem* nextItem = item->next;
+
+        if (nextItem == NULL) { break; }
+
+        if (stringsAreEqual(key, &nextItem->key)) { return nextItem; }
+
+        item = nextItem;
+    }
+
+    return NULL;
+}
+
+bool deleteItemFromHashmapLong(HashmapLong* map, String* key)
+{
+    if (key->address == NULL) { _errorAlreadyReleased("deleteItemFromHashmapLong"); }
+
+    long hashcode = makeHashCode(key, map->capacity);
+
+    HashmapLongItem* item = map->items[hashcode];
+
+    if (item == NULL) { return false; }
+
+    if (stringsAreEqual(key, &item->key))
+    {
+        map->items[hashcode] = item->next;
+
+        map->count -= 1;
+
+        releaseHeap(&item->key);
+        releaseHeap(item);
+
+        return true;
+    }
+
+    while (true) // searching in the chain
+    {
+        HashmapLongItem *nextItem = item->next;
+
+        if (nextItem == NULL) { return false; }
+
+        if (! stringsAreEqual(key, &nextItem->key)) { item = nextItem; continue; }
+
+        item->next = nextItem->next;
+
+        map->count -= 1;
+
+        releaseHeap(&item->key);
+        releaseHeap(item);
+
+        return true;
+    }
+
+    return false; // unreachable
+}
+
+void deleteHashmapLong(HashmapLong* map)
+{
+    for (long mapIndex = 0; mapIndex < map->capacity; mapIndex++)
+    {
+        HashmapLongItem* item = map->items[mapIndex];
+
+        if (item == NULL) { continue; }
+
+        HashmapLongItem* nextItem = item->next;
+
+        releaseHeap(&item->key);
+        releaseHeap(item);
+
+        while (nextItem != NULL)
+        {
+            item = nextItem;
+
+            nextItem = item->next;
+
+            releaseHeap(&item->key);
+            releaseHeap(item);
+        }
+    }
+
+    releaseHeap(map->items);
+    releaseHeap(map);
+}
+/* TODO: must wait ArrayList is ready
+ArrayList* getHashmapLongKeys(HashmapLong* map)
+{
+    ArrayList* list = newArrayList(map->count);
+
+    for (long mapIndex = 0; mapIndex < map->capacity; mapIndex++)
+    {
+        HashmapLongItem* item = map->items[mapIndex];
+
+        if (item == NULL) { continue; }
+
+        arrayListInclude(list, &item->key);
+
+        while (item->next != NULL)
+        {
+            item = item->next;
+
+            arrayListInclude(list, &item->key);
+        }
+    }
+
+    return list;
+}
+*/
+
+
+// file: hashmap/hashmap-string.h //
+
+typedef struct
+{
+    String key;
+    String value;
+    void* next; // linked item that has the same hashcode
+} HashmapStringItem;
+
+typedef struct
+{
+    long capacity;
+    long count;
+    HashmapStringItem** items;
+} HashmapString;
+
+HashmapStringItem* createHashmapStringItem(String* key, String* value)
+{
+    if (key->address == NULL)   { _errorAlreadyReleased("createHashmapStringItem"); }
+    if (value->address == NULL) { _errorAlreadyReleased("createHashmapStringItem"); }
+
+    HashmapStringItem* item = _allocateHeap(sizeof(HashmapStringItem));
+
+    item->key = createStringClone(key);
+
+    item->value = createStringClone(value);
+
+    item->next = NULL;
+
+    return item;
+}
+
+HashmapString* createHashmapString(long capacity)
+{
+    HashmapString* map = _allocateHeap(1 * (long) sizeof(HashmapString));
+
+    map->capacity = capacity;
+
+    map->count = 0;
+
+    map->items = _allocateHeapClean(capacity * (long) sizeof(HashmapStringItem*));
+
+    return map;
+}
+
+bool addItemToHashmapStringOrSetValue(HashmapString* map, String* key, String* value) // returns true when makes new item
+{
+    if (key->address == NULL)   { _errorAlreadyReleased("addItemToHashmapStringOrSetValue"); }
+    if (value->address == NULL) { _errorAlreadyReleased("addItemToHashmapStringOrSetValue"); }
+
+    long hashcode = makeHashCode(key, map->capacity);
+
+    HashmapStringItem* item = map->items[hashcode];
+
+    if (item == NULL) // ADDING new item directly to the items array
+    {
+        map->items[hashcode] = createHashmapStringItem(key, value);
+
+        map->count += 1;
+
+        return true;
+    }
+
+    if (stringsAreEqual(key, &item->key)) { item->value = createStringClone(value); return false; } // SETTING item value
+
+    while (true) // searching in the chain
+    {
+        HashmapStringItem* nextItem = item->next;
+
+        if (nextItem == NULL) { break; }
+
+        if (stringsAreEqual(key, &nextItem->key)) { nextItem->value = createStringClone(value); return false; } // SETTING item value
+
+        item = nextItem;
+    }
+
+    // ADDING new item in the chain
+
+    item->next = createHashmapStringItem(key, value);
+
+    map->count += 1;
+
+    return true;
+}
+
+HashmapStringItem* getItemFromHashmapString(HashmapString* map, String* key)
+{
+    if (key->address == NULL)   { _errorAlreadyReleased("getItemFromHashmapString"); }
+
+    long hashcode = makeHashCode(key, map->capacity);
+
+    HashmapStringItem* item = map->items[hashcode];
+
+    if (item == NULL) { return NULL; }
+
+    if (stringsAreEqual(key, &item->key)) { return item; }
+
+    while (true) // searching in the chain
+    {
+        HashmapStringItem* nextItem = item->next;
+
+        if (nextItem == NULL) { break; }
+
+        if (stringsAreEqual(key, &nextItem->key)) { return nextItem; }
+
+        item = nextItem;
+    }
+
+    return NULL;
+}
+
+bool deleteItemFromHashmapString(HashmapString* map, String* key)
+{
+    if (key->address == NULL)   { _errorAlreadyReleased("deleteItemFromHashmapString"); }
+
+    long hashcode = makeHashCode(key, map->capacity);
+
+    HashmapStringItem* item = map->items[hashcode];
+
+    if (item == NULL) { return false; }
+
+    if (stringsAreEqual(key, &item->key))
+    {
+        map->items[hashcode] = item->next;
+
+        map->count -= 1;
+
+        releaseHeap(&item->key);
+        releaseHeap(&item->value);
+        releaseHeap(&item);
+
+        return true;
+    }
+
+    while (true) // searching in the chain
+    {
+        HashmapStringItem *nextItem = item->next;
+
+        if (nextItem == NULL) { return false; }
+
+        if (! stringsAreEqual(key, &nextItem->key)) { item = nextItem; continue; }
+
+        item->next = nextItem->next;
+
+        map->count -= 1;
+
+        releaseHeap(&item->key);
+        releaseHeap(&item->value);
+        releaseHeap(&item);
+
+        return true;
+    }
+
+    return false; // unreachable
+}
+
+void deleteHashmapString(HashmapString* map)
+{
+    for (long mapIndex = 0; mapIndex < map->capacity; mapIndex++)
+    {
+        HashmapStringItem* item = map->items[mapIndex];
+
+        if (item == NULL) { continue; }
+
+        HashmapStringItem* nextItem = item->next;
+
+        releaseHeap(&item->key);
+        releaseHeap(&item->value);
+        releaseHeap(&item);
+
+        while (nextItem != NULL)
+        {
+            item = nextItem;
+
+            nextItem = item->next;
+
+            releaseHeap(&item->key);
+            releaseHeap(&item->value);
+            releaseHeap(&item);
+        }
+    }
+
+    releaseHeap(map->items);
+    releaseHeap(map);
+}
+/* TODO: waiting ArrayList get ready
+ArrayList* getHashmapStringKeys(HashmapString* map)
+{
+    ArrayList* list = newArrayList(map->count);
+
+    for (long mapIndex = 0; mapIndex < map->capacity; mapIndex++)
+    {
+        HashmapStringItem* item = map->items[mapIndex];
+
+        if (item == NULL) { continue; }
+
+        arrayListInclude(list, &item->key);
+
+        while (item->next != NULL)
+        {
+            item = item->next;
+
+            arrayListInclude(list, &item->key);
+        }
+    }
+
+    return list;
+}
+*/
 
 
 

@@ -63,7 +63,7 @@ double _stringParseFractionalSegment(String* string, long start, long length, in
 // *NOT* CHECKING FOR TOO BIG NUMBER
 NullLong stringParseLong(String* string) 
 {  
-    if (string->address == NULL) { _errorAlreadyReleased("_errorAlreadyReleased"); }
+    if (string->address == NULL) { _errorAlreadyReleased("stringParseLong"); }
        
     int signal = 0; // zero means signal not found
 

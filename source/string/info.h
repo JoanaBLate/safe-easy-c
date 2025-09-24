@@ -11,6 +11,13 @@ long getStringSize(String* string)
     return string->size;
 }
 
+bool stringIsEmpty(String* string)
+{        
+    if (string->address == NULL) { _errorAlreadyReleased("stringIsEmpty"); }
+    
+    return string->size == 0;
+}
+
 // the same pattern as the C standard library
 int stringCharCodeAt(String* string, long index)
 {     

@@ -63,3 +63,17 @@ Buffer createBufferFromString(String* string)
     return buffer;
 }
 
+// does NOT allocate new memory
+Buffer convertStringIntoBuffer(String* string) 
+{   
+    if (string->address == NULL) { _errorAlreadyReleased("convertStringIntoBuffer"); }
+    
+    if (string->size == 0) { releaseHeap(string); return createEmptyBuffer(); }
+    
+    Buffer buffer = { string->address, string->size, 0, string->size };
+    
+    string->address = NULL; // must not call 'releaseHeap'
+    
+    return buffer;
+}
+

@@ -39,10 +39,12 @@
 #include "buffer/remove.h"
 #include "buffer/pad.h"
 #include "buffer/reset-clear-fill.h"
+#include "buffer/token.h"
+#include "buffer/number.h"
 
 //#include "array/array.h"
 
-//#include "array-list/array-list.h"
+#include "array-list/array-list.h"
 
 //#include "linked-list/linked-list.h"
 

@@ -8,6 +8,7 @@
 
 int main()
 {
+    printf("\nMany functions are tested only by solving Advent Of Code puzzles.\n\n");
     testReadTextFile();
     testString();
     testBuffer();
