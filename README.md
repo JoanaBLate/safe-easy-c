@@ -32,7 +32,7 @@ int main()
     // SafeEasyC structs must be passed by reference (using '&')
     printlnString(&hello); 
 
-    releaseHeap(&hello);
+    deleteString(&hello);
     
     return 0;
 }
@@ -48,7 +48,7 @@ int main()
 {
     String hello = createStringFromLiteral("Hello!");
        
-    releaseHeap(&hello);
+    deleteString(&hello);
     
     // ERROR: trying to use already released object in function 'printlnString'
     printlnString(&hello);

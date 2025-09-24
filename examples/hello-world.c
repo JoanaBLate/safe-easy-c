@@ -9,7 +9,7 @@ int main()
     // SafeEasyC structs must be passed by reference (using '&')
     printlnString(&hello); 
 
-    releaseHeap(&hello);
+    deleteString(&hello);
     
     return 0;
 }

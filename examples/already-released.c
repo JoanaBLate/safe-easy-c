@@ -5,7 +5,7 @@ int main()
 {
     String hello = createStringFromLiteral("Hello!");
        
-    releaseHeap(&hello);
+    deleteString(&hello);
     
     // ERROR: trying to use already released object in function 'printlnString'
     printlnString(&hello);
