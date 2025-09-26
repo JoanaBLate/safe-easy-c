@@ -7,7 +7,7 @@ int main()
        
     deleteString(&hello);
     
-    // ERROR: trying to use already released object in function 'printlnString'
+    // ERROR: trying to use already deleted object in function 'printlnString'
     printlnString(&hello);
     
     return 0;
