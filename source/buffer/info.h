@@ -28,6 +28,11 @@ bool bufferIsEmpty(Buffer* buffer)
     return buffer->size == 0;
 }
 
+bool bufferWasDeleted(Buffer* buffer)
+{        
+    return (buffer->address == NULL);
+}
+
 // the same pattern as the C standard library
 int bufferByteAt(Buffer* buffer, long index)
 { 

@@ -68,7 +68,7 @@ Buffer convertStringIntoBuffer(String* string)
 {   
     if (string->address == NULL) { _errorAlreadyReleased("convertStringIntoBuffer"); }
     
-    if (string->size == 0) { releaseHeap(string); return createEmptyBuffer(); }
+    if (string->size == 0) { string->address = NULL; return createEmptyBuffer(); }
     
     Buffer buffer = { string->address, string->size, 0, string->size };
     

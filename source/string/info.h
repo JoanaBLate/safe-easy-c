@@ -18,6 +18,11 @@ bool stringIsEmpty(String* string)
     return string->size == 0;
 }
 
+bool stringWasDeleted(String* string)
+{        
+    return (string->address == NULL);
+}
+
 // the same pattern as the C standard library
 int stringCharCodeAt(String* string, long index)
 {     

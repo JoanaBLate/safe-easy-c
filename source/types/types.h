@@ -46,11 +46,6 @@ typedef struct
     bool isNull;
 } NullDouble;
 
-typedef struct // generic!
-{
-    char* address;
-} AddressStruct;
-
 typedef struct 
 {
     char* address; 

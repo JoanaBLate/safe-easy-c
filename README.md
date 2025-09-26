@@ -56,21 +56,7 @@ int main()
     return 0;
 }
 ~~~
-<!-- probably not necessary because all objects are handled/checked by the library (or they are just stack - or global - structs)
 
-### No use-after-free in your own functions
-
-~~~ C
-
-void myFunction(String* myString)
-{
-    // the function name will appear in eventual error message
-    assureNotReleased(myString, "myFunction");
-       
-    // do something here using myString
-}
-~~~ 
--->
 ### Private functions
 
 The names of *private* functions in the SafeEasyC library start with uderscore (*_name*). Never call those functions.

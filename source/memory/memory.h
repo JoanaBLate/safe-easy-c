@@ -39,39 +39,14 @@ void* _reallocateHeap(void* address, long size)
     exit(1);
 }
 
-void releaseHeap(void* voidStruct)
-{
-    AddressStruct* genericStruct = (AddressStruct*) voidStruct;
-    
-    if (genericStruct->address == NULL) { return; } // avoiding double free
-    
-    // empty strings (fakenull address) must not be freed
-    if (genericStruct->address != FAKENULL) { free(genericStruct->address); } 
-    
-    genericStruct->address = NULL;
-}
-
-bool objectExists(void* voidStruct)
-{
-    AddressStruct* genericStruct = (AddressStruct*) voidStruct;
-    
-    return genericStruct->address != NULL;
-}
-
 void _errorAlreadyReleased(char* funcName)
 {
-    printf("\nERROR: trying to use already released object in function '%s'\n", funcName);
+    printf("\nERROR: trying to use deleted object in function '%s'\n", funcName);
     
     exit(1);
 }
 
-void assureNotReleased(void* voidStruct, char* funcName)
-{
-    AddressStruct* genericStruct = (AddressStruct*) voidStruct;
-    
-    if (genericStruct->address == NULL) { _errorAlreadyReleased(funcName); }
-}
-
+// unused
 void _errorNullArgument(char* funcName)
 {
     printf("\nERROR: null argument received in function '%s'\n", funcName);
