@@ -10,11 +10,11 @@ long processPackage(Buffer* puzzleInput)
       
     long length = bufferEatLong(&line).value;
     
-    String startA = bufferEatStart(&line, 1); // 'x'
+    bufferBiteStart(&line, 1); // 'x'
     
     long width = bufferEatLong(&line).value;
     
-    String startB = bufferEatStart(&line, 1); // 'x'
+    bufferBiteStart(&line, 1); // 'x'
     
     long height = bufferEatLong(&line).value;
       
@@ -28,8 +28,6 @@ long processPackage(Buffer* puzzleInput)
     if (front < smallest) { smallest = front; }
 
     deleteBuffer(&line);
-    deleteString(&startA);
-    deleteString(&startB);
     
     return 2 * (front + side + top) + smallest;
 }

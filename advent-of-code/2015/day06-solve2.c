@@ -1,60 +1,58 @@
-// solution for https://adventofcode.com/2015/day/6 part 1
+// solution for https://adventofcode.com/2015/day/6 part 2
 
 #include "../safe-easy-c.h"
 
-const long DIM = 1000;
+long array[1000 * 1000];
 
-String on;
-String off;
-String toggle;
-
-void actionOff(Buffer* grid, long rowA, long rowB, long colA, long colB)
+void actionOff(long rowA, long rowB, long colA, long colB)
 {
     for (long row = rowA; row <= rowB; row++)
     {
         for (long col = colA; col <= colB; col++)
         {
-            long index = row * DIM + col;
+            long index = row * 1000 + col;
             
-            bufferSetByte(grid, index, 0);
+            if (array[index] > 0) {  array[index] -= 1; }
         }
     }
 }
-     
-void actionOn(Buffer* grid, long rowA, long rowB, long colA, long colB)
+
+void actionOn(long rowA, long rowB, long colA, long colB)
 {
     for (long row = rowA; row <= rowB; row++)
     {
         for (long col = colA; col <= colB; col++)
         {
-            long index = row * DIM + col;
+            long index = row * 1000 + col;
             
-            bufferSetByte(grid, index, 1);
+            array[index] += 1;
         }
     }
 }
-     
-void actionToggle(Buffer* grid, long rowA, long rowB, long colA, long colB)
+
+void actionToggle(long rowA, long rowB, long colA, long colB)
 {
     for (long row = rowA; row <= rowB; row++)
     {
         for (long col = colA; col <= colB; col++)
         {
-            long index = row * DIM + col;
+            long index = row * 1000 + col;
             
-            char byte = (bufferByteAt(grid, index) == 0) ? 1 : 0;
-                
-            bufferSetByte(grid, index, byte);
+            array[index] += 2;
         }
     }
-}   
+}  
 
-void processLine(Buffer* line, Buffer* grid)
+void processLine(Buffer* line)
 {   
+    String on = createStringFromLiteral("on");
+    String off = createStringFromLiteral("off");
+    String toggle = createStringFromLiteral("toggle");
+
     String action = bufferEatToken(line);
     
     if (! stringsAreEqual(&action, &toggle)) { deleteString(&action); action = bufferEatToken(line); }
-       
+    
     long rowA = bufferEatLong(line).value;
     
     bufferBiteStart(line, 1); // ','
@@ -68,32 +66,41 @@ void processLine(Buffer* line, Buffer* grid)
     bufferBiteStart(line, 1); // ','
     
     long colB = bufferEatLong(line).value;
-        
+    
     if (stringsAreEqual(&action, &on))
     { 
-        actionOn(grid, rowA,rowB, colA, colB);
+        actionOn(rowA,rowB, colA, colB);
     }
     else if (stringsAreEqual(&action, &off))
     { 
-        actionOff(grid, rowA,rowB, colA, colB);
+        actionOff(rowA,rowB, colA, colB);
     }
     else 
     { 
-        actionToggle(grid, rowA,rowB, colA, colB);
+        actionToggle(rowA,rowB, colA, colB);
     }
-
-    deleteString(&action);  
+    
+    deleteString(&on);
+    deleteString(&off);
+    deleteString(&toggle);
+    deleteString(&action);
 }
 
-long countLitLights(Buffer* grid)
+void clearArray()
+{
+    for (long index = 0; index < 1000 * 1000; index++)
+    {
+        array[index] = 0;
+    }
+}
+
+long countLitLights()
 {
     long count = 0;
     
-    long capacity = bufferCapacity(grid);
-        
-    for (long index = 0; index < capacity; index++)
+    for (long index = 0; index < 1000 * 1000; index++)
     {
-        if (bufferByteAt(grid, index) != 0) { count += 1; }
+        count += array[index];
     }
 
     return count;
@@ -108,12 +115,8 @@ int main()
     Buffer puzzleInput = convertStringIntoBuffer(&_puzzleInput);
     
     bufferTrim(&puzzleInput);
-
-    Buffer grid = createBuffer(DIM * DIM); 
-    
-    on = createStringFromLiteral("on");
-    off = createStringFromLiteral("off");
-    toggle = createStringFromLiteral("toggle");
+        
+    clearArray();
     
     while (true)
     {
@@ -125,19 +128,15 @@ int main()
         
         if (bufferSize(&line) == 0) { deleteBuffer(&line); break; }
 
-        processLine(&line, &grid);
+        processLine(&line);
         
         deleteBuffer(&line);
     }
         
-    printf("answer: %li\n", countLitLights(&grid));
+    printf("answer: %li\n", countLitLights());
     
     deleteString(&filename);
-    deleteString(&on);
-    deleteString(&off);
-    deleteString(&toggle);
     deleteBuffer(&puzzleInput);
-    deleteBuffer(&grid);
 
     return 0;
 } 
