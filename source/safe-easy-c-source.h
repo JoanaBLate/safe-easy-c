@@ -41,6 +41,7 @@
 #include "buffer/reset-clear-fill.h"
 #include "buffer/token.h"
 #include "buffer/number.h"
+#include "buffer/set.h"
 
 //#include "array/array.h"
 

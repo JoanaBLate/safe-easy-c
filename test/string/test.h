@@ -15,7 +15,7 @@
 void testString()
 {
     testStringIsEmpty();
-    testStringCharCodeAt();
+    testStringByteAt();
     testStringContains();
     testStringStartsWith();
     testStringEndsWith();

@@ -1,22 +1,22 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
-long getBufferCapacity(Buffer* buffer)
+long bufferCapacity(Buffer* buffer)
 {        
-    if (buffer->address == NULL) { _errorAlreadyReleased("getBufferCapacity"); }
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferCapacity"); }
 
     return buffer->capacity;
 }
 
-long getBufferMargin(Buffer* buffer)
+long bufferMargin(Buffer* buffer)
 {        
-    if (buffer->address == NULL) { _errorAlreadyReleased("getBufferMargin"); }
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferMargin"); }
 
     return buffer->margin;
 }
 
-long getBufferSize(Buffer* buffer)
+long bufferSize(Buffer* buffer)
 {        
-    if (buffer->address == NULL) { _errorAlreadyReleased("getBufferSize"); }
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferSize"); }
 
     return buffer->size;
 }
@@ -38,9 +38,9 @@ int bufferByteAt(Buffer* buffer, long index)
 { 
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferByteAt"); }
 
-    if (index < 1  ||  index > buffer->size) { return -1; } // out of bounds
+    if (index < 0  ||  index >= buffer->size) { return -1; } // out of bounds
 
-    return (int) (unsigned char) buffer->address[buffer->margin + index - 1];
+    return (int) (unsigned char) buffer->address[buffer->margin + index];
 }
 
 bool buffersAreEqual(Buffer* bufferA, Buffer* bufferB) 

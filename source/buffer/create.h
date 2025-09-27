@@ -11,15 +11,47 @@ Buffer createEmptyBuffer()
     return buffer;
 }
 
+// clean buffer
 Buffer createBuffer(long capacity) 
+{
+    if (capacity < 1) { return createEmptyBuffer(); }
+    
+    char* address = _allocateHeapClean(capacity);
+    
+    Buffer buffer = { address, capacity, 0, capacity };
+    
+    return buffer;
+}     
+
+Buffer createBufferDontClean(long capacity) 
 {
     if (capacity < 1) { return createEmptyBuffer(); }
     
     char* address = _allocateHeap(capacity);
     
-    Buffer buffer = { address, capacity, 0, 0 };
+    Buffer buffer = { address, capacity, 0, capacity };
     
     return buffer;
+}
+
+void bufferClearAll(Buffer* buffer) 
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferClearAll"); }
+    
+    memset(buffer->address, 0, (size_t) buffer->capacity);
+} 
+
+// faster but dangerous
+void bufferClearVisible(Buffer* buffer) 
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferClearVisible"); }
+    
+//    for (long index = 0; index < buffer->size; index++)
+//    {
+//        buffer->address[buffer->margin + index] = 0;
+//    }
+    
+    memset(buffer->address + buffer->margin, 0, (size_t) buffer->size);
 }
 
 Buffer createBufferFromLiteral(char* cString) 

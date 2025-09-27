@@ -293,9 +293,9 @@ void printlnString(String* string)
 // unsigned char for raw byte values
 // int for functions that return character codes + need a sentinel
 
-long getStringSize(String* string)
+long stringSize(String* string)
 {
-    if (string->address == NULL) { _errorAlreadyReleased("getStringSize"); }
+    if (string->address == NULL) { _errorAlreadyReleased("stringSize"); }
 
     return string->size;
 }
@@ -313,9 +313,10 @@ bool stringWasDeleted(String* string)
 }
 
 // the same pattern as the C standard library
-int stringCharCodeAt(String* string, long index)
+// stringCharAt is reserved for Unicode characters
+int stringByteAt(String* string, long index)
 {
-    if (string->address == NULL) { _errorAlreadyReleased("stringCharCodeAt"); }
+    if (string->address == NULL) { _errorAlreadyReleased("stringByteAt"); }
 
     if (index < 0  ||  index >= string->size) { return -1; } // out of bounds
 
@@ -1410,23 +1411,23 @@ void displayBuffer(Buffer* buffer)
 
 // file: buffer/info.h //
 
-long getBufferCapacity(Buffer* buffer)
+long bufferCapacity(Buffer* buffer)
 {
-    if (buffer->address == NULL) { _errorAlreadyReleased("getBufferCapacity"); }
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferCapacity"); }
 
     return buffer->capacity;
 }
 
-long getBufferMargin(Buffer* buffer)
+long bufferMargin(Buffer* buffer)
 {
-    if (buffer->address == NULL) { _errorAlreadyReleased("getBufferMargin"); }
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferMargin"); }
 
     return buffer->margin;
 }
 
-long getBufferSize(Buffer* buffer)
+long bufferSize(Buffer* buffer)
 {
-    if (buffer->address == NULL) { _errorAlreadyReleased("getBufferSize"); }
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferSize"); }
 
     return buffer->size;
 }
@@ -1448,9 +1449,9 @@ int bufferByteAt(Buffer* buffer, long index)
 {
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferByteAt"); }
 
-    if (index < 1  ||  index > buffer->size) { return -1; } // out of bounds
+    if (index < 0  ||  index >= buffer->size) { return -1; } // out of bounds
 
-    return (int) (unsigned char) buffer->address[buffer->margin + index - 1];
+    return (int) (unsigned char) buffer->address[buffer->margin + index];
 }
 
 bool buffersAreEqual(Buffer* bufferA, Buffer* bufferB)
@@ -1569,15 +1570,47 @@ Buffer createEmptyBuffer()
     return buffer;
 }
 
+// clean buffer
 Buffer createBuffer(long capacity)
+{
+    if (capacity < 1) { return createEmptyBuffer(); }
+
+    char* address = _allocateHeapClean(capacity);
+
+    Buffer buffer = { address, capacity, 0, capacity };
+
+    return buffer;
+}
+
+Buffer createBufferDontClean(long capacity)
 {
     if (capacity < 1) { return createEmptyBuffer(); }
 
     char* address = _allocateHeap(capacity);
 
-    Buffer buffer = { address, capacity, 0, 0 };
+    Buffer buffer = { address, capacity, 0, capacity };
 
     return buffer;
+}
+
+void bufferClearAll(Buffer* buffer)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferClearAll"); }
+
+    memset(buffer->address, 0, (size_t) buffer->capacity);
+}
+
+// faster but dangerous
+void bufferClearVisible(Buffer* buffer)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferClearVisible"); }
+
+//    for (long index = 0; index < buffer->size; index++)
+//    {
+//        buffer->address[buffer->margin + index] = 0;
+//    }
+
+    memset(buffer->address + buffer->margin, 0, (size_t) buffer->size);
 }
 
 Buffer createBufferFromLiteral(char* cString)
@@ -2533,6 +2566,83 @@ void bufferFill(Buffer* buffer, String* chunk)
 
 // file: buffer/token.h //
 
+// considers both (Linux and Windows) end-of-line
+String bufferEatToken(Buffer* buffer)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferEatToken"); }
+
+    while (buffer->size > 0)
+    {
+        char c = buffer->address[buffer->margin];
+
+        if (c != ' ') { break; }
+
+        buffer->margin += 1;
+        buffer->size -= 1;
+    }
+
+    if (buffer->size == 0) { return createEmptyString(); }
+
+    long nIndex = -1; // '\n'
+    long rIndex = -1; // '\r'
+    long wIndex = -1; // white space
+
+    for (long index = 0; index < buffer->size; index++)
+    {
+        char c = buffer->address[buffer->margin + index];
+
+        if (c == ' ')  { wIndex = index; break; }
+
+        if (c == '\r') { rIndex = index; }
+
+        if (c == '\n') { nIndex = index; break; }
+    }
+
+    if (wIndex != -1) // wIndex matches the size of the token
+    {
+        String result = _createStringFromInfo(buffer->address + buffer->margin, wIndex);
+        buffer->margin += wIndex; buffer->size -= wIndex;
+        return result;
+    }
+
+    // no EOL was found
+    if (nIndex == -1)
+    {
+        String result = createStringFromBuffer(buffer);
+        buffer->size = 0;
+        return result;
+    }
+
+    if (nIndex == 0)
+    {
+        buffer->margin += 1;
+        buffer->size -= 1;
+        return createStringFromLiteral("\n");
+    }
+
+    if (rIndex == 0  &&  nIndex == 1)
+    {
+        buffer->margin += 2;
+        buffer->size -= 2;
+        return createStringFromLiteral("\r\n");
+    }
+
+    if (rIndex == nIndex - 1)  // rIndex matches the size of the token
+    {
+        String result = _createStringFromInfo(buffer->address + buffer->margin, rIndex);
+        buffer->margin += rIndex;
+        buffer->size -= rIndex;
+        return result;
+    }
+
+    // nIndex matches the size of the token
+    String result = _createStringFromInfo(buffer->address + buffer->margin, nIndex);
+    buffer->margin += nIndex;
+    buffer->size -= nIndex;
+    return result;
+}
+
+// considers both (Linux and Windows) end-of-line
 String bufferEatLine(Buffer* buffer)
 {
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferEatLine"); }
@@ -2552,7 +2662,7 @@ String bufferEatLine(Buffer* buffer)
     }
 
     // no EOL was found
-    if (nIndex == -1) { String s = createStringFromBuffer(buffer); buffer->size = 0; return s; }
+    if (nIndex == -1) { String result = createStringFromBuffer(buffer); buffer->size = 0; return result; }
 
     long sizeWithEOL = nIndex + 1;
 
@@ -2650,6 +2760,35 @@ NullLong bufferEatLong(Buffer* buffer)
         factor *= 10;
     }
     return makeNullLong(signal * value, false);
+}
+
+
+// file: buffer/set.h //
+
+//long bufferSetMargin(Buffer* buffer) // must change the size too!!!
+//{
+//    if (buffer->address == NULL) { _errorAlreadyReleased("bufferSetMargin"); }
+//
+//    return buffer->margin;
+//}
+//
+//long bufferSetSize(Buffer* buffer)
+//{
+//    if (buffer->address == NULL) { _errorAlreadyReleased("bufferSetSize"); }
+//
+//    return buffer->size;
+//}
+//
+
+bool bufferSetByte(Buffer* buffer, long index, char byte)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferSetByte"); }
+
+    if (index < 0  ||  index >= buffer->size) { return false; } // out of bounds
+
+    buffer->address[buffer->margin + index] = byte;
+
+    return true;
 }
 
 //#include "array/array.h"

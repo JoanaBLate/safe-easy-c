@@ -31,7 +31,7 @@ void testBufferByteAt()
     buffer.size -= 6;
     
     bool fails = false;
-    if (bufferByteAt(&buffer,   3) != 64)   { fails = true; }
+    if (bufferByteAt(&buffer,   2) != 64)   { fails = true; }
     if (bufferByteAt(&buffer,  -1) != -1)   { fails = true; }
     if (bufferByteAt(&buffer, 333) != -1)   { fails = true; }
     

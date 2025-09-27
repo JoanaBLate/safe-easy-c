@@ -4,9 +4,9 @@
 // unsigned char for raw byte values
 // int for functions that return character codes + need a sentinel
 
-long getStringSize(String* string)
+long stringSize(String* string)
 {        
-    if (string->address == NULL) { _errorAlreadyReleased("getStringSize"); }
+    if (string->address == NULL) { _errorAlreadyReleased("stringSize"); }
     
     return string->size;
 }
@@ -24,9 +24,10 @@ bool stringWasDeleted(String* string)
 }
 
 // the same pattern as the C standard library
-int stringCharCodeAt(String* string, long index)
+// stringCharAt is reserved for Unicode characters
+int stringByteAt(String* string, long index)
 {     
-    if (string->address == NULL) { _errorAlreadyReleased("stringCharCodeAt"); }
+    if (string->address == NULL) { _errorAlreadyReleased("stringByteAt"); }
     
     if (index < 0  ||  index >= string->size) { return -1; } // out of bounds
     

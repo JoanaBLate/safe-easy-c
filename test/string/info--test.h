@@ -20,22 +20,22 @@ void testStringIsEmpty()
     }
 }
 
-void testStringCharCodeAt() 
+void testStringByteAt() 
 {
-    printf("- testing stringCharCodeAt\n"); 
+    printf("- testing stringByteAt\n"); 
     
     String source = createStringFromLiteral("He@llo");
     
     bool fails = false;
     
-    if (stringCharCodeAt(&source, 2) != 64)   { fails = true; }
-    if (stringCharCodeAt(&source, -1) != -1)   { fails = true; }
-    if (stringCharCodeAt(&source, 200) != -1)   { fails = true; }
+    if (stringByteAt(&source, 2) != 64)   { fails = true; }
+    if (stringByteAt(&source, -1) != -1)   { fails = true; }
+    if (stringByteAt(&source, 200) != -1)   { fails = true; }
     
     deleteString(&source);
     
     if (fails) { 
-        printf("stringCharCodeAt FAILS!\n"); 
+        printf("stringByteAt FAILS!\n"); 
         exit(1);
     }
 }
