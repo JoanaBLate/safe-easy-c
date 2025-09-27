@@ -1,4 +1,4 @@
-# SafeEasyC (UNDER CONSTRUCTION!)
+# SafeEasyC 
 
 SafeEasyC is a C library that provides a safe, high-level approach to working with strings and other data structures. 
 
@@ -10,13 +10,15 @@ It prevents common errors such as
 - out-of-bounds access
 <!-- - using a non-initialized variable -->
 
-Because SafeEasyC provides so much safety, it is around 15% slower than pure C.
+Because SafeEasyC provides so much safety, its performance is something between pure C and JavaScript (closer to pure C).
 
 SafeEasyC makes C programming much easier for beginners.
 
 Just download the file **safe-easy-c.h**, it contains the whole SafeEasyC library in it.
 
 *Currently* SafeEasyC is for **LINUX ONLY!**
+
+SafeEasyC is still evolving, but you can already use it. Check the **advent-of-code** folder.
 
 ### Hello World
 
@@ -82,11 +84,4 @@ OK, but *signed types* have **half** the capacity of *unsigned types*.
 This means that, in case the data size is too big: BUG - that function cannot not search the whole data!!!
 
 The index and the size must share the same type (*signed*)! 
-
-
-
-
-<!-- At the moment the library is comprehensive enough to solve all the puzzles of the Advent of Code. -->
-
-
 
