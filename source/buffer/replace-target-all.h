@@ -3,54 +3,48 @@
 // replace target once ////////////////////////////////////////////////////////
 
 // preserves margin
-bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long relativePosition) 
+bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long position) 
 {        
-    if (relativePosition == -1) { return false; } // target not found
+    if (position == -1) { return false; } // target not found
     
-    long absolutePosition = buffer->margin + relativePosition;
+    long absolutePosition = buffer->margin + position;
     
     // just enough room
     if (target->size == chunk->size) 
     {
-        memcpy(buffer->address + absolutePosition, chunk->address, (size_t) chunk->size);
-        
-        return true;    
+        // do nothing
     }
-    
     // more than enough room
-    if (target->size > chunk->size) 
+    else if (target->size > chunk->size) 
     {
-        memcpy(buffer->address + absolutePosition, chunk->address, (size_t) chunk->size);
-        
-        long delta = target->size - chunk->size;
-        long start = absolutePosition + chunk->size;
-        long off = buffer->margin + buffer->size - delta;
-        
-        for (long index = start; index < off; index++)
-        {
-            buffer->address[index] = buffer->address[index + delta];
-        }
-        
-        buffer->size -= delta;
+        long origin = position + target->size;
 
-        return true;    
+        long length = buffer->size - origin;
+
+        long destiny = position + chunk->size;
+
+        bufferMoveRange(buffer, origin, length, destiny);
+
+        buffer->size += chunk->size - target->size; // must come after 'bufferMoveRange'
+    }
+    // not enough room
+    else
+    {
+        long deltaSize = chunk->size - target->size; // positive number        
+        
+        bufferMaybeExpandCapacity(buffer, deltaSize);
+        
+        long origin = position + target->size;
+        
+        long length = buffer->size - origin;
+        
+        long destiny = position + chunk->size;
+      
+        buffer->size += deltaSize; // must come before 'bufferMoveRange'
+        
+        bufferMoveRange(buffer, origin, length, destiny);
     }
     
-    // not enough room
-    long deltaSize = chunk->size - target->size;
-    
-    bufferMaybeExpandCapacity(buffer, deltaSize);
-    
-    // moving to the right
-    buffer->size += deltaSize;
-    
-    long origin = relativePosition + target->size;
-    
-    long destiny = origin + deltaSize;
-  
-    bufferMoveRange(buffer, origin, buffer->size, destiny); // dimension buffer->size is big enough for all cases 
-                
-    // copying the chunk
     memcpy(buffer->address + absolutePosition, chunk->address, (size_t) chunk->size);
     
     return true;

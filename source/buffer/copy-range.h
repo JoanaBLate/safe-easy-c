@@ -1,16 +1,16 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
 // the exact order of the statements of this function is crucial!
-void bufferCopyRange(Buffer* originBuffer, long originPosition, long count, Buffer* destinyBuffer, long destinyPosition)
+void bufferCopyRange(Buffer* originBuffer, long originPosition, long length, Buffer* destinyBuffer, long destinyPosition)
 {
     if (originBuffer->address == NULL)  { _errorAlreadyReleased("bufferCopyRange"); }    
     if (destinyBuffer->address == NULL) { _errorAlreadyReleased("bufferCopyRange"); }
     
-    if (count < 1) { return; }
+    if (length < 1) { return; }
     
     if (originBuffer->address == destinyBuffer->address)
     {
-        bufferMoveRange(destinyBuffer, originPosition, count, destinyPosition); return; // 'destinyBuffer' OK
+        bufferMoveRange(destinyBuffer, originPosition, length, destinyPosition); return; // 'destinyBuffer' OK
     }
     
     // destiny
@@ -18,7 +18,7 @@ void bufferCopyRange(Buffer* originBuffer, long originPosition, long count, Buff
     
     if (destinyStart >= destinyBuffer->size) { return; }
 
-    long destinyEnd = destinyStart + count - 1;
+    long destinyEnd = destinyStart + length - 1;
     
     if (destinyEnd < 0) { return; }
     
@@ -38,7 +38,7 @@ void bufferCopyRange(Buffer* originBuffer, long originPosition, long count, Buff
     // origin    
     long originStart = originPosition;
         
-    long originEnd = originStart + count - 1;
+    long originEnd = originStart + length - 1;
 
     if (originEnd < 0) { return; }
     

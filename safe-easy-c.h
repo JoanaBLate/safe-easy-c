@@ -1684,9 +1684,9 @@ bool bufferMaybeExpandCapacity(Buffer* buffer, long deltaSize)
 {
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferMaybeExpandCapacity"); }
 
-    long hiddenSpaceAtRight = buffer->capacity - (buffer->margin + buffer->size);
+    long hiddenTail = buffer->capacity - (buffer->margin + buffer->size);
 
-    long neededExpansion = deltaSize - hiddenSpaceAtRight;
+    long neededExpansion = deltaSize - hiddenTail;
 
     if (neededExpansion <= 0) { return false; }
 
@@ -1703,18 +1703,18 @@ bool bufferMaybeExpandCapacity(Buffer* buffer, long deltaSize)
 // file: buffer/move-range.h //
 
 // the exact order of the statements of this function is crucial!
-void bufferMoveRange(Buffer* buffer, long origin, long count, long destiny)
+void bufferMoveRange(Buffer* buffer, long origin, long length, long destiny)
 {
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferMoveRange"); }
 
-    if (count < 1) { return; }
+    if (length < 1) { return; }
 
     // destiny
     long destinyStart = destiny;
 
     if (destinyStart >= buffer->size) { return; }
 
-    long destinyEnd = destinyStart + count - 1;
+    long destinyEnd = destinyStart + length - 1;
 
     if (destinyEnd < 0) { return; }
 
@@ -1734,7 +1734,7 @@ void bufferMoveRange(Buffer* buffer, long origin, long count, long destiny)
     // origin
     long originStart = origin;
 
-    long originEnd = originStart + count - 1;
+    long originEnd = originStart + length - 1;
 
     if (originEnd < 0) { return; }
 
@@ -1781,16 +1781,16 @@ void bufferMoveRange(Buffer* buffer, long origin, long count, long destiny)
 // file: buffer/copy-range.h //
 
 // the exact order of the statements of this function is crucial!
-void bufferCopyRange(Buffer* originBuffer, long originPosition, long count, Buffer* destinyBuffer, long destinyPosition)
+void bufferCopyRange(Buffer* originBuffer, long originPosition, long length, Buffer* destinyBuffer, long destinyPosition)
 {
     if (originBuffer->address == NULL)  { _errorAlreadyReleased("bufferCopyRange"); }
     if (destinyBuffer->address == NULL) { _errorAlreadyReleased("bufferCopyRange"); }
 
-    if (count < 1) { return; }
+    if (length < 1) { return; }
 
     if (originBuffer->address == destinyBuffer->address)
     {
-        bufferMoveRange(destinyBuffer, originPosition, count, destinyPosition); return; // 'destinyBuffer' OK
+        bufferMoveRange(destinyBuffer, originPosition, length, destinyPosition); return; // 'destinyBuffer' OK
     }
 
     // destiny
@@ -1798,7 +1798,7 @@ void bufferCopyRange(Buffer* originBuffer, long originPosition, long count, Buff
 
     if (destinyStart >= destinyBuffer->size) { return; }
 
-    long destinyEnd = destinyStart + count - 1;
+    long destinyEnd = destinyStart + length - 1;
 
     if (destinyEnd < 0) { return; }
 
@@ -1818,7 +1818,7 @@ void bufferCopyRange(Buffer* originBuffer, long originPosition, long count, Buff
     // origin
     long originStart = originPosition;
 
-    long originEnd = originStart + count - 1;
+    long originEnd = originStart + length - 1;
 
     if (originEnd < 0) { return; }
 
@@ -1846,61 +1846,6 @@ void bufferCopyRange(Buffer* originBuffer, long originPosition, long count, Buff
         destinyBuffer->address[indexDestiny] = originBuffer->address[indexOrigin];
     }
 }
-
-
-// file: buffer/append-insert.h //
-
-void bufferAppendString(Buffer* buffer, String* chunk)
-{
-    if (buffer->address == NULL) { _errorAlreadyReleased("bufferAppendString"); }
-    if (chunk->address  == NULL) { _errorAlreadyReleased("bufferAppendString"); }
-
-    if (chunk->size == 0)  { return; }
-
-    bufferMaybeExpandCapacity(buffer, chunk->size);
-
-    memcpy(buffer->address + buffer->margin + buffer->size, chunk->address, (size_t) chunk->size);
-
-    buffer->size += chunk->size;
-}
-
-//void bufferInsertString(Buffer* buffer, String* chunk, long position)
-//{
-//    if (string->address == NULL) { _errorAlreadyReleased("bufferInsertString"); }
-//    if (chunk->address  == NULL) { _errorAlreadyReleased("bufferInsertString"); }
-//
-//    if (chunk->size == 0) { return; }
-//
-//    if (position <= 0) { bufferReplaceStart(buffer, 0, chunk); return }
-//
-//    if (position >= buffer->size) { bufferAppendString(buffer, chunk); return; }
-//
-//
-//
-//
-//
-//
-//    *UNDER CONSTRUCTION*
-//
-//
-//
-//
-//
-//
-//
-//
-//    long bufferSize = string->size + chunk->size;
-//
-//    char* buffer = _allocateHeap(bufferSize);
-//
-//    for (long index = 0; index < position; index++) { buffer[index] = string->address[index]; }
-//
-//    for (long index = 0; index < chunk->size; index++) { buffer[position + index] = chunk->address[index]; }
-//
-//    for (long index = position; index < string->size; index++) { buffer[index + chunk->size] = string->address[index]; }
-//
-//    return _makeStructString(buffer, bufferSize);
-//}
 
 
 // file: buffer/lower-reverse-sort.h //
@@ -2217,9 +2162,15 @@ void bufferReplaceStart(Buffer* buffer, long count, String* chunk)
     // margin is small and will not be touched
     bufferMaybeExpandCapacity(buffer, chunk->size);
 
+    long origin = 0;
+
+    long length = buffer->size;
+
+    long destiny = chunk->size;
+
     buffer->size += chunk->size;
 
-    bufferMoveRange(buffer, 0, buffer->size, chunk->size); // dimension buffer->size is big enough for all cases
+    bufferMoveRange(buffer, origin, length, destiny);
 
     memcpy(buffer->address + buffer->margin, chunk->address, (size_t) chunk->size);
 }
@@ -2236,22 +2187,9 @@ void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
     // eating the end
     buffer->size -= count;
 
-    long hiddenTail = buffer->capacity - buffer->margin - buffer->size;
-
-    if (chunk->size <= hiddenTail)
-    {
-        memcpy(buffer->address + buffer->margin + buffer->size, chunk->address, (size_t) chunk->size);
-
-        buffer->size += chunk->size;
-
-        return;
-    }
-
     bufferMaybeExpandCapacity(buffer, chunk->size);
 
-    long position = buffer->margin + buffer->size;
-
-    memcpy(buffer->address + position, chunk->address, (size_t) chunk->size);
+    memcpy(buffer->address + buffer->margin + buffer->size, chunk->address, (size_t) chunk->size);
 
     buffer->size += chunk->size;
 }
@@ -2262,54 +2200,48 @@ void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
 // replace target once ////////////////////////////////////////////////////////
 
 // preserves margin
-bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long relativePosition)
+bool _bufferReplace(Buffer* buffer, String* target, String* chunk, long position)
 {
-    if (relativePosition == -1) { return false; } // target not found
+    if (position == -1) { return false; } // target not found
 
-    long absolutePosition = buffer->margin + relativePosition;
+    long absolutePosition = buffer->margin + position;
 
     // just enough room
     if (target->size == chunk->size)
     {
-        memcpy(buffer->address + absolutePosition, chunk->address, (size_t) chunk->size);
-
-        return true;
+        // do nothing
     }
-
     // more than enough room
-    if (target->size > chunk->size)
+    else if (target->size > chunk->size)
     {
-        memcpy(buffer->address + absolutePosition, chunk->address, (size_t) chunk->size);
+        long origin = position + target->size;
 
-        long delta = target->size - chunk->size;
-        long start = absolutePosition + chunk->size;
-        long off = buffer->margin + buffer->size - delta;
+        long length = buffer->size - origin;
 
-        for (long index = start; index < off; index++)
-        {
-            buffer->address[index] = buffer->address[index + delta];
-        }
+        long destiny = position + chunk->size;
 
-        buffer->size -= delta;
+        bufferMoveRange(buffer, origin, length, destiny);
 
-        return true;
+        buffer->size += chunk->size - target->size; // must come after 'bufferMoveRange'
+    }
+    // not enough room
+    else
+    {
+        long deltaSize = chunk->size - target->size; // positive number
+
+        bufferMaybeExpandCapacity(buffer, deltaSize);
+
+        long origin = position + target->size;
+
+        long length = buffer->size - origin;
+
+        long destiny = position + chunk->size;
+
+        buffer->size += deltaSize; // must come before 'bufferMoveRange'
+
+        bufferMoveRange(buffer, origin, length, destiny);
     }
 
-    // not enough room
-    long deltaSize = chunk->size - target->size;
-
-    bufferMaybeExpandCapacity(buffer, deltaSize);
-
-    // moving to the right
-    buffer->size += deltaSize;
-
-    long origin = relativePosition + target->size;
-
-    long destiny = origin + deltaSize;
-
-    bufferMoveRange(buffer, origin, buffer->size, destiny); // dimension buffer->size is big enough for all cases
-
-    // copying the chunk
     memcpy(buffer->address + absolutePosition, chunk->address, (size_t) chunk->size);
 
     return true;
@@ -2359,6 +2291,51 @@ bool bufferReplaceAll(Buffer* buffer, String* target, String* chunk)
      while (bufferReplace(buffer, target, chunk)) { }
 
      return true;
+}
+
+
+// file: buffer/append-insert.h //
+
+void bufferAppendString(Buffer* buffer, String* chunk)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferAppendString"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("bufferAppendString"); }
+
+    if (chunk->size == 0)  { return; }
+
+    bufferMaybeExpandCapacity(buffer, chunk->size);
+
+    memcpy(buffer->address + buffer->margin + buffer->size, chunk->address, (size_t) chunk->size);
+
+    buffer->size += chunk->size; // must come after 'memcpy'
+}
+
+void bufferInsertString(Buffer* buffer, String* chunk, long position)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferInsertString"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("bufferInsertString"); }
+
+    if (chunk->size == 0) { return; }
+
+    if (position <= 0) { bufferReplaceStart(buffer, 0, chunk); return; }
+
+    if (position >= buffer->size) { bufferAppendString(buffer, chunk); return; }
+
+    // creating room
+    bufferMaybeExpandCapacity(buffer, chunk->size);
+
+    long origin = position;
+
+    long length = buffer->size - origin;
+
+    long destiny = position + chunk->size;
+
+    buffer->size += chunk->size; // must come before 'bufferMoveRange'
+
+    bufferMoveRange(buffer, origin, length, destiny);
+
+    // writing the chunk
+    memcpy(buffer->address + buffer-> margin + position, chunk->address, (size_t) chunk->size);
 }
 
 
@@ -2421,9 +2398,9 @@ void bufferPadStart(Buffer* buffer, String* chunk, long count)
 
         long origin = 0;
 
-        long length = buffer->size; // dimension buffer->size is big enough for all cases
+        long length = buffer->size;
 
-        long destiny = origin + padLength;
+        long destiny = padLength;
 
         buffer->size += padLength;
 
@@ -2822,22 +2799,7 @@ NullLong bufferEatLong(Buffer* buffer)
 }
 
 
-// file: buffer/set.h //
-
-//long bufferSetMargin(Buffer* buffer) // must change the size too!!!
-//{
-//    if (buffer->address == NULL) { _errorAlreadyReleased("bufferSetMargin"); }
-//
-//    return buffer->margin;
-//}
-//
-//long bufferSetSize(Buffer* buffer)
-//{
-//    if (buffer->address == NULL) { _errorAlreadyReleased("bufferSetSize"); }
-//
-//    return buffer->size;
-//}
-//
+// file: buffer/adjust-move-set.h //
 
 bool bufferSetByte(Buffer* buffer, long index, char byte)
 {
@@ -2848,6 +2810,80 @@ bool bufferSetByte(Buffer* buffer, long index, char byte)
     buffer->address[buffer->margin + index] = byte;
 
     return true;
+}
+
+void bufferMoveLeft(Buffer* buffer, long deltaPos)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferMoveLeft"); }
+
+    if (deltaPos < 0) { return; }
+
+    bufferMoveRange(buffer, deltaPos, buffer->size - deltaPos, 0);
+}
+
+void bufferMoveRight(Buffer* buffer, long deltaPos)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferMoveRight"); }
+
+    if (deltaPos < 0) { return; }
+
+    bufferMoveRange(buffer, 0, buffer->size - deltaPos, deltaPos);
+}
+
+// may change the capacity, allocating memory
+void bufferAdjustHiddenEnds(Buffer* buffer, long newMargin, long newHiddenTail)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferAdjustHiddenEnds"); }
+
+    if (newMargin < 0  ||  newHiddenTail< 0) { return; }
+
+    long hiddenTail = buffer->capacity - (buffer->margin + buffer->size);
+
+    if (buffer->margin  ==  newMargin  &&  hiddenTail == newHiddenTail) { return; }
+
+    long newCapacity = newMargin + buffer->size + newHiddenTail;
+
+    if (newCapacity != buffer->capacity)
+    {
+        Buffer newBuffer = createBufferDontClean(newCapacity);
+
+        memcpy(newBuffer.address + newMargin, buffer->address + buffer->margin, (size_t) buffer->size);
+
+        deleteBuffer(buffer);
+
+        buffer->address = newBuffer.address;
+        buffer->margin = newMargin;
+        buffer->capacity = newCapacity;
+
+        return;
+    }
+
+    long deltaMargin = newMargin - buffer->margin;
+
+    if (deltaMargin < 0)
+    {
+        long start = buffer->margin;
+
+        long off = buffer->margin + buffer->size;
+
+        for (long index = start; index < off; index++)
+        {
+            buffer->address[index - deltaMargin] = buffer->address[index];
+        }
+    }
+    else // if (deltaMargin > 0)
+    {
+        long start = buffer->margin + buffer->size - 1;
+
+        long off = buffer->margin - 1;
+
+        for (long index = start; index > off; index--) // runs backwards
+        {
+            buffer->address[index + deltaMargin] = buffer->address[index];
+        }
+    }
+
+    buffer->margin = newMargin;
 }
 
 //#include "array/array.h"

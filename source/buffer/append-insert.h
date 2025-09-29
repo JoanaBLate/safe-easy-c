@@ -11,44 +11,34 @@ void bufferAppendString(Buffer* buffer, String* chunk)
     
     memcpy(buffer->address + buffer->margin + buffer->size, chunk->address, (size_t) chunk->size);
     
-    buffer->size += chunk->size;
+    buffer->size += chunk->size; // must come after 'memcpy'
 }
 
-//void bufferInsertString(Buffer* buffer, String* chunk, long position)
-//{
-//    if (string->address == NULL) { _errorAlreadyReleased("bufferInsertString"); }
-//    if (chunk->address  == NULL) { _errorAlreadyReleased("bufferInsertString"); }
-//    
-//    if (chunk->size == 0) { return; }
-//    
-//    if (position <= 0) { bufferReplaceStart(buffer, 0, chunk); return }
-//
-//    if (position >= buffer->size) { bufferAppendString(buffer, chunk); return; }
-//    
-//    
-//    
-//    
-//    
-//
-//    *UNDER CONSTRUCTION*
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    long bufferSize = string->size + chunk->size;
-//    
-//    char* buffer = _allocateHeap(bufferSize);
-//
-//    for (long index = 0; index < position; index++) { buffer[index] = string->address[index]; }
-//
-//    for (long index = 0; index < chunk->size; index++) { buffer[position + index] = chunk->address[index]; }
-//
-//    for (long index = position; index < string->size; index++) { buffer[index + chunk->size] = string->address[index]; }
-//    
-//    return _makeStructString(buffer, bufferSize);
-//}
+void bufferInsertString(Buffer* buffer, String* chunk, long position)
+{
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferInsertString"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("bufferInsertString"); }
+    
+    if (chunk->size == 0) { return; }
+    
+    if (position <= 0) { bufferReplaceStart(buffer, 0, chunk); return; }
+
+    if (position >= buffer->size) { bufferAppendString(buffer, chunk); return; }
+    
+    // creating room
+    bufferMaybeExpandCapacity(buffer, chunk->size);
+    
+    long origin = position;
+
+    long length = buffer->size - origin;
+
+    long destiny = position + chunk->size;
+
+    buffer->size += chunk->size; // must come before 'bufferMoveRange'
+
+    bufferMoveRange(buffer, origin, length, destiny);
+
+    // writing the chunk
+    memcpy(buffer->address + buffer-> margin + position, chunk->address, (size_t) chunk->size);
+}
 

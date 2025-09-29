@@ -24,9 +24,9 @@ void bufferPadStart(Buffer* buffer, String* chunk, long count)
                 
         long origin = 0;
         
-        long length = buffer->size; // dimension buffer->size is big enough for all cases 
+        long length = buffer->size;
         
-        long destiny = origin + padLength;
+        long destiny = padLength;
         
         buffer->size += padLength;
         

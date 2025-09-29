@@ -28,9 +28,15 @@ void bufferReplaceStart(Buffer* buffer, long count, String* chunk)
     // margin is small and will not be touched
     bufferMaybeExpandCapacity(buffer, chunk->size);
     
+    long origin = 0;
+    
+    long length = buffer->size;
+
+    long destiny = chunk->size;
+
     buffer->size += chunk->size;
     
-    bufferMoveRange(buffer, 0, buffer->size, chunk->size); // dimension buffer->size is big enough for all cases 
+    bufferMoveRange(buffer, origin, length, destiny);
 
     memcpy(buffer->address + buffer->margin, chunk->address, (size_t) chunk->size); 
 }
@@ -47,22 +53,9 @@ void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
     // eating the end
     buffer->size -= count;
     
-    long hiddenTail = buffer->capacity - buffer->margin - buffer->size;
-    
-    if (chunk->size <= hiddenTail)
-    {        
-        memcpy(buffer->address + buffer->margin + buffer->size, chunk->address, (size_t) chunk->size);
-        
-        buffer->size += chunk->size;
-        
-        return;    
-    }
-    
     bufferMaybeExpandCapacity(buffer, chunk->size);
     
-    long position = buffer->margin + buffer->size;
-
-    memcpy(buffer->address + position, chunk->address, (size_t) chunk->size);
+    memcpy(buffer->address + buffer->margin + buffer->size, chunk->address, (size_t) chunk->size);
     
     buffer->size += chunk->size;
 }

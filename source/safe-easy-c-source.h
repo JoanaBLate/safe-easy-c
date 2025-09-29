@@ -31,11 +31,11 @@
 #include "buffer/expand.h"
 #include "buffer/move-range.h"
 #include "buffer/copy-range.h"
-#include "buffer/append-insert.h"
 #include "buffer/lower-reverse-sort.h"
 #include "buffer/trim.h"
 #include "buffer/replace-start-end.h"
 #include "buffer/replace-target-all.h"
+#include "buffer/append-insert.h"
 #include "buffer/remove.h"
 #include "buffer/pad.h"
 #include "buffer/clear-fill-reset.h"
@@ -43,7 +43,7 @@
 #include "buffer/eat-start-end.h"
 #include "buffer/eat-token-line.h"
 #include "buffer/number.h"
-#include "buffer/set.h"
+#include "buffer/adjust-move-set.h"
 
 //#include "array/array.h"
 

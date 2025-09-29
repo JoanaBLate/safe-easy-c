@@ -3,6 +3,7 @@
 #include "info--test.h"
 #include "move-range--test.h"
 #include "copy-range--test.h"
+#include "append-insert--test.h"
 #include "lower-reverse-sort--test.h"
 #include "trim--test.h"
 #include "trim-target--test.h"
@@ -12,6 +13,7 @@
 #include "remove--test.h"
 #include "pad--test.h"
 #include "reset-clear-fill--test.h"
+#include "adjust-move-set--test.h"
 #include "print--test.h"
 
 void testBuffer()
@@ -31,6 +33,9 @@ void testBuffer()
     
     testBufferMoveRange();
     testBufferCopyRange();
+    
+    testBufferAppendString();
+    testBufferInsertString();
     
     testBufferToLower();
     testBufferToUpper();
@@ -69,6 +74,11 @@ void testBuffer()
     testBufferReset();
     testBufferClear();
     testBufferFill();
+    
+    testBufferSetByte();
+    testBufferMoveLeft();
+    testBufferMoveRight();
+    testBufferAdjustHiddenEnds();
     
     testPrintBufferA();
     testPrintBufferB();

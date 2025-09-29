@@ -5,9 +5,9 @@ bool bufferMaybeExpandCapacity(Buffer* buffer, long deltaSize)
 {
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferMaybeExpandCapacity"); } 
     
-    long hiddenSpaceAtRight = buffer->capacity - (buffer->margin + buffer->size);
+    long hiddenTail = buffer->capacity - (buffer->margin + buffer->size);
     
-    long neededExpansion = deltaSize - hiddenSpaceAtRight;
+    long neededExpansion = deltaSize - hiddenTail;
  
     if (neededExpansion <= 0) { return false; }
 
