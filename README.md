@@ -18,7 +18,7 @@ Just download the file **safe-easy-c.h**, it contains the whole SafeEasyC librar
 
 *Currently* SafeEasyC is for **LINUX ONLY!**
 
-SafeEasyC is still evolving, but you can already use it. Check the **advent-of-code** folder.
+SafeEasyC is still evolving, but you can already use it. Check the [advent-of-code folder](advent-of-code).
 
 ### Hello World
 
@@ -35,6 +35,29 @@ int main()
     printlnString(&hello); 
 
     deleteString(&hello);
+    
+    return 0;
+}
+~~~ 
+
+### Functions can return String
+
+~~~ C
+
+#include "safe-easy-c.h"
+
+String getMessage()
+{
+    return createStringFromLiteral("∆  Hello World!  ∆");
+}
+
+int main()
+{
+    String message = getMessage();
+    
+    printlnString(&message); 
+
+    deleteString(&message);
     
     return 0;
 }

@@ -2,7 +2,7 @@
 
 #include "../safe-easy-c.h"
 
-long array[1000 * 1000];
+long grid[1000 * 1000];
 
 void actionOff(long rowA, long rowB, long colA, long colB)
 {
@@ -12,7 +12,7 @@ void actionOff(long rowA, long rowB, long colA, long colB)
         {
             long index = row * 1000 + col;
             
-            if (array[index] > 0) {  array[index] -= 1; }
+            if (grid[index] > 0) {  grid[index] -= 1; }
         }
     }
 }
@@ -25,7 +25,7 @@ void actionOn(long rowA, long rowB, long colA, long colB)
         {
             long index = row * 1000 + col;
             
-            array[index] += 1;
+            grid[index] += 1;
         }
     }
 }
@@ -38,7 +38,7 @@ void actionToggle(long rowA, long rowB, long colA, long colB)
         {
             long index = row * 1000 + col;
             
-            array[index] += 2;
+            grid[index] += 2;
         }
     }
 }  
@@ -69,15 +69,15 @@ void processLine(Buffer* line)
     
     if (stringsAreEqual(&action, &on))
     { 
-        actionOn(rowA,rowB, colA, colB);
+        actionOn(rowA, rowB, colA, colB);
     }
     else if (stringsAreEqual(&action, &off))
     { 
-        actionOff(rowA,rowB, colA, colB);
+        actionOff(rowA, rowB, colA, colB);
     }
     else 
     { 
-        actionToggle(rowA,rowB, colA, colB);
+        actionToggle(rowA, rowB, colA, colB);
     }
     
     deleteString(&on);
@@ -86,11 +86,11 @@ void processLine(Buffer* line)
     deleteString(&action);
 }
 
-void clearArray()
+void clearGrid()
 {
     for (long index = 0; index < 1000 * 1000; index++)
     {
-        array[index] = 0;
+        grid[index] = 0;
     }
 }
 
@@ -100,7 +100,7 @@ long countLitLights()
     
     for (long index = 0; index < 1000 * 1000; index++)
     {
-        count += array[index];
+        count += grid[index];
     }
 
     return count;
@@ -116,7 +116,7 @@ int main()
     
     bufferTrim(&puzzleInput);
         
-    clearArray();
+    clearGrid();
     
     while (true)
     {

@@ -1,5 +1,6 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
+// may preserve margin or not
 void bufferReplaceStart(Buffer* buffer, long count, String* chunk)
 {   
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferReplaceStart"); }
@@ -12,6 +13,7 @@ void bufferReplaceStart(Buffer* buffer, long count, String* chunk)
     buffer->size -= count;
     buffer->margin += count; 
     
+    // margin is big enough
     if (chunk->size <= buffer->margin)
     {        
         buffer->margin -= chunk->size;
@@ -23,25 +25,17 @@ void bufferReplaceStart(Buffer* buffer, long count, String* chunk)
         return;    
     }
     
-    _bufferMaybeExpandCapacity(buffer, chunk->size);
+    // margin is small and will not be touched
+    bufferMaybeExpandCapacity(buffer, chunk->size);
     
-    // now capacity is enough but margin is not enough: must move bytes to right
+    buffer->size += chunk->size;
     
-    long delta = chunk->size - buffer->margin;
-    
-    buffer->size += delta;
-    
-    bufferMoveRange(buffer, 0, buffer->size - delta, delta);
+    bufferMoveRange(buffer, 0, buffer->size, chunk->size); // dimension buffer->size is big enough for all cases 
 
-    buffer->size += buffer->margin;
-    
-    buffer->margin = 0;
-    
-    // pasting the chunk
-    
-    memcpy(buffer->address, chunk->address, (size_t) chunk->size);
+    memcpy(buffer->address + buffer->margin, chunk->address, (size_t) chunk->size); 
 }
 
+// preserves margin
 void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
 {    
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferReplaceEnd"); }
@@ -64,33 +58,12 @@ void bufferReplaceEnd(Buffer* buffer, long count, String* chunk)
         return;    
     }
     
-    _bufferMaybeExpandCapacity(buffer, chunk->size);
-        
-    hiddenTail = buffer->capacity - buffer->margin - buffer->size;
+    bufferMaybeExpandCapacity(buffer, chunk->size);
     
-    long delta = chunk->size - hiddenTail;
-    
-    if (delta == 0) // no need to displace data
-    {
-        memcpy(buffer->address + buffer->margin + buffer->size, chunk->address, (size_t) chunk->size);
-        
-        buffer->size += chunk->size;
-    
-        return;    
-    }     
-    
-    // must use the margin: moving bytes to left
-    
-    long position = buffer->margin + buffer->size - delta;
-        
-    buffer->margin -= delta;
-    
-    buffer->size += delta;
-  
-    bufferMoveRange(buffer, 0 + delta, buffer->size, 0);
+    long position = buffer->margin + buffer->size;
 
     memcpy(buffer->address + position, chunk->address, (size_t) chunk->size);
     
-    buffer->size += chunk->size - delta;
+    buffer->size += chunk->size;
 }
 

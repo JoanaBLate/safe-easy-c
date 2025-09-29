@@ -7,22 +7,21 @@ void bufferReset(Buffer* buffer)
     buffer->margin = 0;
     
     buffer->size = buffer->capacity;
+    
+    memset(buffer->address, 0, (size_t) buffer->size);
 }
 
-void bufferClear(Buffer* buffer)
+void bufferClear(Buffer* buffer) 
 {
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferClear"); }
     
-    for (long index = 0; index < buffer->size; index++) 
-    { 
-        buffer->address[buffer->margin + index] = 0;
-    }
+    memset(buffer->address + buffer->margin, 0, (size_t) buffer->size);
 }
 
 void bufferFill(Buffer* buffer, String* chunk)
 {
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferFill"); }
-    if (chunk->address == NULL) { _errorAlreadyReleased("bufferFill"); }    
+    if (chunk->address  == NULL) { _errorAlreadyReleased("bufferFill"); }    
     
     if (chunk->size == 0) { return; } // necessary
     

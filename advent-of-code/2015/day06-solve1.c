@@ -71,15 +71,15 @@ void processLine(Buffer* line, Buffer* grid)
         
     if (stringsAreEqual(&action, &on))
     { 
-        actionOn(grid, rowA,rowB, colA, colB);
+        actionOn(grid, rowA, rowB, colA, colB);
     }
     else if (stringsAreEqual(&action, &off))
     { 
-        actionOff(grid, rowA,rowB, colA, colB);
+        actionOff(grid, rowA, rowB, colA, colB);
     }
     else 
     { 
-        actionToggle(grid, rowA,rowB, colA, colB);
+        actionToggle(grid, rowA, rowB, colA, colB);
     }
 
     deleteString(&action);  

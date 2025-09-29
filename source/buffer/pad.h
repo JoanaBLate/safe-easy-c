@@ -1,33 +1,32 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
+// may preserve margin or not
 void bufferPadStart(Buffer* buffer, String* chunk, long count)
 {
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferPadStart"); }
-    if (chunk->address == NULL)  { _errorAlreadyReleased("bufferPadStart"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("bufferPadStart"); }
     
     long padLength = count * chunk->size;
         
     if (padLength < 1) { return; }
-    
-    _bufferMaybeExpandCapacity(buffer, padLength);
 
+    // margin is big enough
     if (buffer->margin >= padLength)
     {
         buffer->margin -= padLength;
         
         buffer->size += padLength;
     }
+    // margin is small and will not be touched
     else
     {
-        long deltaRight = padLength - buffer->margin;
+        bufferMaybeExpandCapacity(buffer, padLength);
+                
+        long origin = 0;
         
-        long origin = buffer->margin;
+        long length = buffer->size; // dimension buffer->size is big enough for all cases 
         
-        long length = buffer->size;
-        
-        long destiny = origin + deltaRight;
-
-        buffer->margin = 0;
+        long destiny = origin + padLength;
         
         buffer->size += padLength;
         
@@ -42,41 +41,19 @@ void bufferPadStart(Buffer* buffer, String* chunk, long count)
     }
 }
 
+// preserves margin
 void bufferPadEnd(Buffer* buffer, String* chunk, long count)
 {
     if (buffer->address == NULL) { _errorAlreadyReleased("bufferPadEnd"); }
-    if (chunk->address == NULL)  { _errorAlreadyReleased("bufferPadEnd"); }
+    if (chunk->address  == NULL) { _errorAlreadyReleased("bufferPadEnd"); }
     
     long padLength = count * chunk->size;
         
     if (padLength < 1) { return; }
     
-    _bufferMaybeExpandCapacity(buffer, padLength);
+    bufferMaybeExpandCapacity(buffer, padLength);
     
-    long hiddenTail = buffer->capacity - buffer->margin - buffer->size;
-    
-    if (hiddenTail >= padLength)
-    {
-        buffer->size += padLength;
-    }
-    else
-    {
-        long length = buffer->size;
-        
-        long deltaLeft = padLength - hiddenTail;
-        
-        buffer->margin -= deltaLeft;
-
-        buffer->size += deltaLeft; // temporary
-        
-        long origin = deltaLeft;
-        
-        long destiny = 0;
-        
-        bufferMoveRange(buffer, origin, length, destiny);
-
-        buffer->size = length + padLength; // definitive
-    }
+    buffer->size += padLength;
    
     for (long n = 0; n < count; n++)
     {

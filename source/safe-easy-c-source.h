@@ -31,13 +31,14 @@
 #include "buffer/expand.h"
 #include "buffer/move-range.h"
 #include "buffer/copy-range.h"
+#include "buffer/append-insert.h"
 #include "buffer/lower-reverse-sort.h"
 #include "buffer/trim.h"
 #include "buffer/replace-start-end.h"
 #include "buffer/replace-target-all.h"
 #include "buffer/remove.h"
 #include "buffer/pad.h"
-#include "buffer/reset-clear-fill.h"
+#include "buffer/clear-fill-reset.h"
 #include "buffer/bite-start-end-token.h"
 #include "buffer/eat-start-end.h"
 #include "buffer/eat-token-line.h"
@@ -46,7 +47,7 @@
 
 //#include "array/array.h"
 
-#include "array-list/array-list.h"
+//#include "list/list.h"
 
 //#include "linked-list/linked-list.h"
 

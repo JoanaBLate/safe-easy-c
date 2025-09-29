@@ -1,12 +1,13 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
-bool _bufferMaybeExpandCapacity(Buffer* buffer, long neededSpace)
+// preserves margin
+bool bufferMaybeExpandCapacity(Buffer* buffer, long deltaSize)
 {
- // if (buffer->address == NULL) { _errorAlreadyReleased("_bufferMaybeExpandCapacity"); } // private function
+    if (buffer->address == NULL) { _errorAlreadyReleased("bufferMaybeExpandCapacity"); } 
     
-    long hiddenSpace = buffer->capacity - buffer->size;
+    long hiddenSpaceAtRight = buffer->capacity - (buffer->margin + buffer->size);
     
-    long neededExpansion = neededSpace - hiddenSpace;
+    long neededExpansion = deltaSize - hiddenSpaceAtRight;
  
     if (neededExpansion <= 0) { return false; }
 

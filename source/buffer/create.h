@@ -34,26 +34,6 @@ Buffer createBufferDontClean(long capacity)
     return buffer;
 }
 
-void bufferClearAll(Buffer* buffer) 
-{
-    if (buffer->address == NULL) { _errorAlreadyReleased("bufferClearAll"); }
-    
-    memset(buffer->address, 0, (size_t) buffer->capacity);
-} 
-
-// faster but dangerous
-void bufferClearVisible(Buffer* buffer) 
-{
-    if (buffer->address == NULL) { _errorAlreadyReleased("bufferClearVisible"); }
-    
-//    for (long index = 0; index < buffer->size; index++)
-//    {
-//        buffer->address[buffer->margin + index] = 0;
-//    }
-    
-    memset(buffer->address + buffer->margin, 0, (size_t) buffer->size);
-}
-
 Buffer createBufferFromLiteral(char* cString) 
 {   
     if (cString == NULL) { return createEmptyBuffer(); }
@@ -107,6 +87,21 @@ Buffer convertStringIntoBuffer(String* string)
     string->address = NULL; // must not call 'releaseHeap'
     
     return buffer;
+}
+
+Buffer createBufferClone(Buffer* buffer) 
+{   
+    if (buffer->address == NULL) { _errorAlreadyReleased("createBufferClone"); }
+    
+    Buffer clone = createBuffer(buffer->capacity);
+
+    memcpy(clone.address, buffer->address, (size_t) buffer->capacity);
+        
+    clone.margin = buffer->margin;
+    
+    clone.size = buffer->size;
+    
+    return clone;
 }
 
 bool deleteBuffer(Buffer* buffer)
