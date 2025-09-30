@@ -253,21 +253,19 @@ void hashmapStringPrintAll(HashmapString* map)
 {
     if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapStringPrintAll"); }
     
-    int counter = 0;
-    
+    printf("{hashmap count: %li}", hashmapStringCount(map));
+        
     for (long index = 0; index < map->capacity; index++)
     {            
         HashmapStringItem* item = map->pointers[index];
         
         if (item == NULL) { continue; }
   
-        if (counter > 0) { printf("  "); }
-        printf("[");
+        printf("   [");
         printString(&item->key);
         printf(": "); 
         printString(&item->value);
         printf("]");
-        counter += 1;
         
         HashmapStringItem* nextItem = item->next;
         
@@ -275,19 +273,16 @@ void hashmapStringPrintAll(HashmapString* map)
         {
             item = nextItem;
             
-            if (counter > 0) { printf("  "); }
-            printf("[");
+            printf("   [");
             printString(&item->key);
             printf(": "); 
             printString(&item->value);
             printf("]");
-            counter += 1;
         
             nextItem = item->next;
         }
     }
-     printf("\nhashmap count: %li\n", hashmapStringCount(map)); 
- //  printf("\nhashmap count: %li    printed objects: %d\n", hashmapStringCount(map), counter);
+    printf("\n"); 
 }    
 
 /* TODO: must wait ArrayList is ready

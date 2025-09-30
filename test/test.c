@@ -6,6 +6,8 @@
 #include "string/test.h"
 #include "buffer/test.h"
 #include "hashmap/test.h"
+#include "list/test.h"
+#include "linked-list/test.h"
 
 int main()
 {
@@ -14,6 +16,8 @@ int main()
     testString();
     testBuffer();
     testHashmap();
+    testList();
+    testLinkedList();
 
     printf("\nAll tests passed!\n");
 

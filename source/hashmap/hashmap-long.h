@@ -235,23 +235,19 @@ void deleteHashmapLong(HashmapLong* map)
     free(map->pointers); 
 }
 
-void hashmapLongPrintAll(HashmapLong* map)
+long long hashmapLongSum(HashmapLong* map)
 {
-    if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapLongPrintAll"); }
+    if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapLongSum"); }
     
-    int counter = 0;
-    
+    long long result = 0;
+            
     for (long index = 0; index < map->capacity; index++)
     {            
         HashmapLongItem* item = map->pointers[index];
         
         if (item == NULL) { continue; }
   
-        if (counter > 0) { printf("  "); }
-        printf("[");
-        printString(&item->key);
-        printf(": %li]", item->value);
-        counter += 1;
+        result += item->value;
         
         HashmapLongItem* nextItem = item->next;
         
@@ -259,18 +255,45 @@ void hashmapLongPrintAll(HashmapLong* map)
         {
             item = nextItem;
             
-            if (counter > 0) { printf("  "); }
-            printf("[");
+            result += item->value;
+            
+            nextItem = item->next;
+        }
+    }
+    return result; 
+}
+
+void hashmapLongPrintAll(HashmapLong* map)
+{
+    if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapLongPrintAll"); }
+    
+    printf("{hashmap count: %li}", hashmapLongCount(map));
+        
+    for (long index = 0; index < map->capacity; index++)
+    {            
+        HashmapLongItem* item = map->pointers[index];
+        
+        if (item == NULL) { continue; }
+  
+        printf("   [");
+        printString(&item->key);
+        printf(": %li]", item->value);
+        
+        HashmapLongItem* nextItem = item->next;
+        
+        while (nextItem != NULL)
+        {
+            item = nextItem;
+            
+            printf("   [");
             printString(&item->key);
             printf(": %li]", item->value);
-            counter += 1;
         
             nextItem = item->next;
         }
     }
-     printf("\nhashmap count: %li\n", hashmapLongCount(map)); 
- //  printf("\nhashmap count: %li    printed objects: %d\n", hashmapLongCount(map), counter);
-}  
+    printf("\n"); 
+}    
 
 /* TODO: must wait ArrayList is ready
 ArrayList* hashmapLongGetKeys(HashmapLong* map)
@@ -298,4 +321,4 @@ ArrayList* hashmapLongGetKeys(HashmapLong* map)
     return list;
 }
 */
-
+    

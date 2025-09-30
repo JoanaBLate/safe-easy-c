@@ -2886,11 +2886,117 @@ void bufferAdjustHiddenEnds(Buffer* buffer, long newMargin, long newHiddenTail)
     buffer->margin = newMargin;
 }
 
-//#include "array/array.h"
 
-//#include "list/list.h"
 
-//#include "linked-list/linked-list.h"
+// file: list/list.h //
+/*
+typedef struct {
+    long   capacity;
+    long   count;
+    void** items;
+} ArrayList;
+
+ArrayList* newArrayList(long capacity)
+{
+    ArrayList* list = _allocateHeap(1 * (long) sizeof(ArrayList));
+
+    list->capacity = capacity;
+
+    list->count = 0;
+
+    list->items = _allocateHeap(capacity * (long) sizeof(void**));
+
+    return list;
+}
+
+void arrayListInclude(ArrayList* list, void* item)
+{
+    if (list->count >= list->capacity)
+    {
+        printf("\nERROR in function 'arrayListInclude': ArrayList was already full\n"); exit(1);
+    }
+
+    list->items[list->count] = item;
+
+    list->count += 1;
+}
+
+// TODO void arrayListRemove // one base
+
+void arrayListUnorderedRemove(ArrayList* list, long index) // one base
+{
+    if (index < 1  ||  index > list->count)
+    {
+        printf("\nERROR in function 'arrayListUnorderedRemove': index (%li) out of bounds\n", index); exit(1);
+    }
+
+    index -= 1; // adjusting to zero base
+
+    long indexOfLast = list->count - 1; // zero base
+
+    list->items[index] = list->items[indexOfLast]; // sometimes index == indexOfLast
+
+    list->items[indexOfLast] = NULL;
+
+    list->count -= 1;
+}
+*/
+
+
+
+// file: linked-list/linked-list.h //
+/*
+typedef struct {
+    long   capacity;
+    long   count;
+    void** items;
+} ArrayList;
+
+ArrayList* newArrayList(long capacity)
+{
+    ArrayList* list = _allocateHeap(1 * (long) sizeof(ArrayList));
+
+    list->capacity = capacity;
+
+    list->count = 0;
+
+    list->items = _allocateHeap(capacity * (long) sizeof(void**));
+
+    return list;
+}
+
+void arrayListInclude(ArrayList* list, void* item)
+{
+    if (list->count >= list->capacity)
+    {
+        printf("\nERROR in function 'arrayListInclude': ArrayList was already full\n"); exit(1);
+    }
+
+    list->items[list->count] = item;
+
+    list->count += 1;
+}
+
+// TODO void arrayListRemove // one base
+
+void arrayListUnorderedRemove(ArrayList* list, long index) // one base
+{
+    if (index < 1  ||  index > list->count)
+    {
+        printf("\nERROR in function 'arrayListUnorderedRemove': index (%li) out of bounds\n", index); exit(1);
+    }
+
+    index -= 1; // adjusting to zero base
+
+    long indexOfLast = list->count - 1; // zero base
+
+    list->items[index] = list->items[indexOfLast]; // sometimes index == indexOfLast
+
+    list->items[indexOfLast] = NULL;
+
+    list->count -= 1;
+}
+*/
 
 
 
@@ -3195,11 +3301,11 @@ void deleteHashmapLong(HashmapLong* map)
     free(map->pointers);
 }
 
-void hashmapLongPrintAll(HashmapLong* map)
+long long hashmapLongSum(HashmapLong* map)
 {
-    if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapLongPrintAll"); }
+    if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapLongSum"); }
 
-    int counter = 0;
+    long long result = 0;
 
     for (long index = 0; index < map->capacity; index++)
     {
@@ -3207,11 +3313,7 @@ void hashmapLongPrintAll(HashmapLong* map)
 
         if (item == NULL) { continue; }
 
-        if (counter > 0) { printf("  "); }
-        printf("[");
-        printString(&item->key);
-        printf(": %li]", item->value);
-        counter += 1;
+        result += item->value;
 
         HashmapLongItem* nextItem = item->next;
 
@@ -3219,17 +3321,44 @@ void hashmapLongPrintAll(HashmapLong* map)
         {
             item = nextItem;
 
-            if (counter > 0) { printf("  "); }
-            printf("[");
-            printString(&item->key);
-            printf(": %li]", item->value);
-            counter += 1;
+            result += item->value;
 
             nextItem = item->next;
         }
     }
-     printf("\nhashmap count: %li\n", hashmapLongCount(map));
- //  printf("\nhashmap count: %li    printed objects: %d\n", hashmapLongCount(map), counter);
+    return result;
+}
+
+void hashmapLongPrintAll(HashmapLong* map)
+{
+    if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapLongPrintAll"); }
+
+    printf("{hashmap count: %li}", hashmapLongCount(map));
+
+    for (long index = 0; index < map->capacity; index++)
+    {
+        HashmapLongItem* item = map->pointers[index];
+
+        if (item == NULL) { continue; }
+
+        printf("   [");
+        printString(&item->key);
+        printf(": %li]", item->value);
+
+        HashmapLongItem* nextItem = item->next;
+
+        while (nextItem != NULL)
+        {
+            item = nextItem;
+
+            printf("   [");
+            printString(&item->key);
+            printf(": %li]", item->value);
+
+            nextItem = item->next;
+        }
+    }
+    printf("\n");
 }
 
 /* TODO: must wait ArrayList is ready
@@ -3515,7 +3644,7 @@ void hashmapStringPrintAll(HashmapString* map)
 {
     if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapStringPrintAll"); }
 
-    int counter = 0;
+    printf("{hashmap count: %li}", hashmapStringCount(map));
 
     for (long index = 0; index < map->capacity; index++)
     {
@@ -3523,13 +3652,11 @@ void hashmapStringPrintAll(HashmapString* map)
 
         if (item == NULL) { continue; }
 
-        if (counter > 0) { printf("  "); }
-        printf("[");
+        printf("   [");
         printString(&item->key);
         printf(": ");
         printString(&item->value);
         printf("]");
-        counter += 1;
 
         HashmapStringItem* nextItem = item->next;
 
@@ -3537,19 +3664,16 @@ void hashmapStringPrintAll(HashmapString* map)
         {
             item = nextItem;
 
-            if (counter > 0) { printf("  "); }
-            printf("[");
+            printf("   [");
             printString(&item->key);
             printf(": ");
             printString(&item->value);
             printf("]");
-            counter += 1;
 
             nextItem = item->next;
         }
     }
-     printf("\nhashmap count: %li\n", hashmapStringCount(map));
- //  printf("\nhashmap count: %li    printed objects: %d\n", hashmapStringCount(map), counter);
+    printf("\n");
 }
 
 /* TODO: must wait ArrayList is ready

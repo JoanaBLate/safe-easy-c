@@ -45,11 +45,9 @@
 #include "buffer/number.h"
 #include "buffer/adjust-move-set.h"
 
-//#include "array/array.h"
+#include "list/list.h"
 
-//#include "list/list.h"
-
-//#include "linked-list/linked-list.h"
+#include "linked-list/linked-list.h"
 
 #include "hashmap/hashmap-helper.h"
 #include "hashmap/hashmap-long.h"
