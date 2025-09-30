@@ -5,6 +5,7 @@
 #include "file/test.h"
 #include "string/test.h"
 #include "buffer/test.h"
+#include "hashmap/test.h"
 
 int main()
 {
@@ -12,6 +13,7 @@ int main()
     testReadTextFile();
     testString();
     testBuffer();
+    testHashmap();
 
     printf("\nAll tests passed!\n");
 

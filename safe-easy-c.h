@@ -3171,6 +3171,7 @@ void hashmapLongClearAll(HashmapLong* map)
 
         deleteString(&item->key);
         free(item);
+        map->count -= 1;
 
         while (nextItem != NULL)
         {
@@ -3180,6 +3181,7 @@ void hashmapLongClearAll(HashmapLong* map)
 
             deleteString(&item->key);
             free(item);
+            map->count -= 1;
         }
     }
 }
@@ -3191,6 +3193,43 @@ void deleteHashmapLong(HashmapLong* map)
     hashmapLongClearAll(map);
 
     free(map->pointers);
+}
+
+void hashmapLongPrintAll(HashmapLong* map)
+{
+    if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapLongPrintAll"); }
+
+    int counter = 0;
+
+    for (long index = 0; index < map->capacity; index++)
+    {
+        HashmapLongItem* item = map->pointers[index];
+
+        if (item == NULL) { continue; }
+
+        if (counter > 0) { printf("  "); }
+        printf("[");
+        printString(&item->key);
+        printf(": %li]", item->value);
+        counter += 1;
+
+        HashmapLongItem* nextItem = item->next;
+
+        while (nextItem != NULL)
+        {
+            item = nextItem;
+
+            if (counter > 0) { printf("  "); }
+            printf("[");
+            printString(&item->key);
+            printf(": %li]", item->value);
+            counter += 1;
+
+            nextItem = item->next;
+        }
+    }
+     printf("\nhashmap count: %li\n", hashmapLongCount(map));
+ //  printf("\nhashmap count: %li    printed objects: %d\n", hashmapLongCount(map), counter);
 }
 
 /* TODO: must wait ArrayList is ready
@@ -3303,6 +3342,7 @@ bool hashmapStringKeyExists(HashmapString* map, String* key)
 // that is better than return NULL and the
 // developer takes it as zero because forgot
 // to call 'hashmapStringKeyExists'
+// (in case of HashmapLong)
 String hashmapStringGet(HashmapString* map, String* key)
 {
     if (map->pointers == NULL) { _errorAlreadyReleased("hashmapStringGet"); }
@@ -3446,6 +3486,7 @@ void hashmapStringClearAll(HashmapString* map)
         deleteString(&item->key);
         deleteString(&item->value);
         free(item);
+        map->count -= 1;
 
         while (nextItem != NULL)
         {
@@ -3456,6 +3497,7 @@ void hashmapStringClearAll(HashmapString* map)
             deleteString(&item->key);
             deleteString(&item->value);
             free(item);
+            map->count -= 1;
         }
     }
 }
@@ -3467,6 +3509,47 @@ void deleteHashmapString(HashmapString* map)
     hashmapStringClearAll(map);
 
     free(map->pointers);
+}
+
+void hashmapStringPrintAll(HashmapString* map)
+{
+    if (map->pointers == NULL) {  _errorAlreadyReleased("hashmapStringPrintAll"); }
+
+    int counter = 0;
+
+    for (long index = 0; index < map->capacity; index++)
+    {
+        HashmapStringItem* item = map->pointers[index];
+
+        if (item == NULL) { continue; }
+
+        if (counter > 0) { printf("  "); }
+        printf("[");
+        printString(&item->key);
+        printf(": ");
+        printString(&item->value);
+        printf("]");
+        counter += 1;
+
+        HashmapStringItem* nextItem = item->next;
+
+        while (nextItem != NULL)
+        {
+            item = nextItem;
+
+            if (counter > 0) { printf("  "); }
+            printf("[");
+            printString(&item->key);
+            printf(": ");
+            printString(&item->value);
+            printf("]");
+            counter += 1;
+
+            nextItem = item->next;
+        }
+    }
+     printf("\nhashmap count: %li\n", hashmapStringCount(map));
+ //  printf("\nhashmap count: %li    printed objects: %d\n", hashmapStringCount(map), counter);
 }
 
 /* TODO: must wait ArrayList is ready
