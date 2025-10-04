@@ -39,19 +39,3 @@ void* _reallocateHeap(void* address, long size)
     exit(1);
 }
 
-void _errorAlreadyReleased(char* funcName)
-{
-    printf("\nERROR: trying to use deleted object in function '%s'\n", funcName);
-    
-    exit(1);
-}
-
-// unused
-void _errorNullArgument(char* funcName)
-{
-    printf("\nERROR: null argument received in function '%s'\n", funcName);
-    
-    exit(1);
-}
-
-

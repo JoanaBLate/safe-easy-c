@@ -18,7 +18,7 @@ Just download the file **safe-easy-c.h**, it contains the whole SafeEasyC librar
 
 *Currently* SafeEasyC is for **LINUX ONLY!**
 
-SafeEasyC is still evolving, but you can already use it. Check the [advent-of-code folder](advent-of-code).
+SafeEasyC is still growing, but you can already use it. Check the [advent-of-code folder](advent-of-code).
 
 ### Hello World
 

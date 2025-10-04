@@ -7,7 +7,9 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "types/types.h"
+#include "type/type.h"
+
+#include "error/error.h"
 
 #include "memory/memory.h"
 
@@ -47,7 +49,8 @@
 
 #include "list/list.h"
 
-#include "linked-list/linked-list.h"
+#include "linked-list/link-list-long.h"
+#include "linked-list/link-list-string.h"
 
 #include "hashmap/hashmap-helper.h"
 #include "hashmap/hashmap-long.h"
