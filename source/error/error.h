@@ -1,6 +1,6 @@
 // # Copyright (c) 2024 - 2025 Feudal Code Limitada - MIT license #
 
-// many errors are processed without using this midule
+// many errors are processed without using this module
 
 void _errorAlreadyReleased(char* funcName)
 {

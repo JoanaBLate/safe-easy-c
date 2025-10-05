@@ -97,9 +97,9 @@ long linkListLongGet(LinkListLong* linkList, long index)
     return _linkListLongGetItemAt(linkList, index)->value;
 }
 
-long linkListLongGetFirst(LinkListLong* linkList)
+long linkListLongGetFront(LinkListLong* linkList)
 {
-    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListLongGetFirst"); }
+    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListLongGetFront"); }
     
     return linkList->first->value; 
 }
@@ -118,76 +118,86 @@ void linkListLongSet(LinkListLong* linkList, long index, long value)
     _linkListLongGetItemAt(linkList, index)->value = value;
 }
 
-void linkListLongPushFirst(LinkListLong* linkList, long value)
+void linkListLongPushFront(LinkListLong* linkList, long value)
 {
     linkList->count += 1;
     
-    LinkListLongItem* oldFirst = linkList->first;
-    
     LinkListLongItem* newItem = _linkListLongCreateItem(value);
     
-    linkList->first = newItem;
+    if (linkList->count == 1) { linkList->first = newItem; linkList->last = newItem; return; }
     
-    if (linkList->count == 1) { return; }
+    LinkListLongItem* oldFirst = linkList->first; // granted to exist
     
     newItem->next = oldFirst;
     
     oldFirst->previous = newItem;
+    
+    linkList->first = newItem;
 }
 
 void linkListLongPush(LinkListLong* linkList, long value)
 {
     linkList->count += 1;
     
-    LinkListLongItem* oldLast = linkList->first;
-    
     LinkListLongItem* newItem = _linkListLongCreateItem(value);
     
-    linkList->last = newItem;
+    if (linkList->count == 1) { linkList->first = newItem; linkList->last = newItem; return; }
     
-    if (linkList->count == 1) { return; }
+    LinkListLongItem* oldLast = linkList->last; // granted to exist
     
     newItem->previous = oldLast;
     
     oldLast->next = newItem;
+    
+    linkList->last = newItem;
 }
 
-void linkListLongInsert(LinkListLong* linkList, long value, long index)
+void linkListLongInsert(LinkListLong* linkList, long index, long value)
 {
-    if (index < 1) { linkListLongPushFirst(linkList, value); return; }
+    if (index < 1) { linkListLongPushFront(linkList, value); return; }
     
     if (index >= linkList->count) { linkListLongPush(linkList, value); return; }
-
-    linkList->count += 1;
     
-    LinkListLongItem* nextItem = _linkListLongGetItemAt(linkList, index);
+    LinkListLongItem* currentItem = _linkListLongGetItemAt(linkList, index); // granted to exist
     
-    LinkListLongItem* previousItem = nextItem->previous;
+    linkList->count += 1; // messes with '_linkListLongGetItemAt'
+    
+    LinkListLongItem* previousItem = currentItem->previous; // granted to exist
     
     LinkListLongItem* newItem = _linkListLongCreateItem(value);
     
-    if (previousItem != NULL) { previousItem->next = newItem; newItem->previous = previousItem; }
-        
-    newItem->next = nextItem;
+    previousItem->next = newItem; 
     
-    nextItem->previous = newItem;
+    newItem->previous = previousItem;
+        
+    newItem->next = currentItem;
+    
+    currentItem->previous = newItem;
 }
     
-long linkListLongPopFirst(LinkListLong* linkList)
+long linkListLongPopFront(LinkListLong* linkList)
 {
-    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListLongPopFirst"); }
+    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListLongPopFront"); }
+    
+    LinkListLongItem* removed = linkList->first;
+    
+    long value = removed->value;
 
     linkList->count -= 1;
     
-    LinkListLongItem* deleted = linkList->first;
-    
-    linkList->first = deleted->next;
-    
-    linkList->first->previous = NULL;
-    
-    long value = deleted->value;
-    
-    free(deleted);
+    if (linkList->count == 0) 
+    { 
+        linkList->first = NULL; 
+        linkList->last = NULL;     
+    }
+    else // if (linkList->count >= 1)
+    {    
+        linkList->first = removed->next;
+
+        linkList->first->previous = NULL;
+    }
+        
+    free(removed);
     
     return value;
 }
@@ -195,16 +205,26 @@ long linkListLongPopFirst(LinkListLong* linkList)
 long linkListLongPop(LinkListLong* linkList)
 {
     if (linkList->count == 0) { _errorEmptyContainerAccess("linkListLongPop"); }
+    
+    LinkListLongItem* removed = linkList->last;
+    
+    long value = removed->value;
 
     linkList->count -= 1;
     
-    LinkListLongItem* deleted = linkList->last;
-    
-    linkList->last = deleted->previous;
-    
-    long value = deleted->value;
-    
-    free(deleted);
+    if (linkList->count == 0) 
+    { 
+        linkList->first = NULL; 
+        linkList->last = NULL;     
+    }
+    else // if (linkList->count >= 1)
+    {
+        linkList->last = removed->previous;
+        
+        linkList->last->next = NULL;
+    }
+     
+    free(removed);
     
     return value;
 }
@@ -213,37 +233,30 @@ long linkListLongRemoveAt(LinkListLong* linkList, long index)
 {
     if (index < 0  ||  index >= linkList->count) { _errorIndexOutOfBounds("linkListLongRemoveAt", index); } 
     
-    if (index == 0) { return linkListLongPopFirst(linkList); }
+    if (index == 0) { return linkListLongPopFront(linkList); }
     
     if (index == linkList->count - 1) { return linkListLongPop(linkList); }
     
-    linkList->count -= 1;  
+    LinkListLongItem* removed = _linkListLongGetItemAt(linkList, index); // not the first and not the last
     
-    LinkListLongItem* deleted = _linkListLongGetItemAt(linkList, index);
+    LinkListLongItem* previous = removed->previous; // granted to exist
 
-    LinkListLongItem* previous = deleted->previous;
+    LinkListLongItem* next = removed->next; // granted to exist
 
-    LinkListLongItem* next = deleted->next;
+    previous->next = next;
 
-    if (previous != NULL) { previous->next = next; }
-
-    if (next != NULL) { next->previous = previous; }
+    next->previous = previous;
     
-    long value = deleted->value;
+    linkList->count -= 1; // messes with '_linkListLongGetItemAt'  
     
-    free(deleted);
+    long value = removed->value;
+    
+    free(removed);
     
     return value;
 }
 
-void linkListLongClearAll(LinkListLong* linkList)
-{
-    LinkListLongItem* item = linkList->first;
-        
-    while (item != NULL) { item->value = 0; item = item->next; } 
-}
-
-void linkListLongDeleteAll(LinkListLong* linkList)
+void linkListLongRemoveAll(LinkListLong* linkList)
 {
     LinkListLongItem* item = linkList->first;
         
@@ -259,6 +272,13 @@ void linkListLongDeleteAll(LinkListLong* linkList)
     linkList->count = 0;
     linkList->first = NULL;
     linkList->last  = NULL;
+}
+
+void linkListLongClearAll(LinkListLong* linkList)
+{
+    LinkListLongItem* item = linkList->first;
+        
+    while (item != NULL) { item->value = 0; item = item->next; } 
 }
 
 long long linkListLongSum(LinkListLong* linkList)
