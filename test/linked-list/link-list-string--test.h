@@ -31,6 +31,8 @@ bool _testLinkedListString()
         deleteString(&i);
     }
     
+    //    linkListStringPrintAll(&linkList);
+    
     String* removed = linkListStringRemoveAt(&linkList, 3);
   
     if (! stringsAreEqual(removed, &s3)) { return false; }
@@ -55,13 +57,9 @@ bool _testLinkedListString()
     deleteString(&s3);
     deleteString(&s4);
     deleteString(&s44);
-    deleteString(removed);
-    deleteString(popFront);
-    deleteString(pop);
-    
-    free(removed);
-    free(popFront);
-    free(pop);
+    deleteStringHeap(removed);
+    deleteStringHeap(popFront);
+    deleteStringHeap(pop);
 
     return true;  
 }

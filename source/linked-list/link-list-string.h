@@ -304,12 +304,10 @@ void linkListStringClearAll(LinkListString* linkList)
 
 void linkListStringPrintAll(LinkListString* linkList)
 {
-    printf("{LinkListlong count: %li}   [", linkListStringCount(linkList));
+    printf("{LinkListlong count: %li}\n", linkListStringCount(linkList));
         
     LinkListStringItem* item = linkList->first;
         
-    while (item != NULL) { printf("\""); printlnString(item->pointer); printf("\""); item = item->next; } 
-    
-    printf("\n");
+    while (item != NULL) { printf("\""); printString(item->pointer); printf("\"\n"); item = item->next; }     
 }
 

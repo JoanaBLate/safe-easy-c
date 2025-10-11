@@ -697,6 +697,18 @@ bool deleteString(String* string)
     return true;
 }
 
+void deleteStringHeap(String* string)
+{
+    if (string->address == NULL) { free(string); return; }
+
+    // empty strings (fakenull address) must not be freed
+    if (string->address != FAKENULL) { free(string->address); }
+
+    string->address = NULL;
+
+    free(string);
+}
+
 
 // file: string/repeat.h //
 
@@ -3610,13 +3622,11 @@ void linkListStringClearAll(LinkListString* linkList)
 
 void linkListStringPrintAll(LinkListString* linkList)
 {
-    printf("{LinkListlong count: %li}   [", linkListStringCount(linkList));
+    printf("{LinkListlong count: %li}\n", linkListStringCount(linkList));
 
     LinkListStringItem* item = linkList->first;
 
-    while (item != NULL) { printf("\""); printlnString(item->pointer); printf("\""); item = item->next; }
-
-    printf("\n");
+    while (item != NULL) { printf("\""); printString(item->pointer); printf("\"\n"); item = item->next; }
 }
 
 

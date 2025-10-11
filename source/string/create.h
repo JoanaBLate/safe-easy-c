@@ -122,3 +122,15 @@ bool deleteString(String* string)
     return true;
 }
 
+void deleteStringHeap(String* string)
+{
+    if (string->address == NULL) { free(string); return; }
+    
+    // empty strings (fakenull address) must not be freed
+    if (string->address != FAKENULL) { free(string->address); } 
+    
+    string->address = NULL;
+    
+    free(string);
+}
+
