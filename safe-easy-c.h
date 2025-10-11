@@ -592,6 +592,21 @@ String createEmptyString()
     return _makeStructString(FAKENULL, 0);
 }
 
+String* _createEmptyStringOnHeap()
+{
+ // if (string->address == NULL) { _errorAlreadyReleased("_createEmptyStringOnHeap"); } // no need inner function
+
+    String empty = createEmptyString();
+
+    String* heapEmpty = _allocateHeap(sizeof(String));
+
+    heapEmpty->address = empty.address;
+
+    heapEmpty->size = empty.size;
+
+    return heapEmpty;
+}
+
 String createStringFromByte(int n)
 {
     if (n < 0  ||  n > 255) { return createEmptyString(); }
@@ -635,6 +650,21 @@ String createStringClone(String* string)
     if (string->address == NULL) { _errorAlreadyReleased("createStringClone"); }
 
     return _createStringFromInfo(string->address, string->size);
+}
+
+String* _createStringCloneOnHeap(String* string)
+{
+ // if (string->address == NULL) { _errorAlreadyReleased("_createStringCloneOnHeap"); } // no need inner function
+
+    String clone = _createStringFromInfo(string->address, string->size);
+
+    String* heapClone = _allocateHeap(sizeof(String));
+
+    heapClone->address = clone.address;
+
+    heapClone->size = clone.size;
+
+    return heapClone;
 }
 
 String createStringFromBuffer(Buffer* buffer)
@@ -3275,376 +3305,319 @@ void linkListLongPrintAll(LinkListLong* linkList)
 
 
 // file: linked-list/link-list-string.h //
-//
-//typedef struct
-//{
-//    long value;
-//    void* previous;
-//    void* next;
-//} linkListLongItem;
-//
-//typedef struct
-//{
-//    long count;
-//    linkListLongItem* current;
-//} linkListLong;
-//
-//LinkListLong createLinkListLong()
-//{
-//    linkListLong linkList = { 0, NULL };
-//
-//    return linkList;
-//}
-//
-//long linkListLongCount(LinkListLong* linkList)
-//{
-//    if (linkList->pointers == NULL) {  _errorAlreadyReleased("LinkListLongCount"); }
-//
-//    return linkList->count;
-//}
-//
+
+typedef struct
+{
+    String* pointer;
+    void* previous;
+    void* next;
+} LinkListStringItem;
+
+typedef struct
+{
+    long count;
+    LinkListStringItem* first;
+    LinkListStringItem* last;
+} LinkListString;
+
 // all items are allocated directly on the heap
-//LinkListLongItem* _LinkListLongCreateItem(String* key, long value)
-//{
-//    // key was already checked
-//    // if (key->address == NULL) { _errorAlreadyReleased("_LinkListLongCreateItem"); }
-//
-//    linkListLongItem* item = _allocateHeap(sizeof(LinkListLongItem));
-//
-//    item->key = createStringClone(key);
-//
-//    item->value = value;
-//
-//    item->next = NULL;
-//
-//    return item;
-//}
-//
-//bool linkListLongKeyExists(LinkListLong* linkList, String* key)
-//{
-//    if (linkList->pointers == NULL) { _errorAlreadyReleased("LinkListLongKeyExists"); }
-//    if (key->address == NULL)  { _errorAlreadyReleased("LinkListLongKeyExists"); }
-//
-//    long hashcode = makeHashCode(key, linkList->capacity);
-//
-//    linkListLongItem* item = linkList->pointers[hashcode];
-//
-//    if (item == NULL) { return false; }
-//
-//    if (stringsAreEqual(key, &item->key)) { return true; }
-//
-//    while (true) // searching in the chain
-//    {
-//        linkListLongItem* nextItem = item->next;
-//
-//        if (nextItem == NULL) { break; }
-//
-//        if (stringsAreEqual(key, &nextItem->key)) { return true; }
-//
-//        item = nextItem;
-//    }
-//
-//    return false;
-//}
-//
-// program exits if the key doesn't exist
-// that is better than return NULL and the
-// developer takes it as zero because forgot
-// to call 'LinkListLongKeyExists'
-//long linkListLongGet(LinkListLong* linkList, String* key)
-//{
-//    if (linkList->pointers == NULL) { _errorAlreadyReleased("LinkListLongGet"); }
-//    if (key->address == NULL)  { _errorAlreadyReleased("LinkListLongGet"); }
-//
-//    long hashcode = makeHashCode(key, linkList->capacity);
-//
-//    linkListLongItem* item = linkList->pointers[hashcode];
-//
-//    if (item == NULL) { _errorLinkListKey(key, "LinkListLongGet"); }
-//
-//    if (stringsAreEqual(key, &item->key)) { return item->value; }
-//
-//    while (true) // searching in the chain
-//    {
-//        linkListLongItem* nextItem = item->next;
-//
-//        if (nextItem == NULL) { break; }
-//
-//        if (stringsAreEqual(key, &nextItem->key)) { return nextItem->value; }
-//
-//        item = nextItem;
-//    }
-//
-//    _errorLinkListKey(key, "LinkListLongGet");
-//
-//    return (long) NULL; // pleasing the compiler ;)
-//}
-//
-// updates or creates new item
-// returns true when makes new item
-//bool linkListLongSet(LinkListLong* linkList, String* key, long value)
-//{
-//    if (linkList->pointers == NULL) { _errorAlreadyReleased("LinkListLongSet"); }
-//    if (key->address == NULL)  { _errorAlreadyReleased("LinkListLongSet"); }
-//
-//    long hashcode = makeHashCode(key, linkList->capacity);
-//
-//    linkListLongItem* item = linkList->pointers[hashcode];
-//
-//    if (item == NULL) // ADDING new item (directly in the array 'pointers')
-//    {
-//        linkList->pointers[hashcode] = _LinkListLongCreateItem(key, value);
-//
-//        linkList->count += 1;
-//
-//        return true;
-//    }
-//
-//    if (stringsAreEqual(key, &item->key)) { item->value = value; return false; } // SETTING item value
-//
-//    while (true) // searching in the chain
-//    {
-//        linkListLongItem* nextItem = item->next;
-//
-//        if (nextItem == NULL) { break; }
-//
-//        if (stringsAreEqual(key, &nextItem->key)) { nextItem->value = value; return false; } // SETTING item value
-//
-//        item = nextItem;
-//    }
-//
-//    // ADDING new item in the chain
-//
-//    item->next = _LinkListLongCreateItem(key, value);
-//
-//    linkList->count += 1;
-//
-//    return true;
-//}
-//
-//bool linkListLongDelete(LinkListLong* linkList, String* key)
-//{
-//    if (linkList->pointers == NULL) { _errorAlreadyReleased("LinkListLongDelete"); }
-//    if (key->address == NULL)  { _errorAlreadyReleased("LinkListLongDelete"); }
-//
-//    long hashcode = makeHashCode(key, linkList->capacity);
-//
-//    linkListLongItem* item = linkList->pointers[hashcode];
-//
-//    if (item == NULL) { return false; }
-//
-//    if (stringsAreEqual(key, &item->key))
-//    {
-//        linkList->pointers[hashcode] = item->next;
-//
-//        linkList->count -= 1;
-//
-//        deleteString(&item->key);
-//        free(item);
-//
-//        return true;
-//    }
-//
-//    while (true) // searching in the chain
-//    {
-//        linkListLongItem *nextItem = item->next;
-//
-//        if (nextItem == NULL) { return false; }
-//
-//        if (! stringsAreEqual(key, &nextItem->key)) { item = nextItem; continue; }
-//
-//        item->next = nextItem->next;
-//
-//        linkList->count -= 1;
-//
-//        deleteString(&item->key);
-//        free(item);
-//
-//        return true;
-//    }
-//
-//    return false; // unreachable
-//}
-//
-//void linkListLongClearAll(LinkListLong* linkList)
-//{
-//    if (linkList->pointers == NULL) {  _errorAlreadyReleased("LinkListLongClearAll"); }
-//
-//    for (long index = 0; index < linkList->capacity; index++)
-//    {
-//        linkListLongItem* item = linkList->pointers[index];
-//
-//        if (item == NULL) { continue; }
-//
-//        linkList->pointers[index] = NULL;
-//
-//        linkListLongItem* nextItem = item->next;
-//
-//        deleteString(&item->key);
-//        free(item);
-//        linkList->count -= 1;
-//
-//        while (nextItem != NULL)
-//        {
-//            item = nextItem;
-//
-//            nextItem = item->next;
-//
-//            deleteString(&item->key);
-//            free(item);
-//            linkList->count -= 1;
-//        }
-//    }
-//}
-//
-//void deleteLinkListLong(LinkListLong* linkList)
-//{
-//    if (linkList->pointers == NULL) {  _errorAlreadyReleased("LinkListLongDeleteAll"); }
-//
-//    linkListLongClearAll(linkList);
-//
-//    free(linkList->pointers);
-//}
-//
-//long long linkListLongSum(LinkListLong* linkList)
-//{
-//    if (linkList->pointers == NULL) {  _errorAlreadyReleased("LinkListLongSum"); }
-//
-//    long long result = 0;
-//
-//    for (long index = 0; index < linkList->capacity; index++)
-//    {
-//        linkListLongItem* item = linkList->pointers[index];
-//
-//        if (item == NULL) { continue; }
-//
-//        result += item->value;
-//
-//        linkListLongItem* nextItem = item->next;
-//
-//        while (nextItem != NULL)
-//        {
-//            item = nextItem;
-//
-//            result += item->value;
-//
-//            nextItem = item->next;
-//        }
-//    }
-//    return result;
-//}
-//
-//void linkListLongPrintAll(LinkListLong* linkList)
-//{
-//    if (linkList->pointers == NULL) {  _errorAlreadyReleased("LinkListLongPrintAll"); }
-//
-//    printf("{LinkList count: %li}", linkListLongCount(linkList));
-//
-//    for (long index = 0; index < linkList->capacity; index++)
-//    {
-//        linkListLongItem* item = linkList->pointers[index];
-//
-//        if (item == NULL) { continue; }
-//
-//        printf("   [");
-//        printString(&item->key);
-//        printf(": %li]", item->value);
-//
-//        linkListLongItem* nextItem = item->next;
-//
-//        while (nextItem != NULL)
-//        {
-//            item = nextItem;
-//
-//            printf("   [");
-//            printString(&item->key);
-//            printf(": %li]", item->value);
-//
-//            nextItem = item->next;
-//        }
-//    }
-//    printf("\n");
-//}
-//
-///* TODO: must wait ArrayList is ready
-//ArrayList* linkListLongGetKeys(LinkListLong* linkList)
-//{
-//    if (linkList->pointers == NULL) {  _errorAlreadyReleased("LinkListLongGetKeys"); }
-//
-//    ArrayList* list = newArrayList(linkList->count);
-//
-//    for (long linkListIndex = 0; linkListIndex < linkList->capacity; linkListIndex++)
-//    {
-//        linkListLongItem* item = linkList->pointers[linkListIndex];
-//
-//        if (item == NULL) { continue; }
-//
-//        arrayListInclude(list, &item->key);
-//
-//        while (item->next != NULL)
-//        {
-//            item = item->next;
-//
-//            arrayListInclude(list, &item->key);
-//        }
-//    }
-//
-//    return list;
-//}
-//*/
-//
-///*
-//typedef struct {
-//    long   capacity;
-//    long   count;
-//    void** items;
-//} ArrayList;
-//
-//ArrayList* newArrayList(long capacity)
-//{
-//    ArrayList* list = _allocateHeap(1 * (long) sizeof(ArrayList));
-//
-//    list->capacity = capacity;
-//
-//    list->count = 0;
-//
-//    list->items = _allocateHeap(capacity * (long) sizeof(void**));
-//
-//    return list;
-//}
-//
-//void arrayListInclude(ArrayList* list, void* item)
-//{
-//    if (list->count >= list->capacity)
-//    {
-//        printf("\nERROR in function 'arrayListInclude': ArrayList was already full\n"); exit(1);
-//    }
-//
-//    list->items[list->count] = item;
-//
-//    list->count += 1;
-//}
-//
-// TODO void arrayListRemove // one base
-//
-//void arrayListUnorderedRemove(ArrayList* list, long index) // one base
-//{
-//    if (index < 1  ||  index > list->count)
-//    {
-//        printf("\nERROR in function 'arrayListUnorderedRemove': index (%li) out of bounds\n", index); exit(1);
-//    }
-//
-//    index -= 1; // adjusting to zero base
-//
-//    long indexOfLast = list->count - 1; // zero base
-//
-//    list->items[index] = list->items[indexOfLast]; // sometimes index == indexOfLast
-//
-//    list->items[indexOfLast] = NULL;
-//
-//    list->count -= 1;
-//}
-//*/
+LinkListStringItem* _linkListStringCreateItem(String* string)
+{
+ // if (string->address == NULL) { _errorAlreadyReleased("_linkListStringCreateItem"); } // no need, inner function
+
+    LinkListStringItem* item = _allocateHeap(sizeof(LinkListStringItem));
+
+    item->pointer = _createStringCloneOnHeap(string);
+
+    item->previous = NULL;
+
+    item->next = NULL;
+
+    return item;
+}
+
+LinkListString createLinkListString()
+{
+    LinkListString linkList = { 0, NULL, NULL };
+
+    return linkList;
+}
+
+long linkListStringCount(LinkListString* linkList)
+{
+    return linkList->count;
+}
+
+bool linkListStringIsEmpty(LinkListString* linkList)
+{
+    return linkList->count != 0;
+}
+
+LinkListStringItem* _linkListStringGetItemAt(LinkListString* linkList, long index)
+{
+ // private function, index already checked
+ // if (index < 0  ||  index >= linkList->count) { _errorIndexOutOfBounds(_linkListStringGetItemAt, index); }
+
+    if (index < linkList->count / 2)
+    {
+        LinkListStringItem* item = linkList->first;
+
+        long n = 0;
+
+        while (true)
+        {
+            if (n == index) { return item; }
+
+            n += 1;
+
+            item = item->next;
+        }
+    }
+    else // runs backwards
+    {
+        LinkListStringItem* item = linkList->last;
+
+        long n =  linkList->count - 1;
+
+        while (true)
+        {
+            if (n == index) { return item; }
+
+            n -= 1;
+
+            item = item->previous;
+        }
+    }
+    return NULL; // pleasing the compiler ;)
+}
+
+bool linkListStringIndexExists(LinkListString* linkList, long index)
+{
+    if (index < 0) { return false; }
+
+    return index < linkList->count;
+}
+
+String* linkListStringGet(LinkListString* linkList, long index)
+{
+    if (index < 0  ||  index >= linkList->count) { _errorIndexOutOfBounds("linkListStringGet", index); }
+
+    return _linkListStringGetItemAt(linkList, index)->pointer;
+}
+
+String* linkListStringGetFront(LinkListString* linkList)
+{
+    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListStringGetFront"); }
+
+    return linkList->first->pointer;
+}
+
+String* linkListStringGetLast(LinkListString* linkList)
+{
+    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListStringGetLast"); }
+
+    return linkList->last->pointer;
+}
+
+void linkListStringSet(LinkListString* linkList, long index, String* string)
+{
+    if (index < 0  ||  index >= linkList->count) { _errorIndexOutOfBounds("linkListStringSet", index); }
+
+    LinkListStringItem* item = _linkListStringGetItemAt(linkList, index);
+
+    deleteString(item->pointer);
+
+    free(item->pointer);
+
+    item->pointer = _createStringCloneOnHeap(string);
+}
+
+void linkListStringPushFront(LinkListString* linkList, String* string)
+{
+    linkList->count += 1;
+
+    LinkListStringItem* newItem = _linkListStringCreateItem(string);
+
+    if (linkList->count == 1) { linkList->first = newItem; linkList->last = newItem; return; }
+
+    LinkListStringItem* oldFirst = linkList->first; // granted to exist
+
+    newItem->next = oldFirst;
+
+    oldFirst->previous = newItem;
+
+    linkList->first = newItem;
+}
+
+void linkListStringPush(LinkListString* linkList, String* string)
+{
+    linkList->count += 1;
+
+    LinkListStringItem* newItem = _linkListStringCreateItem(string);
+
+    if (linkList->count == 1) { linkList->first = newItem; linkList->last = newItem; return; }
+
+    LinkListStringItem* oldLast = linkList->last; // granted to exist
+
+    newItem->previous = oldLast;
+
+    oldLast->next = newItem;
+
+    linkList->last = newItem;
+}
+
+void linkListStringInsert(LinkListString* linkList, long index, String* string)
+{
+    if (index < 1) { linkListStringPushFront(linkList, string); return; }
+
+    if (index >= linkList->count) { linkListStringPush(linkList, string); return; }
+
+    LinkListStringItem* currentItem = _linkListStringGetItemAt(linkList, index); // granted to exist
+
+    linkList->count += 1; // messes with '_linkListStringGetItemAt'
+
+    LinkListStringItem* previousItem = currentItem->previous; // granted to exist
+
+    LinkListStringItem* newItem = _linkListStringCreateItem(string);
+
+    previousItem->next = newItem;
+
+    newItem->previous = previousItem;
+
+    newItem->next = currentItem;
+
+    currentItem->previous = newItem;
+}
+
+String* linkListStringPopFront(LinkListString* linkList)
+{
+    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListStringPopFront"); }
+
+    LinkListStringItem* removed = linkList->first;
+
+    String* pointer = removed->pointer;
+
+    linkList->count -= 1;
+
+    if (linkList->count == 0)
+    {
+        linkList->first = NULL;
+        linkList->last = NULL;
+    }
+    else // if (linkList->count >= 1)
+    {
+        linkList->first = removed->next;
+
+        linkList->first->previous = NULL;
+    }
+
+    free(removed);
+
+    return pointer;
+}
+
+String* linkListStringPop(LinkListString* linkList)
+{
+    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListStringPop"); }
+
+    LinkListStringItem* removed = linkList->last;
+
+    String* pointer = removed->pointer;
+
+    linkList->count -= 1;
+
+    if (linkList->count == 0)
+    {
+        linkList->first = NULL;
+        linkList->last = NULL;
+    }
+    else // if (linkList->count >= 1)
+    {
+        linkList->last = removed->previous;
+
+        linkList->last->next = NULL;
+    }
+
+    free(removed);
+
+    return pointer;
+}
+
+String* linkListStringRemoveAt(LinkListString* linkList, long index)
+{
+    if (index < 0  ||  index >= linkList->count) { _errorIndexOutOfBounds("linkListStringRemoveAt", index); }
+
+    if (index == 0) { return linkListStringPopFront(linkList); }
+
+    if (index == linkList->count - 1) { return linkListStringPop(linkList); }
+
+    LinkListStringItem* removed = _linkListStringGetItemAt(linkList, index); // not the first and not the last
+
+    LinkListStringItem* previous = removed->previous; // granted to exist
+
+    LinkListStringItem* next = removed->next; // granted to exist
+
+    previous->next = next;
+
+    next->previous = previous;
+
+    linkList->count -= 1; // messes with '_linkListStringGetItemAt'
+
+    String* pointer = removed->pointer;
+
+    free(removed);
+
+    return pointer;
+}
+
+void linkListStringRemoveAll(LinkListString* linkList)
+{
+    LinkListStringItem* item = linkList->first;
+
+    while (item != NULL)
+    {
+        LinkListStringItem* next = item->next;
+
+        deleteString(item->pointer);
+
+        free(item->pointer); // the struct String on the heap
+
+        free(item);
+
+        item = next;
+    }
+
+    linkList->count = 0;
+    linkList->first = NULL;
+    linkList->last  = NULL;
+}
+
+void linkListStringClearAll(LinkListString* linkList)
+{
+    LinkListStringItem* item = linkList->first;
+
+    while (item != NULL) {
+
+        deleteString(item->pointer);
+
+        free(item->pointer);
+
+        item->pointer = _createEmptyStringOnHeap();
+
+        item = item->next;
+    }
+}
+
+void linkListStringPrintAll(LinkListString* linkList)
+{
+    printf("{LinkListlong count: %li}   [", linkListStringCount(linkList));
+
+    LinkListStringItem* item = linkList->first;
+
+    while (item != NULL) { printf("\""); printlnString(item->pointer); printf("\""); item = item->next; }
+
+    printf("\n");
+}
 
 
 

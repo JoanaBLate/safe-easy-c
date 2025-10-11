@@ -17,6 +17,21 @@ String createEmptyString()
     return _makeStructString(FAKENULL, 0); 
 }
 
+String* _createEmptyStringOnHeap()
+{
+ // if (string->address == NULL) { _errorAlreadyReleased("_createEmptyStringOnHeap"); } // no need inner function
+
+    String empty = createEmptyString();
+
+    String* heapEmpty = _allocateHeap(sizeof(String));
+    
+    heapEmpty->address = empty.address;
+    
+    heapEmpty->size = empty.size;
+    
+    return heapEmpty;
+}
+
 String createStringFromByte(int n)
 {   
     if (n < 0  ||  n > 255) { return createEmptyString(); }
@@ -60,6 +75,21 @@ String createStringClone(String* string)
     if (string->address == NULL) { _errorAlreadyReleased("createStringClone"); }
 
     return _createStringFromInfo(string->address, string->size);
+}
+
+String* _createStringCloneOnHeap(String* string)
+{
+ // if (string->address == NULL) { _errorAlreadyReleased("_createStringCloneOnHeap"); } // no need inner function
+
+    String clone = _createStringFromInfo(string->address, string->size);
+
+    String* heapClone = _allocateHeap(sizeof(String));
+    
+    heapClone->address = clone.address;
+    
+    heapClone->size = clone.size;
+    
+    return heapClone;
 }
 
 String createStringFromBuffer(Buffer* buffer)

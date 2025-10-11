@@ -31,7 +31,11 @@ bool _testLinkedListLong()
 
     linkListLongClearAll(&linkList);
 
+    if (linkListLongSum(&linkList) != 0) { return false; }
+
     linkListLongRemoveAll(&linkList);
+
+    if (linkListLongSum(&linkList) != 0) { return false; }
 
     if (linkListLongCount(&linkList) != 0) { return false; }
 
