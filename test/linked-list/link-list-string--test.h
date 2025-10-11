@@ -14,40 +14,40 @@ bool _testLinkedListString()
     linkListStringPush(&linkList, &s44);    
     linkListStringInsert(&linkList, 0, &s1);
     linkListStringPushFront(&linkList, &s0);
-    linkListStringInsert(&linkList, 3, &s3);
-    
+    linkListStringInsert(&linkList, 3, &s3);    
       
     String s4 = createStringFromLiteral("4");
     linkListStringSet(&linkList, 4, &s4);
 
     for (long index = 0; index < 5; index++)
     {
-        String* s = linkListStringGet(&linkList, index);
+        String s = linkListStringGet(&linkList, index);
         
         String i = createStringFromLong(index);
     
-        if (! stringsAreEqual(s, &i)) { return false; }
+        if (! stringsAreEqual(&s, &i)) { return false; }
         
+        deleteString(&s);
         deleteString(&i);
     }
     
     //    linkListStringPrintAll(&linkList);
     
-    String* removed = linkListStringRemoveAt(&linkList, 3);
+    String removed = linkListStringRemoveAt(&linkList, 3);
   
-    if (! stringsAreEqual(removed, &s3)) { return false; }
+    if (! stringsAreEqual(&removed, &s3)) { return false; }
 
-    String* popFront = linkListStringPopFront(&linkList);
+    String popFront = linkListStringPopFront(&linkList);
     
-    if (! stringsAreEqual(popFront, &s0)) { return false; }
+    if (! stringsAreEqual(&popFront, &s0)) { return false; }
 
-    String* pop = linkListStringPop(&linkList);
+    String pop = linkListStringPop(&linkList);
     
-    if (! stringsAreEqual(pop, &s4)) { return false; }
+    if (! stringsAreEqual(&pop, &s4)) { return false; }
 
   //  linkListStringClearAll(&linkList);
 
-    linkListStringRemoveAll(&linkList);
+    linkListStringDeleteAll(&linkList);
 
     if (linkListStringCount(&linkList) != 0) { return false; }
     
@@ -57,9 +57,9 @@ bool _testLinkedListString()
     deleteString(&s3);
     deleteString(&s4);
     deleteString(&s44);
-    deleteStringHeap(removed);
-    deleteStringHeap(popFront);
-    deleteStringHeap(pop);
+    deleteString(&removed);
+    deleteString(&popFront);
+    deleteString(&pop);
 
     return true;  
 }

@@ -97,9 +97,9 @@ long linkListLongGet(LinkListLong* linkList, long index)
     return _linkListLongGetItemAt(linkList, index)->value;
 }
 
-long linkListLongGetFront(LinkListLong* linkList)
+long linkListLongGetFirst(LinkListLong* linkList)
 {
-    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListLongGetFront"); }
+    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListLongGetFirst"); }
     
     return linkList->first->value; 
 }
@@ -256,7 +256,7 @@ long linkListLongRemoveAt(LinkListLong* linkList, long index)
     return value;
 }
 
-void linkListLongRemoveAll(LinkListLong* linkList)
+void linkListLongDeleteAll(LinkListLong* linkList)
 {
     LinkListLongItem* item = linkList->first;
         

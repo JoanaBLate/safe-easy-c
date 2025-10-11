@@ -122,6 +122,7 @@ bool deleteString(String* string)
     return true;
 }
 
+/*
 void deleteStringHeap(String* string)
 {
     if (string->address == NULL) { free(string); return; }
@@ -133,4 +134,5 @@ void deleteStringHeap(String* string)
     
     free(string);
 }
+*/
 

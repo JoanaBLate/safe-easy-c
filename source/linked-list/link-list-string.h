@@ -92,25 +92,31 @@ bool linkListStringIndexExists(LinkListString* linkList, long index)
     return index < linkList->count;
 } 
 
-String* linkListStringGet(LinkListString* linkList, long index)
+String linkListStringGet(LinkListString* linkList, long index)
 {
     if (index < 0  ||  index >= linkList->count) { _errorIndexOutOfBounds("linkListStringGet", index); }    
 
-    return _linkListStringGetItemAt(linkList, index)->pointer;
+    String* pointer = _linkListStringGetItemAt(linkList, index)->pointer;
+    
+    return createStringClone(pointer);
 }
 
-String* linkListStringGetFront(LinkListString* linkList)
+String linkListStringGetFirst(LinkListString* linkList)
 {
-    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListStringGetFront"); }
+    if (linkList->count == 0) { _errorEmptyContainerAccess("linkListStringGetFirst"); }
     
-    return linkList->first->pointer; 
+    String* pointer = linkList->first->pointer;
+    
+    return createStringClone(pointer);
 }
     
-String* linkListStringGetLast(LinkListString* linkList)
+String linkListStringGetLast(LinkListString* linkList)
 {
     if (linkList->count == 0) { _errorEmptyContainerAccess("linkListStringGetLast"); }
     
-    return linkList->last->pointer; 
+    String* pointer = linkList->last->pointer;
+    
+    return createStringClone(pointer);
 }
 
 void linkListStringSet(LinkListString* linkList, long index, String* string)
@@ -183,7 +189,7 @@ void linkListStringInsert(LinkListString* linkList, long index, String* string)
     currentItem->previous = newItem;
 }
 
-String* linkListStringPopFront(LinkListString* linkList)
+String linkListStringPopFront(LinkListString* linkList)
 {
     if (linkList->count == 0) { _errorEmptyContainerAccess("linkListStringPopFront"); }
     
@@ -204,13 +210,17 @@ String* linkListStringPopFront(LinkListString* linkList)
 
         linkList->first->previous = NULL;
     }
-        
+    
+    String result = _makeStructString(pointer->address, pointer->size);
+    
+    free(pointer);
+    
     free(removed);
     
-    return pointer;
+    return result;
 }
 
-String* linkListStringPop(LinkListString* linkList)
+String linkListStringPop(LinkListString* linkList)
 {
     if (linkList->count == 0) { _errorEmptyContainerAccess("linkListStringPop"); }
     
@@ -231,13 +241,17 @@ String* linkListStringPop(LinkListString* linkList)
         
         linkList->last->next = NULL;
     }
-     
+    
+    String result = _makeStructString(pointer->address, pointer->size);
+    
+    free(pointer);
+    
     free(removed);
     
-    return pointer;
+    return result;
 }
 
-String* linkListStringRemoveAt(LinkListString* linkList, long index)
+String linkListStringRemoveAt(LinkListString* linkList, long index)
 {
     if (index < 0  ||  index >= linkList->count) { _errorIndexOutOfBounds("linkListStringRemoveAt", index); } 
     
@@ -259,12 +273,16 @@ String* linkListStringRemoveAt(LinkListString* linkList, long index)
     
     String* pointer = removed->pointer;
     
+    String result = _makeStructString(pointer->address, pointer->size);
+    
+    free(pointer);
+    
     free(removed);
     
-    return pointer;
+    return result;
 }
  
-void linkListStringRemoveAll(LinkListString* linkList)
+void linkListStringDeleteAll(LinkListString* linkList)
 {
     LinkListStringItem* item = linkList->first;
         
