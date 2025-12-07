@@ -1,4 +1,4 @@
-// solution for https://adventofcode.com/2025/day/2 part 1
+// solution for https://adventofcode.com/2025/day/3 part 1
 
 #include "../safe-easy-c.h"
 
