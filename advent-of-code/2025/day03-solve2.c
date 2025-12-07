@@ -18,7 +18,7 @@ int getBestBatteryIndex(String* bank, int from, int to)
     return position;
 }
 
-double processBank(String* bank)
+unsigned long processBank(String* bank)
 {
     Buffer buffer = createBuffer(12);
     
